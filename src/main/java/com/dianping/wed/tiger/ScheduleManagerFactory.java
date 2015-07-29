@@ -47,7 +47,7 @@ public class ScheduleManagerFactory {
 	}
 
 	public enum keys {
-		zkConnectAddress, rootPath, userName, password, zkSessionTimeout, enableNavigate, enableZookeeper, handlers, visualNodeNum,divideType;
+		zkConnectAddress, rootPath, userName, password, zkSessionTimeout, enableNavigate, enableZookeeper,enableBackFetch, handlers, visualNodeNum,divideType;
 	}
 
 	/**
@@ -85,10 +85,12 @@ public class ScheduleManagerFactory {
 		String divideType = conifg.getProperty(keys.divideType.name(), ScheduleManager.DIVIDE_RNAGE_MODE+"");
 		String zkSessionTimeout = conifg.getProperty(
 				keys.zkSessionTimeout.name(), "60000");
-		String enableNavigate = conifg.getProperty(keys.enableNavigate.name(),
-				"true");
 		String enableZookeeper = conifg.getProperty(
 				keys.enableZookeeper.name(), "true");
+		String enableNavigate = conifg.getProperty(keys.enableNavigate.name(),
+				"true");
+		String enableBackFetch = conifg.getProperty(
+				keys.enableBackFetch.name(), "false");
 
 		if (!StringUtils.isBlank(rootPath)) {
 			ScheduleServer.getInstance().setRootPath(rootPath);
@@ -104,13 +106,14 @@ public class ScheduleManagerFactory {
 			ScheduleServer.getInstance().setZkSessionTimeout(
 					Integer.valueOf(zkSessionTimeout));
 		}
-		if (!StringUtils.isBlank(enableNavigate)) {
-			ScheduleServer.getInstance().setEnableNavigate(
-					"true".equals(enableNavigate));
-		}
 		if (!StringUtils.isBlank(enableZookeeper)) {
-			ScheduleServer.getInstance().setEnableZookeeper(
-					"true".equals(enableZookeeper));
+			this.setZookeeperFlag("true".equals(enableZookeeper));
+		}
+		if (!StringUtils.isBlank(enableNavigate)) {
+			this.setNavigateFlag("true".equals(enableNavigate));
+		}
+		if (!StringUtils.isBlank(enableBackFetch)) {
+			this.setBackFetchFlag("true".equals(enableBackFetch));
 		}
 
 		ScheduleServer.getInstance().initOk();
@@ -219,7 +222,7 @@ public class ScheduleManagerFactory {
 	}
 
 	public static Object getBean(String beanName) {
-		if (StringUtils.isBlank(beanName)) {
+		if (appCtx == null || StringUtils.isBlank(beanName)) {
 			return null;
 		}
 		try{
