@@ -8,7 +8,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>wed-tiger</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0.1-SNAPSHOT</version>
+	<version>1.0.1</version>
 	<name>wed-tiger</name>
 	
 	<dependencies>
@@ -25,7 +25,7 @@
         <dependency>
             <groupId>org.apache.curator</groupId>
             <artifactId>curator-framework</artifactId>
-            <version>2.4.2</version>
+            <version>2.7.1</version>
         </dependency>
 		<dependency>
             <groupId>commons-lang</groupId>
