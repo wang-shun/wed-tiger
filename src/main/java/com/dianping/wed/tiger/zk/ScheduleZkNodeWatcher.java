@@ -31,11 +31,6 @@ public class ScheduleZkNodeWatcher implements CuratorWatcher {
 
 	@Override
 	public void process(WatchedEvent event) throws Exception {
-		if (!ScheduleServer.getInstance().enableZookeeper()) {
-			logger.warn("node changed,zookeeper switch is not enable,ignore,"
-					+ event);
-			return;
-		}
 		logger.warn("node changed," + event);
 		if (zkClient.getState() != CuratorFrameworkState.STOPPED) {
 			if (event.getType() == EventType.NodeChildrenChanged) {

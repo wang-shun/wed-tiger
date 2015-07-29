@@ -69,10 +69,6 @@ public class ScheduleManager {
 						if (!StringUtils.equals(currentRegisterVersion,
 								ScheduleServer.getInstance()
 										.getRegisterVersion())) {// 集群注册版本发生变化
-							if (!ScheduleServer.getInstance().enableZookeeper()) {
-								logger.warn("zk registerversion changed,zookeeper switch is not enable,ignore.");
-								continue;
-							}
 							ScheduleServer.getInstance().reset();
 							if (ScheduleServer.getInstance().isInRunning()) {
 								Thread.sleep(1 * 1000);
