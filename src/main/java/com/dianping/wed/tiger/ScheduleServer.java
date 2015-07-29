@@ -62,6 +62,11 @@ public class ScheduleServer {
 	 * 初始化是否完毕
 	 */
 	private AtomicBoolean initFlag = new AtomicBoolean(false);
+	
+	/**
+	 * 总调度开关
+	 */
+	private AtomicBoolean scheduleSwitcher = new AtomicBoolean(true);
 
 	/**
 	 * 巡航优化开关
@@ -72,11 +77,7 @@ public class ScheduleServer {
 	 * 反压开关
 	 */
 	private AtomicBoolean enableBackFetch = new AtomicBoolean(false);
-
-	/**
-	 * 启用zk开关
-	 */
-	private AtomicBoolean enableZookeeper = new AtomicBoolean(true);
+	
 
 	/**
 	 * 当前正在执行的任务数
@@ -136,7 +137,7 @@ public class ScheduleServer {
 	 * @return
 	 */
 	public boolean canScheduler() {
-		return canSchedule.get();
+		return canSchedule.get() && scheduleSwitcher.get();
 	}
 
 	/**
@@ -225,6 +226,10 @@ public class ScheduleServer {
 		this.divideType = divideType;
 	}
 
+	public void setScheduleSwitcher(boolean scheduleSwitcher) {
+		this.scheduleSwitcher.set(scheduleSwitcher);
+	}
+
 	public boolean enableNavigate() {
 		return enableNavigate.get();
 	}
@@ -239,14 +244,6 @@ public class ScheduleServer {
 
 	public void setEnableBackFetch(boolean enableBackFetch) {
 		this.enableBackFetch.set(enableBackFetch);
-	}
-
-	public boolean enableZookeeper() {
-		return enableZookeeper.get();
-	}
-
-	public void setEnableZookeeper(boolean enableZookeeper) {
-		this.enableZookeeper.set(enableZookeeper);
 	}
 
 	public String getZkAddress() {
