@@ -10,7 +10,7 @@ Step 一. 依赖:
 
 <groupId>com.dianping</groupId>
 <artifactId>wed-tiger</artifactId>
-<version>1.0.0</version>
+<version>1.0.1</version>
 
 Step 二. 实现任务操作管理接口:com.dianping.wed.tiger.dispatch.DispatchTaskService
 
