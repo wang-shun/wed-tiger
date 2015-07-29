@@ -224,7 +224,7 @@ public class ScheduleManagerFactory {
 		}
 		try{
 			return appCtx.getBean(beanName);
-		}catch(Exception Exception){
+		}catch(Exception e){
 			return null;
 		}
 	}
