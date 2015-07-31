@@ -127,4 +127,4 @@ ScheduleManagerFactory.setNavigateFlag(boolean flag);
 4. 运行中反压措施开关控制
 ScheduleManagerFactory.setBackFetchFlag(boolean flag);
 
-**Thanks** 
+**Thanks**
