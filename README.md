@@ -49,7 +49,7 @@ public boolean addRetryTimesAndExecuteTime(int taskId,Date nextExecuteTime,Strin
 ```
 public List<DispatchTaskEntity> findDispatchTasksWithLimitByBackFetch(String handler, List<Integer> nodeList, int limit,int taskId);
 ```
-###Step三. 实现任务分发接口
+### Step三. 实现任务分发接口
 ```
 com.dianping.wed.tiger.dispatch.DispatchHandler
 ```
@@ -69,7 +69,7 @@ public class ChainTestHandler implements DispatchHandler {
     }
 }
 ```
-###Step四. 应用启动唤起
+### Step四. 应用启动唤起
 ```
 com.dianping.wed.tiger.ScheduleManagerFactory
 ```
@@ -113,12 +113,12 @@ smf.initSchedule(configp);
 
 **注意点:**
 
-1. ScheduleManagerFactory.keys.handlers.name()的名字需要和DispatchHandler接口实现类的**bean名字**一样,执行器handler之间用,分隔;
-2. DispatchHandler接口实现类的spring bean配置默认是**单例**，所以在实现类里最好**不用成员变量**，而要用局部变量，**成员变量是有状态的，会有线程安全问题**;
+1) ScheduleManagerFactory.keys.handlers.name()的名字需要和DispatchHandler接口实现类的**bean名字**一样,执行器handler之间用,分隔;
+2) DispatchHandler接口实现类的spring bean配置默认是**单例**，所以在实现类里最好**不用成员变量**，而要用局部变量，**成员变量是有状态的，会有线程安全问题**;
 
 
-###Step五. 运行中改变
-  初始化需要的配置外，tiger支持运行中的配置改变，目前支持以下几种:
+### Step五. 运行中改变
+  初始化需要的配置外，tiger支持运行中的***配置改变***，目前支持以下几种:
   
   1) 运行过程中执行器配置改变
   
