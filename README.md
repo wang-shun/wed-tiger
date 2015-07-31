@@ -1,5 +1,7 @@
 #tiger说明
+
 ####如果阅读完文档后，还有任何疑问，请mail to tengkai.yuan@dianping.com
+
 
 **tiger**是一种分布式异步执行框架，偏重于执行层面，同一种任务可以由多台机器同时执行，并能保证一条任务不被重复执行。
 
@@ -12,13 +14,17 @@ tiger主要有以下三块组成：
 3. 任务执行管理：用于管理本机所分配到的执行器节点,进而进行任务节点捞取、任务过滤等,并对任务的执行结果进行处理;
 
 ##使用步骤
+
 ###Step一. 依赖
+
 ```
 <groupId>com.dianping</groupId>
 <artifactId>wed-tiger</artifactId>
 <version>1.0.1</version>
 ```
+
 ###Step二. 实现任务操作管理接口
+
 ```
 com.dianping.wed.tiger.dispatch.DispatchTaskService
 ```
