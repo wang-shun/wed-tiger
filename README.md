@@ -72,7 +72,9 @@ public class ChainTestHandler implements DispatchHandler {
 
 ```
 ===========声明 ScheduleManagerFactory=======
-ScheduleManagerFactory smf = new ScheduleManagerFactory(30*1000); smf.setAppCtx(applicationcontext);
+ScheduleManagerFactory smf = new ScheduleManagerFactory(30*1000);
+
+smf.setAppCtx(applicationcontext);
 
 ===========初始化配置==============
 Properties configp = new Properties();
