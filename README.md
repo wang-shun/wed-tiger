@@ -18,7 +18,7 @@ tiger主要有以下三块组成：
 ```
 <groupId>com.dianping</groupId>
 <artifactId>wed-tiger</artifactId>
-<version>1.0.1</version>
+<version>1.0.2</version>
 ```
 
 ### Step二. 实现任务操作管理接口
