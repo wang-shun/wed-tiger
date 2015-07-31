@@ -50,7 +50,7 @@ public List<DispatchTaskEntity> findDispatchTasksWithLimitByBackFetch(String han
 ### Step三. 实现任务分发接口
 ``com.dianping.wed.tiger.dispatch.DispatchHandler``
 
-这里用于实现***业务逻辑***;
+这里用于实现 ***业务逻辑***;
 
 任务分发支持并行、串行两种执行策略。 默认是并行执行策略，如果需要串行执行策略（同一个任务有先后执行顺序的情况下）,在实现的类里增加一个注解,如：
 
@@ -111,14 +111,14 @@ smf.initSchedule(configp);
 **注意点:**
 
 
-1) ScheduleManagerFactory.keys.handlers.name()的名字需要和DispatchHandler接口实现类的**bean名字**一样,执行器handler之间用,分隔;
+1) ScheduleManagerFactory.keys.handlers.name()的名字需要和DispatchHandler接口实现类的 **bean名字**一样,执行器handler之间用,分隔;
 
-2) DispatchHandler接口实现类的spring bean配置默认是**单例**，所以在实现类里最好**不用成员变量**，而要用局部变量，**成员变量是有状态的，会有线程安全问题**;
+2) DispatchHandler接口实现类的spring bean配置默认是 **单例**，所以在实现类里最好 **不用成员变量**，而要用局部变量， **成员变量是有状态的，会有线程安全问题;**
 
 
 ### Step五. 运行中改变
   
-  初始化需要的配置外，tiger支持运行中的***配置改变***，目前支持以下几种:
+  初始化需要的配置外，tiger支持运行中的 ***配置改变***，目前支持以下几种:
   
   1) 运行过程中执行器配置改变
   
