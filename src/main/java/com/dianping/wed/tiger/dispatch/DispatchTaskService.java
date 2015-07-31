@@ -33,7 +33,7 @@ public interface DispatchTaskService {
 	 * @param taskEntity
 	 * @return
 	 */
-	public int addWedDispatchTask(DispatchTaskEntity taskEntity);
+	public int addDispatchTask(DispatchTaskEntity taskEntity);
 	
 	/**
 	 * 获取一定数量的任务

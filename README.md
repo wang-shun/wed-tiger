@@ -27,7 +27,7 @@ tiger主要有以下三块组成：
 #### 必须实现：
 ##### 方法1. 添加一条任务
 ```
-public int addWedDispatchTask(DispatchTaskEntity taskEntity);
+public int addDispatchTask(DispatchTaskEntity taskEntity);
 ```
 ##### 方法2. 捞取一定数量的任务
 ```
