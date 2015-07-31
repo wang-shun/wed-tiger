@@ -109,8 +109,8 @@ smf.initSchedule(configp);
 
 **注意点:**
 
-1. ScheduleManagerFactory.keys.handlers.name()的名字需要和DispatchHandler接口实现类的***bean名字***一样,执行器handler之间用**,**分隔;
-2. DispatchHandler接口实现类的spring bean配置默认是**单例**，所以在实现类里最好**不用成员变量**，而要用局部变量，***成员变量是有状态的，会有线程安全问题***;
+1. ScheduleManagerFactory.keys.handlers.name()的名字需要和DispatchHandler接口实现类的**bean名字**一样,执行器handler之间用,分隔;
+2. DispatchHandler接口实现类的spring bean配置默认是**单例**，所以在实现类里最好**不用成员变量**，而要用局部变量，**成员变量是有状态的，会有线程安全问题**;
 
 ###Step五. 运行中改变
 初始化需要的配置外，tiger支持运行中的配置改变，目前支持以下几种:
