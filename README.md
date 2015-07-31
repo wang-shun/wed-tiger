@@ -1,5 +1,5 @@
-#tiger说明
-####如果阅读完文档后，还有任何疑问，请mail to tengkai.yuan@dianping.com
+# tiger说明
+#### 如果阅读完文档后，还有任何疑问，请mail to tengkai.yuan@dianping.com
 
 **tiger**是一种分布式异步执行框架，偏重于执行层面，同一种任务可以由多台机器同时执行，并能保证一条任务不被重复执行。
 
@@ -11,41 +11,41 @@ tiger主要有以下三块组成：
 
 3. 任务执行管理：用于管理本机所分配到的执行器节点,进而进行任务节点捞取、任务过滤等,并对任务的执行结果进行处理;
 
-##使用步骤
-###Step一. 依赖
+## 使用步骤
+### Step一. 依赖
 ```
 <groupId>com.dianping</groupId>
 <artifactId>wed-tiger</artifactId>
 <version>1.0.1</version>
 ```
-###Step二. 实现任务操作管理接口
+### Step二. 实现任务操作管理接口
 ```
 com.dianping.wed.tiger.dispatch.DispatchTaskService
 ```
-####必须实现：
-#####方法1. 添加一条任务
+#### 必须实现：
+##### 方法1. 添加一条任务
 ``
 public int addWedDispatchTask(DispatchTaskEntity taskEntity);
 ``
-#####方法2. 捞取一定数量的任务
+##### 方法2. 捞取一定数量的任务
 ``
 public List<DispatchTaskEntity> findDispatchTasksWithLimit(String handler,List<Integer> nodeList, int limit);
 ``
-#####方法3. 更新任务状态
+##### 方法3. 更新任务状态
 ``
 public boolean updateTaskStatus(int taskId,int status,String hostName);
 ``
-#####方法4. 执行不成功，希望下次继续重试
+##### 方法4. 执行不成功，希望下次继续重试
 ``
 public boolean addRetryTimesAndExecuteTime(int taskId,Date nextExecuteTime,String hostName);
 ``
 
-####可选实现:
-#####方法1. 反压获取一定数量的任务，使用前提ScheduleManagerFactory.setBackFetchFlag(true)
+#### 可选实现:
+##### 方法1. 反压获取一定数量的任务，使用前提ScheduleManagerFactory.setBackFetchFlag(true)
 ``
 public List<DispatchTaskEntity> findDispatchTasksWithLimitByBackFetch(String handler, List<Integer> nodeList, int limit,int taskId);
 ``
-###Step三. 实现任务分发接口
+### Step三. 实现任务分发接口
 ```
 com.dianping.wed.tiger.dispatch.DispatchHandler
 ```
@@ -65,7 +65,7 @@ public class ChainTestHandler implements DispatchHandler {
     }
 }
 ```
-###Step四. 应用启动唤起
+### Step四. 应用启动唤起
 ```
 com.dianping.wed.tiger.ScheduleManagerFactory
 ```
@@ -112,7 +112,7 @@ smf.initSchedule(configp);
 1. ScheduleManagerFactory.keys.handlers.name()的名字需要和DispatchHandler接口实现类的**bean名字**一样,执行器handler之间用,分隔;
 2. DispatchHandler接口实现类的spring bean配置默认是**单例**，所以在实现类里最好**不用成员变量**，而要用局部变量，**成员变量是有状态的，会有线程安全问题**;
 
-###Step五. 运行中改变
+### Step五. 运行中改变
 初始化需要的配置外，tiger支持运行中的配置改变，目前支持以下几种:
 
 1. 运行过程中执行器配置改变
