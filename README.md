@@ -23,9 +23,7 @@ tiger主要有以下三块组成：
 
 ### Step二. 实现任务操作管理接口
 
-```
-com.dianping.wed.tiger.dispatch.DispatchTaskService
-```
+``com.dianping.wed.tiger.dispatch.DispatchTaskService``
 #### 必须实现：
 ##### 方法1. 添加一条任务
 ```
@@ -50,9 +48,7 @@ public boolean addRetryTimesAndExecuteTime(int taskId,Date nextExecuteTime,Strin
 public List<DispatchTaskEntity> findDispatchTasksWithLimitByBackFetch(String handler, List<Integer> nodeList, int limit,int taskId);
 ```
 ### Step三. 实现任务分发接口
-```
-com.dianping.wed.tiger.dispatch.DispatchHandler
-```
+``com.dianping.wed.tiger.dispatch.DispatchHandler``
 这里用于实现***业务逻辑***;
 
 任务分发支持并行、串行两种执行策略。 默认是并行执行策略，如果需要串行执行策略（同一个任务有先后执行顺序的情况下）,在实现的类里增加一个注解,如：
@@ -70,9 +66,7 @@ public class ChainTestHandler implements DispatchHandler {
 }
 ```
 ### Step四. 应用启动唤起
-```
-com.dianping.wed.tiger.ScheduleManagerFactory
-```
+``com.dianping.wed.tiger.ScheduleManagerFactory``
 ***example***:
 
 ```
