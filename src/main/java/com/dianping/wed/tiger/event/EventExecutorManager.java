@@ -56,7 +56,9 @@ public class EventExecutorManager {
 			executorVersion.set(eventConfigs.get(0).getIdentifyCode());
 			for (EventConfig config : eventConfigs) {
 				EventExecutor ee = EventFactory.createExecutor(config);
-				eventExecutors.add(ee);
+				if(ee != null){
+					eventExecutors.add(ee);
+				}
 			}
 			initFlag.set(true);
 		} finally {

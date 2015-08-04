@@ -3,6 +3,9 @@
  */
 package com.dianping.wed.tiger;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.dianping.wed.tiger.dispatch.DispatchHandler;
 import com.dianping.wed.tiger.dispatch.DispatchResultManager;
 import com.dianping.wed.tiger.dispatch.DispatchTaskEntity;
@@ -19,6 +22,9 @@ import com.dianping.wed.tiger.repository.EventInConsumerRepository;
  */
 public class EventFactory {
 
+	private static final Logger logger = LoggerFactory
+			.getLogger(EventFactory.class);
+
 	/**
 	 * 生成任务执行器
 	 * 
@@ -28,6 +34,13 @@ public class EventFactory {
 	public static EventExecutor createExecutor(EventConfig config) {
 		DispatchTaskService dispatchTaskService = (DispatchTaskService) ScheduleManagerFactory
 				.getBean("dispatchTaskService");
+		DispatchHandler handler = (DispatchHandler) ScheduleManagerFactory
+				.getBean(config.getHandler());
+		if (handler == null) {
+			logger.warn("there is no handler bean for eventconfig:"
+					+ config.getHandler());
+			return null;
+		}
 		EventFetcher eventFetcher = new EventFetcher(dispatchTaskService);
 		EventFilter eventFilter = new EventFilter(
 				EventInConsumerRepository.getInstance());
@@ -45,9 +58,10 @@ public class EventFactory {
 	 */
 	public static EventConsumer createConsumer(DispatchTaskEntity task,
 			EventConfig config) {
-		DispatchHandler handler = (DispatchHandler) ScheduleManagerFactory.getBean(config
-				.getHandler());
-		DispatchResultManager resultHandler = DispatchResultManager.getInstance();
+		DispatchHandler handler = (DispatchHandler) ScheduleManagerFactory
+				.getBean(config.getHandler());
+		DispatchResultManager resultHandler = DispatchResultManager
+				.getInstance();
 		if (handler == null) {
 			throw new IllegalArgumentException("handler not found,name="
 					+ config.getHandler());
