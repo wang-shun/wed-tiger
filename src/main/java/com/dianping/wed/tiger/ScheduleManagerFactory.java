@@ -47,7 +47,7 @@ public class ScheduleManagerFactory {
 	}
 
 	public enum keys {
-		zkConnectAddress, rootPath, userName, password, zkSessionTimeout,scheduleFlag,enableNavigate, enableBackFetch, handlers, visualNodeNum,divideType;
+		zkConnectAddress, rootPath, userName, password, zkSessionTimeout, scheduleFlag, enableNavigate, enableBackFetch, handlers, visualNodeNum, divideType;
 	}
 
 	/**
@@ -58,8 +58,8 @@ public class ScheduleManagerFactory {
 	 * @throws IllegalArgumentException
 	 * @throws Exception
 	 */
-	public void initSchedule(Properties conifg) throws IllegalArgumentException,
-			Exception {
+	public void initSchedule(Properties conifg)
+			throws IllegalArgumentException, Exception {
 		if (!initFlag.compareAndSet(false, true)) {
 			return;
 		}
@@ -82,11 +82,12 @@ public class ScheduleManagerFactory {
 		String rootPath = conifg.getProperty(keys.rootPath.name(), "/TIGERZK");
 		String visualNode = conifg
 				.getProperty(keys.visualNodeNum.name(), "100");
-		String divideType = conifg.getProperty(keys.divideType.name(), ScheduleManager.DIVIDE_RNAGE_MODE+"");
+		String divideType = conifg.getProperty(keys.divideType.name(),
+				ScheduleManager.DIVIDE_RNAGE_MODE + "");
 		String zkSessionTimeout = conifg.getProperty(
 				keys.zkSessionTimeout.name(), "60000");
-		String scheduleFlag = conifg.getProperty(
-				keys.scheduleFlag.name(), "true");
+		String scheduleFlag = conifg.getProperty(keys.scheduleFlag.name(),
+				"true");
 		String enableNavigate = conifg.getProperty(keys.enableNavigate.name(),
 				"true");
 		String enableBackFetch = conifg.getProperty(
@@ -99,8 +100,9 @@ public class ScheduleManagerFactory {
 			ScheduleServer.getInstance().setNumOfVisualNode(
 					Integer.valueOf(visualNode));
 		}
-		if(StringUtils.isNumeric(divideType)){
-			ScheduleServer.getInstance().setDivideType(Integer.valueOf(divideType));
+		if (StringUtils.isNumeric(divideType)) {
+			ScheduleServer.getInstance().setDivideType(
+					Integer.valueOf(divideType));
 		}
 		if (StringUtils.isNumeric(zkSessionTimeout)) {
 			ScheduleServer.getInstance().setZkSessionTimeout(
@@ -123,13 +125,14 @@ public class ScheduleManagerFactory {
 		startSchedule();
 
 	}
-	
+
 	/**
 	 * 重新设置调度执行器
+	 * 
 	 * @param handlers
 	 */
-	public void reSchedule(List<String> handlers){
-		if(handlers == null || !initFlag.get()){
+	public void reSchedule(List<String> handlers) {
+		if (handlers == null || !initFlag.get()) {
 			return;
 		}
 		List<Integer> nodeList = ScheduleServer.getInstance().getNodeList();
@@ -138,54 +141,61 @@ public class ScheduleManagerFactory {
 			ScheduleServer.getInstance().addHandler(handler,
 					new ArrayList<Integer>(nodeList));
 		}
-		ScheduleServer.getInstance().setHandlerIdentifyCode(
-				handlers.hashCode());
+		ScheduleServer.getInstance()
+				.setHandlerIdentifyCode(handlers.hashCode());
 	}
-	
+
 	/**
 	 * 设置调度总开关
+	 * 
 	 * @param flag
 	 */
-	public void setScheduleFlag(boolean flag){
+	public void setScheduleFlag(boolean flag) {
 		ScheduleServer.getInstance().setScheduleSwitcher(flag);
 	}
-	
+
 	/**
 	 * 设置是否启用巡航模式
+	 * 
 	 * @param flag
 	 */
-	public void setNavigateFlag(boolean flag){
+	public void setNavigateFlag(boolean flag) {
 		ScheduleServer.getInstance().setEnableNavigate(flag);
 	}
-	
+
 	/**
 	 * 设置是否反压
+	 * 
 	 * @param flag
 	 */
-	public void setBackFetchFlag(boolean flag){
+	public void setBackFetchFlag(boolean flag) {
 		ScheduleServer.getInstance().setEnableBackFetch(flag);
 	}
-	
-	
+
 	private void startSchedule() {
 		eventStarterThread = new Thread(new Runnable() {
 
 			@Override
 			public void run() {
 				while (true) {
-					if (ScheduleServer.getInstance().canScheduler()) {
-						if(!EventExecutorManager.getInstance().hasInited()){
-							List<EventConfig> eventConfigs = EventConfigUtil.syncEventConfigs();
-							EventExecutorManager.getInstance().init(eventConfigs);
-							logger.warn("######" + ScheduleServer.getInstance().getServerName()
-									+ " start scheduling,task config:" + eventConfigs);
-						}
-						EventExecutorScheduler.getInstance().execute();
-					}
 					try {
-						if(EventExecutorManager.getInstance().hasInited()){
+						if (ScheduleServer.getInstance().canScheduler()) {
+							if (!EventExecutorManager.getInstance().hasInited()) {
+								List<EventConfig> eventConfigs = EventConfigUtil
+										.syncEventConfigs();
+								EventExecutorManager.getInstance().init(
+										eventConfigs);
+								logger.warn("######"
+										+ ScheduleServer.getInstance()
+												.getServerName()
+										+ " start scheduling,task config:"
+										+ eventConfigs);
+							}
+							EventExecutorScheduler.getInstance().execute();
+						}
+						if (EventExecutorManager.getInstance().hasInited()) {
 							Thread.sleep(sleepInteverval);
-						}else{
+						} else {
 							Thread.sleep(1000);
 						}
 						if (EventExecutorManager.getInstance()
@@ -202,7 +212,12 @@ public class ScheduleManagerFactory {
 									+ " task config changed:" + eventConfigs);
 						}
 					} catch (InterruptedException e) {
-						logger.error("scheduler sleep exception.", e);
+						logger.error("eventExecutorScheduler sleep exception.",
+								e);
+					} catch (Throwable t) {
+						logger.error(
+								"eventExecutorScheduler happens unknow exception.",
+								t);
 					}
 				}
 			}
@@ -215,8 +230,7 @@ public class ScheduleManagerFactory {
 	private void startZk() throws Exception {
 		scheduleZkManager.start();
 	}
-	
-	
+
 	public void setAppCtx(ApplicationContext applicationContext) {
 		appCtx = applicationContext;
 	}
@@ -225,9 +239,9 @@ public class ScheduleManagerFactory {
 		if (appCtx == null || StringUtils.isBlank(beanName)) {
 			return null;
 		}
-		try{
+		try {
 			return appCtx.getBean(beanName);
-		}catch(Exception e){
+		} catch (Exception e) {
 			return null;
 		}
 	}
