@@ -67,6 +67,7 @@ public class EventConsumer implements Runnable {
 		try {
 			DispatchParam param = new DispatchParam();
 			param.addProperty("id", task.getId());
+			param.addProperty("retryTimes", task.getRetryTimes());
 			param.addProperty("param", task.getParameter());
 			result = dispatchHandler.invoke(param);
 			
