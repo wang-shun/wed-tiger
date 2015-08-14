@@ -44,29 +44,13 @@ public class EventExecutor {
 
 	private final ReentrantLock lock = new ReentrantLock();
 
-	public EventExecutor() {
-		this.eventThreadPool = new ThreadPoolExecutor(1, 1, 10L,
-				TimeUnit.MILLISECONDS,
-				new LinkedBlockingQueue<Runnable>(10000), new ThreadFactory() {
-					AtomicInteger index = new AtomicInteger();
-
-					public Thread newThread(Runnable r) {
-						Thread thread = new Thread(r);
-						thread.setDaemon(true);
-						thread.setName(eventConfig.getHandler() + "#"
-								+ (index.incrementAndGet()));
-						return thread;
-					}
-				});
-	}
-
 	public EventExecutor(final EventConfig eventConfig,
 			EventFetcher eventFetcher, EventFilter eventFilter) {
 		this.eventConfig = eventConfig;
 		this.eventFetcher = eventFetcher;
 		this.eventFilter = eventFilter;
 		this.eventNavigator = new EventNavigator(eventConfig.getHandler());
-		int coreSize = 5;
+		int coreSize = 3;
 		int maxSize = 10;
 		DispatchHandler handler = (DispatchHandler) ScheduleManagerFactory
 				.getBean(eventConfig.getHandler());
