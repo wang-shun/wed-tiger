@@ -73,6 +73,10 @@ public class ScheduleManager {
 							if (ScheduleServer.getInstance().isInRunning()) {
 								Thread.sleep(1 * 1000);
 								if (ScheduleServer.getInstance().isInRunning()) {// 等待1s后，还在执行，则等下次
+									logger.warn("########registerversion changed,but local scheduleServer already in running,scheduleFlag="
+											+ ScheduleServer.getInstance()
+													.canScheduler()
+											+ ",serverList:" + serverList);
 									continue;
 								}
 							}
