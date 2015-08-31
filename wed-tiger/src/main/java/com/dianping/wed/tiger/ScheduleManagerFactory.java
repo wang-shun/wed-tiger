@@ -49,6 +49,10 @@ public class ScheduleManagerFactory {
 	public enum keys {
 		zkConnectAddress, rootPath, userName, password, zkSessionTimeout, scheduleFlag, enableNavigate, enableBackFetch, handlers, visualNodeNum, divideType;
 	}
+	
+	public enum monitorkeys{
+		enableMonitor,monitorUrl
+	}
 
 	/**
 	 * 入口:zk调度初始化
@@ -92,6 +96,8 @@ public class ScheduleManagerFactory {
 				"true");
 		String enableBackFetch = conifg.getProperty(
 				keys.enableBackFetch.name(), "false");
+		String enableMonitor = conifg.getProperty(monitorkeys.enableMonitor.name(), "false");
+		String monitorurl = conifg.getProperty(monitorkeys.monitorUrl.name());
 
 		if (!StringUtils.isBlank(rootPath)) {
 			ScheduleServer.getInstance().setRootPath(rootPath);
@@ -116,6 +122,13 @@ public class ScheduleManagerFactory {
 		}
 		if (!StringUtils.isBlank(enableBackFetch)) {
 			this.setBackFetchFlag("true".equals(enableBackFetch));
+		}
+		//==========监控相关============
+		if (!StringUtils.isBlank(enableMonitor)) {
+			this.setMonitorFlag("true".equals(enableBackFetch));
+		}
+		if(!StringUtils.isBlank(monitorurl)){
+			ScheduleServer.getInstance().setMonitorUrl(monitorurl);
 		}
 
 		ScheduleServer.getInstance().initOk();
@@ -170,6 +183,14 @@ public class ScheduleManagerFactory {
 	 */
 	public void setBackFetchFlag(boolean flag) {
 		ScheduleServer.getInstance().setEnableBackFetch(flag);
+	}
+	
+	/**
+	 * 设置监控开关
+	 * @param flag
+	 */
+	public void setMonitorFlag(boolean flag){
+		ScheduleServer.getInstance().setEnableMonitor(flag);
 	}
 
 	private void startSchedule() {

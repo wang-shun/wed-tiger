@@ -33,6 +33,11 @@ public class ScheduleServer {
 	 * 虚拟节点数
 	 */
 	private int numOfVisualNode = 100;
+	
+	/**
+	 * 监控url
+	 */
+	private String monitorUrl;
 
 	/**
 	 * 该机分配的执行器 k-handlerName v-nodes
@@ -78,6 +83,10 @@ public class ScheduleServer {
 	 */
 	private AtomicBoolean enableBackFetch = new AtomicBoolean(false);
 	
+	/**
+	 * 监控开关
+	 */
+	private AtomicBoolean enableMonitor = new AtomicBoolean(false);
 
 	/**
 	 * 当前正在执行的任务数
@@ -246,6 +255,14 @@ public class ScheduleServer {
 		this.enableBackFetch.set(enableBackFetch);
 	}
 
+	public boolean enableMonitor() {
+		return enableMonitor.get();
+	}
+
+	public void setEnableMonitor(boolean enableMonitor) {
+		this.enableMonitor.set(enableMonitor);;
+	}
+
 	public String getZkAddress() {
 		return zkAddress;
 	}
@@ -276,6 +293,14 @@ public class ScheduleServer {
 
 	public void setNumOfVisualNode(int numOfVisualNode) {
 		this.numOfVisualNode = numOfVisualNode;
+	}
+
+	public String getMonitorUrl() {
+		return monitorUrl;
+	}
+
+	public void setMonitorUrl(String monitorUrl) {
+		this.monitorUrl = monitorUrl;
 	}
 
 	/**

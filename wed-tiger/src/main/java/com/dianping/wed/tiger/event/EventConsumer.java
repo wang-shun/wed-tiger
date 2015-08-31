@@ -69,18 +69,25 @@ public class EventConsumer implements Runnable {
 			param.addProperty("id", task.getId());
 			param.addProperty("retryTimes", task.getRetryTimes());
 			param.addProperty("param", task.getParameter());
+			long start = System.currentTimeMillis();
 			result = dispatchHandler.invoke(param);
-			
+			int duration = (int) (System.currentTimeMillis() - start);
 			if(result == DispatchResult.FAIL){
 				transaction.setStatus(result.name());
 			}else{
 				transaction.setStatus(Transaction.SUCCESS);
+			}
+			if(ScheduleServer.getInstance().enableMonitor()){
+				EventMonitor.getInstance().record(task.getHandler(), result == DispatchResult.FAIL?0:1, duration);
 			}
 		} catch (Throwable t) {
 			logger.error("dispatch invoke exception," + task, t);
 			result = DispatchResult.FAIL;
 			Cat.logError("task dispatch invoke exception:", t);
 			transaction.setStatus(t);
+			if(ScheduleServer.getInstance().enableMonitor()){
+				EventMonitor.getInstance().record(task.getHandler(), 0, 0);
+			}
 		} finally {
 			eventInConsumerRepository.remove(task.getId());
 			ScheduleServer.getInstance().decrRunningTask();
