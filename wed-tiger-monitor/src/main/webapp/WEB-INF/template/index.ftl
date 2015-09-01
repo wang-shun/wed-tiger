@@ -8,8 +8,16 @@
 	<#include "/common/common.style.ftl">
 	<#import "/common/common.content.ftl" as netCommon>
 	
+	<!-- Highcharts -->
 	<script type="text/javascript" src="${base_url}static/plugin/Highcharts-4.1.8/highcharts.js"></script>
 	<script type="text/javascript" src="${base_url}static/plugin/Highcharts-4.1.8/modules/exporting.js"></script>
+	
+	<!-- bootstrap-datetimepicker -->
+	<link rel="stylesheet" href="${base_url}static/plugin/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" >
+	<script type="text/javascript" src="${base_url}static/plugin/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+	<script type="text/javascript" src="${base_url}static/plugin/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+	
+	<!-- meme -->
 	<script type="text/javascript">
 		var chartData = new Array();
 		<#if map?exists>
@@ -17,24 +25,19 @@
 				itemName = '${key}';
 				itemData = new Array();
 				<#list map[key] as item>
-					itemData.push({x:new Date(${item.monitorTime?long}), y:'${item.totalNum}', avgCost:'${item.avgCost}'});
+					itemData.push({
+						x:new Date(${item.monitorTime?long}), 
+						y:${item.totalNum}, 
+						sucNum:${item.sucNum},
+						failNum:${item.failNum},
+						avgCost:${item.avgCost},
+						maxCost:${item.maxCost},
+						minCost:${item.minCost}
+					});
 				</#list>
 				chartData.push({'name':itemName, 'data':itemData});
 			</#list>
 		</#if>
-		
-    	chartData = new Array();
-    	asd = new Array();
-    	asd.push({x:new Date(2015, 9, 01, 9, 59, 59), y:20, avgCost:'78'});
-    	asd.push({x:new Date(2015, 9, 02, 9, 59, 59), y:20, avgCost:'78'});
-    	chartData.push({'name':'asdas', 'data':asd});
-    	
-    	asd = new Array();
-    	asd.push({x:new Date(2015, 9, 01, 9, 59, 59), y:20, avgCost:'78'});
-    	asd.push({x:new Date(2015, 9, 02, 9, 59, 59), y:20, avgCost:'78'});
-    	chartData.push({'name':'asdas', 'data':asd});
-    	
-    	
 	</script>
 	<script type="text/javascript" src="${base_url}static/js/index.1.js"></script>
 	
@@ -55,7 +58,8 @@
 		<div class="col-xs-5">
 			<div class="input-group">
 				<span class="input-group-addon">日期</span>
-				<input type="text" class="form-control" id="monitorTime" value="${monitorTime}" placeholder="请输入日期(默认查询当日)">
+				<input type="text" class="form-control" id="monitorTime" value="${monitorTime?date}" placeholder="请输入日期(默认查询当日)">
+				<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
 			</div>
 		</div>
 		<div class="col-xs-2">

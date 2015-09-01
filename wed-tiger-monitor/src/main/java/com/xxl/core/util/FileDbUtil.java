@@ -1,0 +1,172 @@
+package com.xxl.core.util;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import net.sf.json.JSONObject;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang.ArrayUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.xxl.core.model.MonitorRecord;
+
+/**
+ * file db util
+ * @author xuxueli 2015-9-1 14:50:18
+ */
+public class FileDbUtil {
+	protected static Logger logger = LoggerFactory.getLogger(FileDbUtil.class);
+
+	private static final File DATA_DIR = new File("/data/tiger/");
+	private static final SimpleDateFormat formatDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private static final SimpleDateFormat formatPathA = new SimpleDateFormat("yyyyMM");
+	private static final SimpleDateFormat formatPathB = new SimpleDateFormat("dd");
+	
+	/**
+	 * 加载文件list
+	 * @param hadleName		specify monitor handle file name
+	 * @param monitorTime	specify monitor date
+	 * @return
+	 */
+	private static List<File> loadFiles(String hadleName, Date monitorTime){
+		if (!DATA_DIR.exists()) {
+			DATA_DIR.mkdirs();
+		}
+		File dirA = new File(DATA_DIR, formatPathA.format(monitorTime));	// ../201509
+		if (dirA.exists() && dirA.isDirectory()) {
+			File dirB = new File(dirA, formatPathB.format(monitorTime));	// ../201509/01
+			if (dirB.exists()  && dirB.isDirectory()) {
+				File[] fileArr = dirB.listFiles();
+				if (ArrayUtils.isNotEmpty(fileArr)) {
+					List<File> result = new ArrayList<File>();
+					for (File file : fileArr) {
+						if (file.getName().startsWith(hadleName)) {
+							result.add(file);
+						}
+					}
+					if (CollectionUtils.isNotEmpty(result)) {
+						return result;
+					}
+				}
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * 解析文件
+	 * @param item
+	 * @return
+	 */
+	private static void parseFile(File file, List<MonitorRecord> list) {
+		InputStream ins = null;
+		BufferedReader reader = null;
+		try {
+			ins = new FileInputStream(file);
+			reader = new BufferedReader(new InputStreamReader(ins, "UTF-8"));
+			String content = null;
+			if (reader != null) {
+				while ((content = reader.readLine()) != null) {
+					// 解析文件：# 时间 | handlername | hostname | totalNum | sucNum | failNum | avgCost | maxCost | minCost
+					if (content != null && content.trim().length() > 0 && content.indexOf("#") == -1) {
+						String[] strArray = content.split("\\|");
+						if (strArray.length == 9) {
+							MonitorRecord item = new MonitorRecord();
+							item.setMonitorTime(formatDateTime.parse(strArray[0].trim()));
+							item.setHadleName(strArray[1].trim());
+							item.setHostName(strArray[2].trim());
+							item.setTotalNum(Integer.valueOf(strArray[3].trim()));
+							item.setSucNum(Integer.valueOf(strArray[4].trim()));
+							item.setFailNum(Integer.valueOf(strArray[5].trim()));
+							item.setAvgCost(Long.valueOf(strArray[6].trim()));
+							item.setMaxCost(Long.valueOf(strArray[7].trim()));
+							item.setMinCost(Long.valueOf(strArray[8].trim()));
+							list.add(item);
+						}
+					}
+				}
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		} finally {
+			if (ins != null) {
+				try {
+					ins.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			if (reader != null) {
+				try {
+					reader.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	/**
+	 * 检索数据
+	 * @param hadleName
+	 * @param monitorTime
+	 * @return
+	 */
+	public static Map<String, List<MonitorRecord>> loadMonitorData(String hadleName, Date monitorTime){
+		Map<String, List<MonitorRecord>> result = null;
+		// 加载文件列表
+		List<File> monotorFiles = loadFiles(hadleName, monitorTime);
+		if (CollectionUtils.isNotEmpty(monotorFiles)) {
+			result = new HashMap<String, List<MonitorRecord>>();
+			for (File item : monotorFiles) {
+				String hostName = item.getName().substring(hadleName.length() + 1, item.getName().length() - 4);
+				List<MonitorRecord> list = new ArrayList<MonitorRecord>();
+				result.put(hostName, list);
+				parseFile(item, list);
+				if (CollectionUtils.isNotEmpty(list)) {
+					Collections.sort(list);
+				}
+			}
+		}
+		return result;
+	}
+
+	public static void main(String[] args) {
+		Map<String, List<MonitorRecord>> map = loadMonitorData("demohandler", new Date());
+		if (MapUtils.isNotEmpty(map)) {
+			for (Entry<String, List<MonitorRecord>> item : map.entrySet()) {
+				logger.info("----------------------------:" + item.getKey());
+				for (MonitorRecord monitor : item.getValue()) {
+					logger.info(JSONObject.fromObject(monitor).toString());
+				}
+			}
+		}
+	}
+	
+	
+
+}
