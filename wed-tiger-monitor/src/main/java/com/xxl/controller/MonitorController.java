@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.json.JSONObject;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -16,7 +14,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.xxl.core.model.MonitorOrigin;
 import com.xxl.core.model.MonitorRecord;
 import com.xxl.core.result.ReturnT;
 
@@ -78,10 +75,9 @@ public class MonitorController {
 	 */
 	@RequestMapping("/pushData")
 	@ResponseBody
-	public ReturnT<String> pushData(MonitorOrigin monitorOrigin){
+	public ReturnT<String> pushData(String tm){
 		try {
-			logger.info("pushData:{}", JSONObject.fromObject(monitorOrigin)
-					.toString());
+			logger.info("pushData:{}", tm);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
