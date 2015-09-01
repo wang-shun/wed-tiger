@@ -14,13 +14,30 @@
 		var chartData = new Array();
 		<#if map?exists>
 			<#list map?keys as key>
-				var data_${key} = new Array();
+				itemName = '${key}';
+				itemData = new Array();
 				<#list map[key] as item>
-					data_${key}.push({x:new Date(${item.monitorTime?long}), y:'${item.totalNum}', avgCost:'${item.avgCost}'});
+					itemData.push({x:new Date(${item.monitorTime?long}), y:'${item.totalNum}', avgCost:'${item.avgCost}'});
 				</#list>
-				chartData.push({'name':'${key}', 'data':data_${key}});
+				chartData.push({'name':itemName, 'data':itemData});
 			</#list>
 		</#if>
+		
+		chartData = [{
+            name: 'host1',
+            data: [{x:new Date(2015, 9, 01, 8, 59, 59), y:10, avgCost:'04'}, 	// yyyy,mth(月份区间0-11),dd,hh,mm,ss
+                   {x:new Date(2015, 9, 02, 9, 59, 59), y:20, avgCost:'78'},
+                   {x:new Date(2015, 9, 04, 10, 59, 59), y:30, avgCost:'278'},
+                   {x:new Date(2015, 9, 06, 11, 59, 59), y:40, avgCost:'20'},
+                   {x:new Date(2015, 9, 08, 12, 59, 59), y:50, avgCost:'21'},]
+        	}];
+        	
+    	chartData = new Array();
+    	asd = new Array();
+    	asd.push({x:new Date(2015, 9, 01, 9, 59, 59), y:20, avgCost:'78'});
+    	asd.push({x:new Date(2015, 9, 02, 9, 59, 59), y:20, avgCost:'78'});
+    	chartData.push({'name':'asdas', 'data':asd});
+    	
 	</script>
 	<script type="text/javascript" src="${base_url}static/js/index.1.js"></script>
 	

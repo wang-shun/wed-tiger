@@ -7,11 +7,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.json.JSONObject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.xxl.core.model.MonitorOrigin;
 import com.xxl.core.model.MonitorRecord;
+import com.xxl.core.result.ReturnT;
 
 /**
  * 监控中心
@@ -19,7 +25,15 @@ import com.xxl.core.model.MonitorRecord;
  */
 @Controller
 public class MonitorController {
+	private static Logger logger = LoggerFactory.getLogger(MonitorController.class);
 	
+	/**
+	 * 监控
+	 * @param model
+	 * @param hadleName
+	 * @param monitorTime
+	 * @return
+	 */
 	@RequestMapping("")
 	public String index(Model model, String hadleName, String monitorTime){
 		
@@ -54,6 +68,22 @@ public class MonitorController {
 		model.addAttribute("hadleName", hadleName);
 		model.addAttribute("monitorTime", monitorTime);
 		return "index";
+	}
+	
+	/**
+	 * 接收推送数据
+	 * @param monitorOrigin
+	 * @return
+	 */
+	@RequestMapping("/pushData")
+	public ReturnT<String> pushData(MonitorOrigin monitorOrigin){
+		try {
+			logger.info("pushData:{}", JSONObject.fromObject(monitorOrigin)
+					.toString());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return new ReturnT<String>();
 	}
 	
 }
