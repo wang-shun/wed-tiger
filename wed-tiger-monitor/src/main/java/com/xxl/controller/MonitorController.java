@@ -3,10 +3,12 @@ package com.xxl.controller;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.math.RandomUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -43,17 +45,18 @@ public class MonitorController {
 		for (int i = 0; i < 10; i++) {
 			calendar.add(Calendar.MINUTE, 2*i);
 			
-			MonitorRecord item = new MonitorRecord();
-			item.setMonitorTime(calendar.getTime());
-			
-			item.setTotalNum(i * 5);
-			item.setAvgCost(i * 10);
-			list1.add(item);
+			MonitorRecord item1 = new MonitorRecord();
+			item1.setMonitorTime(calendar.getTime());
+			item1.setTotalNum(RandomUtils.nextInt(10) * i);
+			item1.setAvgCost(RandomUtils.nextInt(10) * i);
+			list1.add(item1);
 			
 			if (i > 2) {
-				item.setTotalNum(i * 5 + 50);
-				item.setAvgCost(i * 10 + 50);
-				list2.add(item);
+				MonitorRecord item2 = new MonitorRecord();
+				item2.setMonitorTime(calendar.getTime());
+				item2.setTotalNum(RandomUtils.nextInt(100) * i);
+				item2.setAvgCost(RandomUtils.nextInt(100) * i);
+				list2.add(item2);
 			}
 		}
 		
@@ -63,8 +66,9 @@ public class MonitorController {
 		map.put("list1", list1);
 		map.put("list2", list2);
 		model.addAttribute("map", map);
+		
 		model.addAttribute("hadleName", hadleName);
-		model.addAttribute("monitorTime", monitorTime);
+		model.addAttribute("monitorTime", monitorTime!=null?monitorTime:new Date());
 		return "index";
 	}
 	

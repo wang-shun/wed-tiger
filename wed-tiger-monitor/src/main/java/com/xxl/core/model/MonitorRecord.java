@@ -13,9 +13,9 @@ public class MonitorRecord implements Serializable, Comparable<MonitorRecord> {
 	private Date monitorTime;	// 监控时间
 	private String hadleName;	// hadle名称
 	private String hostName;	// 服务器host名称
-	private Integer totalNum;	// 监控total数
-	private Integer sucNum;		// 监控success数
-	private Integer failNum;	// 监控fail数
+	private int totalNum;	// 监控total数
+	private int sucNum;		// 监控success数
+	private int failNum;	// 监控fail数
 	private long avgCost;		// avg耗时
 	private long maxCost;		// MAX耗时
 	private long minCode;		// MIN耗时
@@ -31,58 +31,75 @@ public class MonitorRecord implements Serializable, Comparable<MonitorRecord> {
 		}
 		return 0;
 	}
-	
+
 	public Date getMonitorTime() {
 		return monitorTime;
 	}
+
 	public void setMonitorTime(Date monitorTime) {
 		this.monitorTime = monitorTime;
 	}
+
 	public String getHadleName() {
 		return hadleName;
 	}
+
 	public void setHadleName(String hadleName) {
 		this.hadleName = hadleName;
 	}
+
 	public String getHostName() {
 		return hostName;
 	}
+
 	public void setHostName(String hostName) {
 		this.hostName = hostName;
 	}
-	public Integer getTotalNum() {
+
+	public int getTotalNum() {
 		return totalNum;
 	}
-	public void setTotalNum(Integer totalNum) {
+
+	public void setTotalNum(int totalNum) {
 		this.totalNum = totalNum;
 	}
-	public Integer getSucNum() {
+
+	public int getSucNum() {
 		return sucNum;
 	}
-	public void setSucNum(Integer sucNum) {
+
+	public void setSucNum(int sucNum) {
 		this.sucNum = sucNum;
 	}
-	public Integer getFailNum() {
+
+	public int getFailNum() {
 		return failNum;
 	}
-	public void setFailNum(Integer failNum) {
+
+	public void setFailNum(int failNum) {
 		this.failNum = failNum;
 	}
+
 	public long getAvgCost() {
 		return avgCost;
 	}
+
 	public void setAvgCost(long avgCost) {
 		this.avgCost = avgCost;
 	}
+
 	public long getMaxCost() {
 		return maxCost;
 	}
+
 	public void setMaxCost(long maxCost) {
 		this.maxCost = maxCost;
 	}
+
 	public long getMinCode() {
 		return minCode;
 	}
+
 	public void setMinCode(long minCode) {
 		this.minCode = minCode;
 	}

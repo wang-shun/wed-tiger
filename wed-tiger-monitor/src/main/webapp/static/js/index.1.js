@@ -1,4 +1,16 @@
 $(function () {
+	// datetimepicker
+	$('#monitorTime').datetimepicker({
+        weekStart: 1,
+        todayBtn:  1,
+		autoclose: 1,
+		todayHighlight: 1,
+		startView: 2,
+		forceParse: 1,
+        showMeridian: 0,
+        format:'yyyy-mm-dd',
+        minView: 2, 
+    });
 	
 	// query
 	$("#query").click(function(){
@@ -38,9 +50,13 @@ $(function () {
         tooltip: {
         	formatter:function(){
 				return '<b>' + this.series.name + '</b>：<br>' + 
-				'执行时间=' + Highcharts.dateFormat('%Y-%m-%d %H:%M:%S',this.x) + ', <br>' +
-				'执行次数=' + this.y + ', <br>' +
-				'平均耗时=' + this.point.avgCost;
+					'监控时间=' + Highcharts.dateFormat('%Y-%m-%d %H:%M:%S',this.x) + ', <br>' +
+					'执行次数=' + this.y + ', <br>' +
+					'成功次数=' + this.point.sucNum + ', <br>' +
+					'失败次数=' + this.point.failNum + ', <br>' +
+					'平均耗时=' + this.point.avgCost + ', <br>' +
+					'max耗时=' + this.point.maxCost + ', <br>' +
+					'min耗时=' + this.point.minCode;
 			}
         },
         series:chartData 
