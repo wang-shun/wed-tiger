@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.apache.commons.collections.MapUtils;
 import org.springframework.stereotype.Service;
 
 import com.xxl.core.model.MonitorRecord;
@@ -39,8 +40,10 @@ public class MonitorRecordServiceImpl implements IMonitorRecordService {
 		}
 		
 		Map<String, List<MonitorRecord>> map = FileDbUtil.loadMonitorData(hadleName, monitorTime);
-		localDateCache.put(cacheKey, map);
-		localTimCache.put(cacheKey, System.currentTimeMillis());
+		if (MapUtils.isNotEmpty(map)) {
+			localDateCache.put(cacheKey, map);
+			localTimCache.put(cacheKey, System.currentTimeMillis());
+		}
 		return map;
 	}
 	
