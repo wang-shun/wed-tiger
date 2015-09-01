@@ -49,17 +49,18 @@
 <div class="container">
 
 	<div class="row">
-		<div class="col-xs-5">
+		<div class="col-xs-3">
 			<div class="input-group">
 				<span class="input-group-addon">hander</span>
 				<input type="text" class="form-control" id="hadleName" value="${hadleName}" placeholder="请输入hander">
 			</div>
 		</div>
-		<div class="col-xs-5">
+		<div class="col-xs-7">
 			<div class="input-group">
 				<span class="input-group-addon">日期</span>
-				<input type="text" class="form-control" id="monitorTime" value="${monitorTime?date}" placeholder="请输入日期(默认查询当日)">
+				<input type="text" class="form-control monitorTime" id="monitorTimeFrom" value="${monitorTimeFrom?datetime}" placeholder="开始时间">
 				<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+				<input type="text" class="form-control monitorTime" id="monitorTimeTo" value="${monitorTimeTo?datetime}" placeholder="结束时间">
 			</div>
 		</div>
 		<div class="col-xs-2">

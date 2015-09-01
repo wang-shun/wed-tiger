@@ -1,6 +1,8 @@
 package com.xxl.controller;
 
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +24,7 @@ import com.xxl.service.IMonitorService;
  */
 @Controller
 public class MonitorController {
+	private static final SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
 	
 	@Autowired
 	private IMonitorService monitorService;
@@ -34,13 +37,40 @@ public class MonitorController {
 	 * @return
 	 */
 	@RequestMapping("")
-	public String index(Model model, String hadleName, @DateTimeFormat(pattern="yyyy-MM-dd") Date monitorTime){
+	public String index(Model model, String hadleName, 
+			@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") Date monitorTimeFrom, 
+			@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") Date monitorTimeTo){
 		// for param
-		monitorTime = monitorTime!=null?monitorTime:new Date();
-		model.addAttribute("hadleName", hadleName);
-		model.addAttribute("monitorTime", monitorTime);
+		if (monitorTimeFrom == null) {
+			Calendar calendarFrom = Calendar.getInstance();
+			calendarFrom.set(Calendar.HOUR_OF_DAY, 0);
+			calendarFrom.set(Calendar.MINUTE, 0);
+			calendarFrom.set(Calendar.SECOND, 0);
+			monitorTimeFrom = calendarFrom.getTime();
+		} 
+		if(monitorTimeTo == null) {
+			Calendar calendarTo = Calendar.getInstance();
+			calendarTo.set(Calendar.HOUR_OF_DAY, 23);
+			calendarTo.set(Calendar.MINUTE, 59);
+			calendarTo.set(Calendar.SECOND, 59);
+			monitorTimeTo = calendarTo.getTime();
+		} 
+		String dateFromStr = formatDate.format(monitorTimeFrom);
+		String dateToStr = formatDate.format(monitorTimeTo);
+		if (!dateFromStr.equals(dateToStr)) {
+			Calendar calendarTo = Calendar.getInstance();
+			calendarTo.setTime(monitorTimeFrom);
+			calendarTo.set(Calendar.HOUR_OF_DAY, 23);
+			calendarTo.set(Calendar.MINUTE, 59);
+			calendarTo.set(Calendar.SECOND, 59);
+			monitorTimeTo = calendarTo.getTime();
+		}
 		
-		Map<String, List<MonitorRecord>> map = monitorService.loadMonitorData(hadleName, monitorTime);
+		model.addAttribute("hadleName", hadleName);
+		model.addAttribute("monitorTimeFrom", monitorTimeFrom);
+		model.addAttribute("monitorTimeTo", monitorTimeTo);
+		
+		Map<String, List<MonitorRecord>> map = monitorService.loadMonitorData(hadleName, monitorTimeFrom, monitorTimeTo);
 		model.addAttribute("map", map);
 		
 		return "index";

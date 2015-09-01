@@ -158,10 +158,10 @@ public class FileDbUtil {
 			for (File item : monotorFiles) {
 				String hostName = item.getName().substring(hadleName.length() + 1, item.getName().length() - 4);
 				List<MonitorRecord> list = new ArrayList<MonitorRecord>();
-				result.put(hostName, list);
 				parseFile(item, list);
 				if (CollectionUtils.isNotEmpty(list)) {
 					Collections.sort(list);
+					result.put(hostName, list);
 				}
 			}
 		}

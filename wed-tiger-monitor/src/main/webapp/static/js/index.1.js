@@ -1,6 +1,6 @@
 $(function () {
 	// datetimepicker
-	$('#monitorTime').datetimepicker({
+	$('.monitorTime').datetimepicker({
         weekStart: 1,
         todayBtn:  1,
 		autoclose: 1,
@@ -9,24 +9,30 @@ $(function () {
 		forceParse: 1,
         showMeridian: 0,
         language:'zh-CN',
-        format:'yyyy-mm-dd',
-        minView: 2, 
+        format:'yyyy-mm-dd hh:mm:ss',
+        minView: 1,
+        minuteStep:1
     });
 	
 	// query
 	$("#query").click(function(){
 		var hadleName = $("#hadleName").val();
-		var monitorTime = $("#monitorTime").val();
+		var monitorTimeFrom = $("#monitorTimeFrom").val();
+		var monitorTimeTo = $("#monitorTimeTo").val();
 		if (!hadleName) {
 			ComAlert.show(0, "hadleName");
 			return;
 		}
 		
-		window.location.href = base_url + "?hadleName=" + hadleName + "&monitorTime=" + monitorTime;
+		window.location.href = base_url 
+			+ "?hadleName=" + hadleName 
+			+ "&monitorTimeFrom=" + monitorTimeFrom 
+			+ "&monitorTimeTo=" + monitorTimeTo;
 		
 	});
 	
 	// chart
+	Highcharts.setOptions({ global: { useUTC: false } });   // 时区处理
     $('#container').highcharts({
         title: {
             text: '监控中心',
@@ -37,7 +43,8 @@ $(function () {
         	labels: {
                 formatter: function() {
                     return Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.value);                  
-                }
+                },
+                rotation: -45
             }
         },
         yAxis: {

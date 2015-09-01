@@ -1,12 +1,16 @@
 package com.xxl.service.impl;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +39,7 @@ public class MonitorServiceImpl implements IMonitorService {
 	 * @see com.xxl.service.IMonitorRecordService#loadMonitorInfo(java.lang.String, java.util.Date)
 	 */
 	@Override
-	public Map<String, List<MonitorRecord>> loadMonitorData(String hadleName, Date monitorTime) {
+	public Map<String, List<MonitorRecord>> loadMonitorData(String hadleName, Date monitorTimeFrom, Date monitorTimeTo) {
 		/*String cacheKey = formatDate.format(monitorTime).concat("_").concat(hadleName);
 		
 		Map<String, List<MonitorRecord>> cacheDate = localDateCache.get(cacheKey);
@@ -44,12 +48,28 @@ public class MonitorServiceImpl implements IMonitorService {
 			return cacheDate;
 		}*/
 		
-		Map<String, List<MonitorRecord>> map = FileDbUtil.loadMonitorData(hadleName, monitorTime);
+		Map<String, List<MonitorRecord>> map = FileDbUtil.loadMonitorData(hadleName, monitorTimeFrom);
+		Map<String, List<MonitorRecord>> resultMap = new HashMap<String, List<MonitorRecord>>();
+		if (MapUtils.isNotEmpty(map)) {
+			for (Entry<String, List<MonitorRecord>> item : map.entrySet()) {
+				List<MonitorRecord> list = new ArrayList<MonitorRecord>();
+				if (CollectionUtils.isNotEmpty(item.getValue())) {
+					for (MonitorRecord record : item.getValue()) {
+						if (record.getMonitorTime().after(monitorTimeFrom) && record.getMonitorTime().before(monitorTimeTo)) {
+							list.add(record);
+						}
+					}
+					resultMap.put(item.getKey(), list);
+				}
+				
+			}
+		}
+		
 		/*if (MapUtils.isNotEmpty(map)) {
 			localDateCache.put(cacheKey, map);
 			localTimCache.put(cacheKey, System.currentTimeMillis());
 		}*/
-		return map;
+		return resultMap;
 	}
 
 	/*

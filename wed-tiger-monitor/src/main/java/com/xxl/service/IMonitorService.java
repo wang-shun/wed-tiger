@@ -18,7 +18,7 @@ public interface IMonitorService {
 	 * @param monitorTime
 	 * @return
 	 */
-	public Map<String, List<MonitorRecord>> loadMonitorData(String hadleName, Date monitorTime);
+	public Map<String, List<MonitorRecord>> loadMonitorData(String hadleName, Date monitorTimeFrom, Date monitorTimeTo);
 
 	/**
 	 * push data
