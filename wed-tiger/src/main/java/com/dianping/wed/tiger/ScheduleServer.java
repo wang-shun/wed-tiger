@@ -47,6 +47,16 @@ public class ScheduleServer {
 	private CopyOnWriteArrayList<Integer> nodeList = new CopyOnWriteArrayList<Integer>();
 
 	private CopyOnWriteArraySet<String> handlers = new CopyOnWriteArraySet<String>();
+	
+	/**
+	 * 处理器的线程池大小coresize
+	 */
+	private int handlerCoreSize = 2;
+	
+	/**
+	 * 处理器的线程池大小maxsize
+	 */
+	private int handlerMaxSize = 5;
 
 	/**
 	 * handler配置识别码
@@ -301,6 +311,22 @@ public class ScheduleServer {
 
 	public void setMonitorIP(String monitorIP) {
 		this.monitorIP = monitorIP;
+	}
+
+	public int getHandlerCoreSize() {
+		return handlerCoreSize;
+	}
+
+	public void setHandlerCoreSize(int handlerCoreSize) {
+		this.handlerCoreSize = handlerCoreSize;
+	}
+
+	public int getHandlerMaxSize() {
+		return handlerMaxSize;
+	}
+
+	public void setHandlerMaxSize(int handlerMaxSize) {
+		this.handlerMaxSize = handlerMaxSize;
 	}
 
 	/**

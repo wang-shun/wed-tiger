@@ -50,8 +50,8 @@ public class EventExecutor {
 		this.eventFetcher = eventFetcher;
 		this.eventFilter = eventFilter;
 		this.eventNavigator = new EventNavigator(eventConfig.getHandler());
-		int coreSize = 2;
-		int maxSize = 5;
+		int coreSize = ScheduleServer.getInstance().getHandlerCoreSize();
+		int maxSize = ScheduleServer.getInstance().getHandlerMaxSize();
 		DispatchHandler handler = (DispatchHandler) ScheduleManagerFactory
 				.getBean(eventConfig.getHandler());
 		if (handler.getClass().isAnnotationPresent(ExecuteType.class)) {

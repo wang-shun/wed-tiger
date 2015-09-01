@@ -51,7 +51,7 @@ public class ScheduleManagerFactory {
 	}
 	
 	public enum schedulekeys{
-		scheduleFlag, enableNavigate, enableBackFetch, handlers, visualNodeNum, divideType;
+		scheduleFlag, enableNavigate, enableBackFetch, handlers,coreSize,maxSize,visualNodeNum, divideType;
 	}
 	
 	public enum monitorkeys{
@@ -102,6 +102,8 @@ public class ScheduleManagerFactory {
 				schedulekeys.enableBackFetch.name(), "false");
 		String enableMonitor = conifg.getProperty(monitorkeys.enableMonitor.name(), "false");
 		String monitorurl = conifg.getProperty(monitorkeys.monitorIP.name());
+		String coreSize = conifg.getProperty(schedulekeys.coreSize.name());
+		String maxSize = conifg.getProperty(schedulekeys.maxSize.name());
 
 		if (!StringUtils.isBlank(rootPath)) {
 			ScheduleServer.getInstance().setRootPath(rootPath);
@@ -126,6 +128,12 @@ public class ScheduleManagerFactory {
 		}
 		if (!StringUtils.isBlank(enableBackFetch)) {
 			this.setBackFetchFlag("true".equals(enableBackFetch));
+		}
+		if(!StringUtils.isBlank(coreSize) && StringUtils.isNumeric(coreSize)){
+			ScheduleServer.getInstance().setHandlerCoreSize(Integer.valueOf(coreSize));
+		}
+		if(!StringUtils.isBlank(maxSize) && StringUtils.isNumeric(maxSize)){
+			ScheduleServer.getInstance().setHandlerMaxSize(Integer.valueOf(maxSize));
 		}
 		//==========监控相关============
 		if (!StringUtils.isBlank(enableMonitor)) {
