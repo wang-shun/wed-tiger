@@ -182,16 +182,16 @@ public class FileDbUtil {
 	}
 
 	/**
-	 * push data to origin dic
+	 * push data to origin dic	:ORIGIN_DIR/DATA_DIR	// 注意001，此处DATA_DIR线上应该为ORIGIN_DIR，守护线程自动同步两个目录下文件
 	 * @param originData
 	 */
 	public static void pushData(String originData) {
-		if (!ORIGIN_DIR.exists()) {
-			ORIGIN_DIR.mkdirs();
+		if (!DATA_DIR.exists()) {
+			DATA_DIR.mkdirs();
 		}
 		MonitorRecord item = parseLineData(originData);
 		if (item != null) {
-			File dirA = new File(ORIGIN_DIR, formatPathA.format(item.getMonitorTime()));	// ../201509
+			File dirA = new File(DATA_DIR, formatPathA.format(item.getMonitorTime()));	// ../201509
 			if (!dirA.exists()) {
 				dirA.mkdirs();
 			}
@@ -210,7 +210,7 @@ public class FileDbUtil {
 			FileOutputStream fos = null;
 			try {
 				fos =new FileOutputStream(file, true);
-				fos.write(originData.getBytes());
+				fos.write(("\r\n" + originData).getBytes());
 				logger.info("push data success:{}", originData);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();

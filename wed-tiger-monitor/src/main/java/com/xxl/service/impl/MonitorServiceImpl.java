@@ -31,24 +31,24 @@ public class MonitorServiceImpl implements IMonitorService {
 	private static ConcurrentMap<String, Long> localTimCache = new ConcurrentHashMap<String, Long>();
 	
 	/*
-	 * load monitor data
+	 * load monitor data	// 注意002：此处注释为查询缓存，推荐线上打开注释缓存，可大大增加查询效率，默认缓存时间60s
 	 * @see com.xxl.service.IMonitorRecordService#loadMonitorInfo(java.lang.String, java.util.Date)
 	 */
 	@Override
 	public Map<String, List<MonitorRecord>> loadMonitorData(String hadleName, Date monitorTime) {
-		String cacheKey = formatDate.format(monitorTime).concat("_").concat(hadleName);
+		/*String cacheKey = formatDate.format(monitorTime).concat("_").concat(hadleName);
 		
 		Map<String, List<MonitorRecord>> cacheDate = localDateCache.get(cacheKey);
 		Long cacheTim = localTimCache.get(cacheKey);
 		if (cacheDate!=null && cacheTim!=null && System.currentTimeMillis() - cacheTim < 60 * 1000) {
 			return cacheDate;
-		}
+		}*/
 		
 		Map<String, List<MonitorRecord>> map = FileDbUtil.loadMonitorData(hadleName, monitorTime);
-		if (MapUtils.isNotEmpty(map)) {
+		/*if (MapUtils.isNotEmpty(map)) {
 			localDateCache.put(cacheKey, map);
 			localTimCache.put(cacheKey, System.currentTimeMillis());
-		}
+		}*/
 		return map;
 	}
 
