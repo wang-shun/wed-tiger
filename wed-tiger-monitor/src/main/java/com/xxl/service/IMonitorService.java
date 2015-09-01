@@ -10,7 +10,7 @@ import com.xxl.core.model.MonitorRecord;
  * monitor record
  * @author xuxueli
  */
-public interface IMonitorRecordService {
+public interface IMonitorService {
 
 	/**
 	 * load monitor data
@@ -18,6 +18,12 @@ public interface IMonitorRecordService {
 	 * @param monitorTime
 	 * @return
 	 */
-	Map<String, List<MonitorRecord>> loadMonitorData(String hadleName, Date monitorTime);
+	public Map<String, List<MonitorRecord>> loadMonitorData(String hadleName, Date monitorTime);
+
+	/**
+	 * push data
+	 * @param originData
+	 */
+	public void pushData(String originData);
 	
 }

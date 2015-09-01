@@ -8,19 +8,24 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.apache.commons.collections.MapUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.xxl.core.model.MonitorRecord;
+import com.xxl.core.thread.MonitorThreadHelper;
 import com.xxl.core.util.FileDbUtil;
-import com.xxl.service.IMonitorRecordService;
+import com.xxl.service.IMonitorService;
 
 /**
  * monitor record
  * 
  * @author xuxueli
  */
-@Service("monitorRecordService")
-public class MonitorRecordServiceImpl implements IMonitorRecordService {
+@Service("monitorService")
+public class MonitorServiceImpl implements IMonitorService {
+	private static Logger logger = LoggerFactory.getLogger(FileDbUtil.class);
+	
 	private static final SimpleDateFormat formatDate = new SimpleDateFormat("yyyyMMdd");
 	private static ConcurrentMap<String, Map<String, List<MonitorRecord>>> localDateCache = new ConcurrentHashMap<String, Map<String,List<MonitorRecord>>>();
 	private static ConcurrentMap<String, Long> localTimCache = new ConcurrentHashMap<String, Long>();
@@ -46,9 +51,20 @@ public class MonitorRecordServiceImpl implements IMonitorRecordService {
 		}
 		return map;
 	}
-	
-	public static void main(String[] args) {
-		System.out.println(System.currentTimeMillis());
+
+	/*
+	 * push data
+	 * @see com.xxl.service.IMonitorService#pushData(java.lang.String)
+	 */
+	@Override
+	public void pushData(String originData) {
+		logger.info("push data start :{}", originData);
+		MonitorRecord record = FileDbUtil.parseLineData(originData);
+		if (record != null) {
+			MonitorThreadHelper.pushData(originData);
+		} else {
+			logger.info("push data fail:{}", originData);
+		}
 	}
 
 }

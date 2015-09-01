@@ -5,8 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -16,7 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.xxl.core.model.MonitorRecord;
 import com.xxl.core.result.ReturnT;
-import com.xxl.service.IMonitorRecordService;
+import com.xxl.service.IMonitorService;
 
 /**
  * monitor center
@@ -24,10 +22,9 @@ import com.xxl.service.IMonitorRecordService;
  */
 @Controller
 public class MonitorController {
-	private static Logger logger = LoggerFactory.getLogger(MonitorController.class);
 	
 	@Autowired
-	private IMonitorRecordService monitorRecordService;
+	private IMonitorService monitorService;
 	
 	/**
 	 * monitor index
@@ -43,7 +40,7 @@ public class MonitorController {
 		model.addAttribute("hadleName", hadleName);
 		model.addAttribute("monitorTime", monitorTime);
 		
-		Map<String, List<MonitorRecord>> map = monitorRecordService.loadMonitorData(hadleName, monitorTime);
+		Map<String, List<MonitorRecord>> map = monitorService.loadMonitorData(hadleName, monitorTime);
 		model.addAttribute("map", map);
 		
 		return "index";
@@ -58,7 +55,7 @@ public class MonitorController {
 	@ResponseBody
 	public ReturnT<String> pushData(String tm){
 		try {
-			logger.info("pushData:{}", tm);
+			monitorService.pushData(tm);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
