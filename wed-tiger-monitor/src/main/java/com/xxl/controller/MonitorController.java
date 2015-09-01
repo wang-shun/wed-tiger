@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.xxl.core.model.MonitorOrigin;
 import com.xxl.core.model.MonitorRecord;
@@ -76,6 +77,7 @@ public class MonitorController {
 	 * @return
 	 */
 	@RequestMapping("/pushData")
+	@ResponseBody
 	public ReturnT<String> pushData(MonitorOrigin monitorOrigin){
 		try {
 			logger.info("pushData:{}", JSONObject.fromObject(monitorOrigin)
