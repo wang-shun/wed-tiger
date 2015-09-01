@@ -46,12 +46,16 @@ public class ScheduleManagerFactory {
 		}
 	}
 
-	public enum keys {
-		zkConnectAddress, rootPath, userName, password, zkSessionTimeout, scheduleFlag, enableNavigate, enableBackFetch, handlers, visualNodeNum, divideType;
+	public enum zookeeperkeys {
+		zkConnectAddress, rootPath, userName, password, zkSessionTimeout;
+	}
+	
+	public enum schedulekeys{
+		scheduleFlag, enableNavigate, enableBackFetch, handlers, visualNodeNum, divideType;
 	}
 	
 	public enum monitorkeys{
-		enableMonitor,monitorUrl
+		enableMonitor,monitorIP;
 	}
 
 	/**
@@ -67,8 +71,8 @@ public class ScheduleManagerFactory {
 		if (!initFlag.compareAndSet(false, true)) {
 			return;
 		}
-		String zkAddress = conifg.getProperty(keys.zkConnectAddress.name());
-		String handlers = conifg.getProperty(keys.handlers.name());
+		String zkAddress = conifg.getProperty(zookeeperkeys.zkConnectAddress.name());
+		String handlers = conifg.getProperty(schedulekeys.handlers.name());
 		if (StringUtils.isBlank(zkAddress) || StringUtils.isBlank(handlers)) {
 			throw new IllegalArgumentException(
 					"zkAddress or handlers is empty.");
@@ -83,21 +87,21 @@ public class ScheduleManagerFactory {
 		}
 		ScheduleServer.getInstance().setHandlerIdentifyCode(
 				handlerList.hashCode());
-		String rootPath = conifg.getProperty(keys.rootPath.name(), "/TIGERZK");
+		String rootPath = conifg.getProperty(zookeeperkeys.rootPath.name(), "/TIGERZK");
 		String visualNode = conifg
-				.getProperty(keys.visualNodeNum.name(), "100");
-		String divideType = conifg.getProperty(keys.divideType.name(),
+				.getProperty(schedulekeys.visualNodeNum.name(), "100");
+		String divideType = conifg.getProperty(schedulekeys.divideType.name(),
 				ScheduleManager.DIVIDE_RNAGE_MODE + "");
 		String zkSessionTimeout = conifg.getProperty(
-				keys.zkSessionTimeout.name(), "60000");
-		String scheduleFlag = conifg.getProperty(keys.scheduleFlag.name(),
+				zookeeperkeys.zkSessionTimeout.name(), "60000");
+		String scheduleFlag = conifg.getProperty(schedulekeys.scheduleFlag.name(),
 				"true");
-		String enableNavigate = conifg.getProperty(keys.enableNavigate.name(),
+		String enableNavigate = conifg.getProperty(schedulekeys.enableNavigate.name(),
 				"true");
 		String enableBackFetch = conifg.getProperty(
-				keys.enableBackFetch.name(), "false");
+				schedulekeys.enableBackFetch.name(), "false");
 		String enableMonitor = conifg.getProperty(monitorkeys.enableMonitor.name(), "false");
-		String monitorurl = conifg.getProperty(monitorkeys.monitorUrl.name());
+		String monitorurl = conifg.getProperty(monitorkeys.monitorIP.name());
 
 		if (!StringUtils.isBlank(rootPath)) {
 			ScheduleServer.getInstance().setRootPath(rootPath);
@@ -128,7 +132,7 @@ public class ScheduleManagerFactory {
 			this.setMonitorFlag("true".equals(enableBackFetch));
 		}
 		if(!StringUtils.isBlank(monitorurl)){
-			ScheduleServer.getInstance().setMonitorUrl(monitorurl);
+			ScheduleServer.getInstance().setMonitorIP(monitorurl);
 		}
 
 		ScheduleServer.getInstance().initOk();

@@ -118,7 +118,7 @@ public class EventMonitor {
 
 	private void httpSend(String parameter) throws HttpException, IOException {
 		HttpClient client = new HttpClient();
-		String url = ScheduleServer.getInstance().getMonitorUrl()+"?tm=" + parameter;
+		String url = ScheduleServer.getInstance().getMonitorIP()+"?tm=" + parameter;
 		HttpMethod method = new GetMethod(url);
 		client.executeMethod(method);
 		if (method.getStatusCode() != 200) {

@@ -37,7 +37,7 @@ public class ScheduleServer {
 	/**
 	 * 监控url
 	 */
-	private String monitorUrl;
+	private String monitorIP;
 
 	/**
 	 * 该机分配的执行器 k-handlerName v-nodes
@@ -295,12 +295,12 @@ public class ScheduleServer {
 		this.numOfVisualNode = numOfVisualNode;
 	}
 
-	public String getMonitorUrl() {
-		return monitorUrl;
+	public String getMonitorIP() {
+		return monitorIP;
 	}
 
-	public void setMonitorUrl(String monitorUrl) {
-		this.monitorUrl = monitorUrl;
+	public void setMonitorIP(String monitorIP) {
+		this.monitorIP = monitorIP;
 	}
 
 	/**
