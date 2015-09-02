@@ -3,9 +3,11 @@
  */
 package com.dianping.wed.tiger.event;
 
+import java.util.Map.Entry;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,6 +63,15 @@ public class EventQueue {
 			startThread2ConsumeQueue(handler);
 		}
 		return true;
+	}
+	
+	/**
+	 * 清空阻塞队列中的任务 
+	 */
+	public void clearTaskInQueue(){
+		for(Entry<String, BlockingQueue<EventConsumer>> e : handlerQueueMap.entrySet()){
+			e.getValue().clear();
+		}
 	}
 
 	/**

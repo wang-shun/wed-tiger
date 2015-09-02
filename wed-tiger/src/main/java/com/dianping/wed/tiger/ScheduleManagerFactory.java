@@ -7,12 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
-
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
-
 import com.dianping.wed.tiger.event.EventConfig;
 import com.dianping.wed.tiger.event.EventExecutorManager;
 import com.dianping.wed.tiger.utils.EventConfigUtil;
@@ -46,33 +44,34 @@ public class ScheduleManagerFactory {
 		}
 	}
 
-	public enum zookeeperkeys {
+	public enum ZookeeperKeys {
 		zkConnectAddress, rootPath, userName, password, zkSessionTimeout;
 	}
-	
-	public enum schedulekeys{
-		scheduleFlag, enableNavigate, enableBackFetch, handlers,coreSize,maxSize,visualNodeNum, divideType;
+
+	public enum ScheduleKeys {
+		scheduleFlag, taskStrategy, enableNavigate, enableBackFetch, handlers, coreSize, maxSize, visualNodeNum, divideType;
 	}
-	
-	public enum monitorkeys{
-		enableMonitor,monitorIP;
+
+	public enum MonitorKeys {
+		enableMonitor, monitorIP;
 	}
 
 	/**
 	 * 入口:zk调度初始化
 	 * 
-	 * @param conifg
+	 * @param config
 	 *            :必填：zkConnectString,handlers
 	 * @throws IllegalArgumentException
 	 * @throws Exception
 	 */
-	public void initSchedule(Properties conifg)
+	public void initSchedule(Properties config)
 			throws IllegalArgumentException, Exception {
 		if (!initFlag.compareAndSet(false, true)) {
 			return;
 		}
-		String zkAddress = conifg.getProperty(zookeeperkeys.zkConnectAddress.name());
-		String handlers = conifg.getProperty(schedulekeys.handlers.name());
+		String zkAddress = config.getProperty(ZookeeperKeys.zkConnectAddress
+				.name());
+		String handlers = config.getProperty(ScheduleKeys.handlers.name());
 		if (StringUtils.isBlank(zkAddress) || StringUtils.isBlank(handlers)) {
 			throw new IllegalArgumentException(
 					"zkAddress or handlers is empty.");
@@ -87,23 +86,26 @@ public class ScheduleManagerFactory {
 		}
 		ScheduleServer.getInstance().setHandlerIdentifyCode(
 				handlerList.hashCode());
-		String rootPath = conifg.getProperty(zookeeperkeys.rootPath.name(), "/TIGERZK");
-		String visualNode = conifg
-				.getProperty(schedulekeys.visualNodeNum.name(), "100");
-		String divideType = conifg.getProperty(schedulekeys.divideType.name(),
+		String rootPath = config.getProperty(ZookeeperKeys.rootPath.name(),
+				"/TIGERZK");
+		String visualNode = config.getProperty(
+				ScheduleKeys.visualNodeNum.name(), "100");
+		String divideType = config.getProperty(ScheduleKeys.divideType.name(),
 				ScheduleManager.DIVIDE_RNAGE_MODE + "");
-		String zkSessionTimeout = conifg.getProperty(
-				zookeeperkeys.zkSessionTimeout.name(), "60000");
-		String scheduleFlag = conifg.getProperty(schedulekeys.scheduleFlag.name(),
-				"true");
-		String enableNavigate = conifg.getProperty(schedulekeys.enableNavigate.name(),
-				"true");
-		String enableBackFetch = conifg.getProperty(
-				schedulekeys.enableBackFetch.name(), "false");
-		String enableMonitor = conifg.getProperty(monitorkeys.enableMonitor.name(), "false");
-		String monitorurl = conifg.getProperty(monitorkeys.monitorIP.name());
-		String coreSize = conifg.getProperty(schedulekeys.coreSize.name());
-		String maxSize = conifg.getProperty(schedulekeys.maxSize.name());
+		String zkSessionTimeout = config.getProperty(
+				ZookeeperKeys.zkSessionTimeout.name(), "60000");
+		String scheduleFlag = config.getProperty(
+				ScheduleKeys.scheduleFlag.name(), "true");
+		String enableNavigate = config.getProperty(
+				ScheduleKeys.enableNavigate.name(), "true");
+		String enableBackFetch = config.getProperty(
+				ScheduleKeys.enableBackFetch.name(), "false");
+		String enableMonitor = config.getProperty(
+				MonitorKeys.enableMonitor.name(), "false");
+		String monitorurl = config.getProperty(MonitorKeys.monitorIP.name());
+		String coreSize = config.getProperty(ScheduleKeys.coreSize.name());
+		String maxSize = config.getProperty(ScheduleKeys.maxSize.name());
+		String taskStrategy = config.getProperty(ScheduleKeys.taskStrategy.name());
 
 		if (!StringUtils.isBlank(rootPath)) {
 			ScheduleServer.getInstance().setRootPath(rootPath);
@@ -129,17 +131,22 @@ public class ScheduleManagerFactory {
 		if (!StringUtils.isBlank(enableBackFetch)) {
 			this.setBackFetchFlag("true".equals(enableBackFetch));
 		}
-		if(!StringUtils.isBlank(coreSize) && StringUtils.isNumeric(coreSize)){
-			ScheduleServer.getInstance().setHandlerCoreSize(Integer.valueOf(coreSize));
+		if (!StringUtils.isBlank(coreSize) && StringUtils.isNumeric(coreSize)) {
+			ScheduleServer.getInstance().setHandlerCoreSize(
+					Integer.valueOf(coreSize));
 		}
-		if(!StringUtils.isBlank(maxSize) && StringUtils.isNumeric(maxSize)){
-			ScheduleServer.getInstance().setHandlerMaxSize(Integer.valueOf(maxSize));
+		if (!StringUtils.isBlank(maxSize) && StringUtils.isNumeric(maxSize)) {
+			ScheduleServer.getInstance().setHandlerMaxSize(
+					Integer.valueOf(maxSize));
 		}
-		//==========监控相关============
+		if(!StringUtils.isBlank(taskStrategy) && StringUtils.isNumeric(taskStrategy)){
+			ScheduleServer.getInstance().setTaskStrategy(Integer.valueOf(taskStrategy));
+		}
+		// ==========监控相关============
 		if (!StringUtils.isBlank(enableMonitor)) {
 			this.setMonitorFlag("true".equals(enableBackFetch));
 		}
-		if(!StringUtils.isBlank(monitorurl)){
+		if (!StringUtils.isBlank(monitorurl)) {
 			ScheduleServer.getInstance().setMonitorIP(monitorurl);
 		}
 
@@ -196,12 +203,13 @@ public class ScheduleManagerFactory {
 	public void setBackFetchFlag(boolean flag) {
 		ScheduleServer.getInstance().setEnableBackFetch(flag);
 	}
-	
+
 	/**
 	 * 设置监控开关
+	 * 
 	 * @param flag
 	 */
-	public void setMonitorFlag(boolean flag){
+	public void setMonitorFlag(boolean flag) {
 		ScheduleServer.getInstance().setEnableMonitor(flag);
 	}
 

@@ -8,6 +8,9 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.dianping.wed.tiger.ScheduleServer;
+import com.dianping.wed.tiger.dispatch.DispatchMultiService;
+import com.dianping.wed.tiger.dispatch.DispatchSingleService;
 import com.dianping.wed.tiger.dispatch.DispatchTaskEntity;
 import com.dianping.wed.tiger.dispatch.DispatchTaskService;
 
@@ -35,13 +38,28 @@ public class EventFetcher {
 	 */
 	public List<DispatchTaskEntity> getTasks(String handlerName,
 			List<Integer> nodeList) {
-		if (StringUtils.isBlank(handlerName) || nodeList == null
-				|| nodeList.size() == 0) {
-			throw new IllegalArgumentException(
-					"handlerName or nodeList is empty.");
+		if (ScheduleServer.getInstance().getTaskStrategy() == DispatchTaskService.TaskFetchStrategy.Multi
+				.getValue()) {// 各个执行器捞取策略
+			if (StringUtils.isBlank(handlerName) || nodeList == null
+					|| nodeList.size() == 0) {
+				throw new IllegalArgumentException(
+						"handlerName or nodeList is empty.");
+			}
+			DispatchMultiService dispatchMultiService = (DispatchMultiService) dispatchTaskService;
+			List<DispatchTaskEntity> tasks = dispatchMultiService
+					.findDispatchTasksWithLimit(handlerName, nodeList, TASK_NUM);
+			if (tasks == null) {
+				return Collections.emptyList();
+			}
+			return tasks;
 		}
-		List<DispatchTaskEntity> tasks = dispatchTaskService
-				.findDispatchTasksWithLimit(handlerName, nodeList, TASK_NUM);
+		//单个执行器统一捞取策略
+		if (nodeList == null || nodeList.size() == 0) {
+			throw new IllegalArgumentException("nodeList is empty.");
+		}
+		DispatchSingleService dispatchSingleService = (DispatchSingleService) dispatchTaskService;
+		List<DispatchTaskEntity> tasks = dispatchSingleService
+				.findDispatchTasksWithLimit(nodeList, TASK_NUM);
 		if (tasks == null) {
 			return Collections.emptyList();
 		}
@@ -58,14 +76,31 @@ public class EventFetcher {
 	 */
 	public List<DispatchTaskEntity> getTasksByBackFetch(String handlerName,
 			List<Integer> nodeList, int taskId) {
-		if (StringUtils.isBlank(handlerName) || nodeList == null
-				|| nodeList.size() == 0 || taskId < 1) {
-			throw new IllegalArgumentException(
-					"backFetch task,handlerName or nodeList is empty,or taskId smaller than 1");
+		if (ScheduleServer.getInstance().getTaskStrategy() == DispatchTaskService.TaskFetchStrategy.Multi
+				.getValue()) {// 各个执行器捞取策略
+			if (StringUtils.isBlank(handlerName) || nodeList == null
+					|| nodeList.size() == 0 || taskId < 1) {
+				throw new IllegalArgumentException(
+						"backFetch task,handlerName or nodeList is empty,or taskId smaller than 1");
+			}
+			DispatchMultiService dispatchMultiService = (DispatchMultiService) dispatchTaskService;
+			List<DispatchTaskEntity> tasks = dispatchMultiService
+					.findDispatchTasksWithLimitByBackFetch(handlerName,
+							nodeList, TASK_NUM / 2, taskId);
+			if (tasks == null) {
+				return Collections.emptyList();
+			}
+			return tasks;
 		}
-		List<DispatchTaskEntity> tasks = dispatchTaskService
-				.findDispatchTasksWithLimitByBackFetch(handlerName, nodeList,
-						TASK_NUM / 2, taskId);
+		//单个执行器统一捞取策略
+		if (nodeList == null || nodeList.size() == 0 || taskId < 1) {
+			throw new IllegalArgumentException(
+					"backFetch task, nodeList is empty,or taskId smaller than 1");
+		}
+		DispatchSingleService dispatchSingleService = (DispatchSingleService) dispatchTaskService;
+		List<DispatchTaskEntity> tasks = dispatchSingleService
+				.findDispatchTasksWithLimitByBackFetch(nodeList, TASK_NUM / 2,
+						taskId);
 		if (tasks == null) {
 			return Collections.emptyList();
 		}

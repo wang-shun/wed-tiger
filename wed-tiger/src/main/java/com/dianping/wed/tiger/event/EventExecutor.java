@@ -22,6 +22,7 @@ import com.dianping.wed.tiger.annotation.AnnotationConstants;
 import com.dianping.wed.tiger.annotation.ExecuteType;
 import com.dianping.wed.tiger.dispatch.DispatchHandler;
 import com.dianping.wed.tiger.dispatch.DispatchTaskEntity;
+import com.dianping.wed.tiger.dispatch.DispatchTaskService;
 import com.dianping.wed.tiger.repository.EventInConsumerRepository;
 
 /**
@@ -52,16 +53,23 @@ public class EventExecutor {
 		this.eventNavigator = new EventNavigator(eventConfig.getHandler());
 		int coreSize = ScheduleServer.getInstance().getHandlerCoreSize();
 		int maxSize = ScheduleServer.getInstance().getHandlerMaxSize();
-		DispatchHandler handler = (DispatchHandler) ScheduleManagerFactory
-				.getBean(eventConfig.getHandler());
-		if (handler.getClass().isAnnotationPresent(ExecuteType.class)) {
-			String dType = handler.getClass().getAnnotation(ExecuteType.class)
-					.value();
-			if (AnnotationConstants.Executor.CHAIN.equalsIgnoreCase(dType)) {// 说明是串行
-				coreSize = 1;
-				maxSize = 1;
+		String handlerName = eventConfig.getHandler();
+		if (ScheduleServer.getInstance().getTaskStrategy() == DispatchTaskService.TaskFetchStrategy.Multi
+				.getValue()) {
+			DispatchHandler handler = (DispatchHandler) ScheduleManagerFactory
+					.getBean(handlerName);
+			if (handler.getClass().isAnnotationPresent(ExecuteType.class)) {
+				String dType = handler.getClass()
+						.getAnnotation(ExecuteType.class).value();
+				if (AnnotationConstants.Executor.CHAIN.equalsIgnoreCase(dType)) {// 说明是串行
+					coreSize = 1;
+					maxSize = 1;
+				}
 			}
+		} else {
+			handlerName = "singleTigerHandler";
 		}
+		final String handlerNameTmp = handlerName;
 		this.eventThreadPool = new ThreadPoolExecutor(coreSize, maxSize, 10L,
 				TimeUnit.MILLISECONDS,
 				new LinkedBlockingQueue<Runnable>(10000), new ThreadFactory() {
@@ -70,7 +78,7 @@ public class EventExecutor {
 					public Thread newThread(Runnable r) {
 						Thread thread = new Thread(r);
 						thread.setDaemon(true);
-						thread.setName(eventConfig.getHandler() + "#"
+						thread.setName(handlerNameTmp + "#"
 								+ (index.incrementAndGet()));
 						return thread;
 					}
@@ -109,7 +117,8 @@ public class EventExecutor {
 				if (logger.isInfoEnabled()) {
 					logger.info("there is no tasks for handler="
 							+ eventConfig.getHandler() + ",nodes="
-							+ eventConfig.getNodeList());
+							+ eventConfig.getNodeList() + ",taskStrategy="
+							+ ScheduleServer.getInstance().getTaskStrategy());
 				}
 				return;
 			}
@@ -144,6 +153,35 @@ public class EventExecutor {
 				}
 				EventConsumer consumer = EventFactory.createConsumer(task,
 						eventConfig);
+				// ======统一任务捞取策略下 并行 or 串行=======
+				if (ScheduleServer.getInstance().getTaskStrategy() != DispatchTaskService.TaskFetchStrategy.Multi
+						.getValue()) {
+					if (!ScheduleServer.getInstance().getHandlers()
+							.contains(task.getHandler())) {
+						logger.warn("taskFetch single strategy,the handler is not in whitelist,"
+								+ task);
+						continue;
+					}
+					DispatchHandler handler = (DispatchHandler) ScheduleManagerFactory
+							.getBean(task.getHandler());
+					if (handler.getClass().isAnnotationPresent(
+							ExecuteType.class)) {
+						String dType = handler.getClass()
+								.getAnnotation(ExecuteType.class).value();
+						if (AnnotationConstants.Executor.CHAIN
+								.equalsIgnoreCase(dType)) {// 说明是串行
+							boolean succ = EventQueue.getInstance()
+									.put2ChainDeal(task.getHandler(), consumer);
+							if (!succ) {
+								logger.warn("taskFetch single strategy,chain execute mode,put into queue failed,"
+										+ task);
+								return;
+							}
+							continue;
+						}
+					}
+				}
+				// =========end=============
 				eventThreadPool.execute(consumer);
 			} catch (RejectedExecutionException e) {
 				logger.error("task execute rejected exception," + task, e);
@@ -167,6 +205,10 @@ public class EventExecutor {
 		lock.lock();
 		try {
 			this.eventThreadPool.getQueue().clear();
+			if (ScheduleServer.getInstance().getTaskStrategy() != DispatchTaskService.TaskFetchStrategy.Multi
+					.getValue()) {
+				EventQueue.getInstance().clearTaskInQueue();
+			}
 		} finally {
 			lock.unlock();
 		}

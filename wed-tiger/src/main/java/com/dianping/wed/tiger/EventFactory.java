@@ -7,7 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dianping.wed.tiger.dispatch.DispatchHandler;
+import com.dianping.wed.tiger.dispatch.DispatchMultiService;
 import com.dianping.wed.tiger.dispatch.DispatchResultManager;
+import com.dianping.wed.tiger.dispatch.DispatchSingleService;
 import com.dianping.wed.tiger.dispatch.DispatchTaskEntity;
 import com.dianping.wed.tiger.dispatch.DispatchTaskService;
 import com.dianping.wed.tiger.event.EventConfig;
@@ -31,9 +33,14 @@ public class EventFactory {
 	 * @param config
 	 * @return
 	 */
-	public static EventExecutor createExecutor(EventConfig config) {
-		DispatchTaskService dispatchTaskService = (DispatchTaskService) ScheduleManagerFactory
-				.getBean("dispatchTaskService");
+	public static EventExecutor createMultiExecutor(EventConfig config) {
+		DispatchTaskService dispatchTaskService = null;
+		DispatchMultiService dispatchMultiService = (DispatchMultiService) ScheduleManagerFactory
+				.getBean("dispatchMultiService");
+		dispatchTaskService = dispatchMultiService;
+		// DispatchTaskService dispatchTaskService = (DispatchTaskService)
+		// ScheduleManagerFactory
+		// .getBean("dispatchTaskService");
 		DispatchHandler handler = (DispatchHandler) ScheduleManagerFactory
 				.getBean(config.getHandler());
 		if (handler == null) {
@@ -41,6 +48,29 @@ public class EventFactory {
 					+ config.getHandler());
 			return null;
 		}
+		EventFetcher eventFetcher = new EventFetcher(dispatchTaskService);
+		EventFilter eventFilter = new EventFilter(
+				EventInConsumerRepository.getInstance());
+		EventExecutor executor = new EventExecutor(config, eventFetcher,
+				eventFilter);
+		return executor;
+	}
+
+	public static EventExecutor createSingleExecutor(EventConfig config) {
+		DispatchTaskService dispatchTaskService = null;
+		DispatchSingleService dispatchSingleService = (DispatchSingleService) ScheduleManagerFactory
+				.getBean("dispatchSingleService");
+		dispatchTaskService = dispatchSingleService;
+		// DispatchTaskService dispatchTaskService = (DispatchTaskService)
+		// ScheduleManagerFactory
+		// .getBean("dispatchTaskService");
+//		DispatchHandler handler = (DispatchHandler) ScheduleManagerFactory
+//				.getBean(config.getHandler());
+//		if (handler == null) {
+//			logger.warn("there is no handler bean for eventconfig:"
+//					+ config.getHandler());
+//			return null;
+//		}
 		EventFetcher eventFetcher = new EventFetcher(dispatchTaskService);
 		EventFilter eventFilter = new EventFilter(
 				EventInConsumerRepository.getInstance());
@@ -59,12 +89,12 @@ public class EventFactory {
 	public static EventConsumer createConsumer(DispatchTaskEntity task,
 			EventConfig config) {
 		DispatchHandler handler = (DispatchHandler) ScheduleManagerFactory
-				.getBean(config.getHandler());
+				.getBean(task.getHandler());
 		DispatchResultManager resultHandler = DispatchResultManager
 				.getInstance();
 		if (handler == null) {
 			throw new IllegalArgumentException("handler not found,name="
-					+ config.getHandler());
+					+ task.getHandler());
 		}
 		EventConsumer consumer = new EventConsumer(handler, resultHandler,
 				task, config.getIdentifyCode());

@@ -10,6 +10,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
 
 import com.dianping.wed.tiger.EventFactory;
+import com.dianping.wed.tiger.ScheduleServer;
+import com.dianping.wed.tiger.dispatch.DispatchTaskService;
 import com.dianping.wed.tiger.repository.EventInConsumerRepository;
 
 /**
@@ -21,7 +23,7 @@ public class EventExecutorManager {
 
 	// 执行版本号
 	private AtomicInteger executorVersion = new AtomicInteger(0);
-	
+
 	private AtomicBoolean initFlag = new AtomicBoolean(false);
 
 	private final ReentrantLock lock = new ReentrantLock();
@@ -40,25 +42,31 @@ public class EventExecutorManager {
 		return this.executorVersion.get();
 	}
 
-
 	/**
 	 * 初始化事件执行器
 	 * 
 	 * @param eventConfigs
 	 */
 	public void init(List<EventConfig> eventConfigs) {
-		if (eventConfigs == null || eventConfigs.isEmpty() || eventConfigs.get(0).getNodeList().isEmpty()) {
+		if (eventConfigs == null || eventConfigs.isEmpty()
+				|| eventConfigs.get(0).getNodeList().isEmpty()) {
 			return;
 		}
 		lock.lock();
 		try {
 			eventExecutors.clear();
 			executorVersion.set(eventConfigs.get(0).getIdentifyCode());
-			for (EventConfig config : eventConfigs) {
-				EventExecutor ee = EventFactory.createExecutor(config);
-				if(ee != null){
-					eventExecutors.add(ee);
+			if (ScheduleServer.getInstance().getTaskStrategy() == DispatchTaskService.TaskFetchStrategy.Multi
+					.getValue()) {
+				for (EventConfig config : eventConfigs) {
+					EventExecutor ee = EventFactory.createMultiExecutor(config);
+					if (ee != null) {
+						eventExecutors.add(ee);
+					}
 				}
+			} else {
+				EventExecutor ee = EventFactory.createSingleExecutor(eventConfigs.get(0));
+				eventExecutors.add(ee);
 			}
 			initFlag.set(true);
 		} finally {
@@ -94,16 +102,17 @@ public class EventExecutorManager {
 			lock.unlock();
 		}
 	}
-	
+
 	/**
 	 * 复位执行版本
 	 */
-	public void resetExecutorVersion(){
+	public void resetExecutorVersion() {
 		this.executorVersion.set(0);
 	}
 
 	/**
 	 * 执行器是否已初始化完
+	 * 
 	 * @return
 	 */
 	public boolean hasInited() {

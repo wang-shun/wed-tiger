@@ -71,7 +71,7 @@ public class EventMonitor {
 			public void run() {
 				while (true) {
 					try {
-						Thread.sleep(2000);
+						Thread.sleep(2*60*1000);
 						for (Entry<String, MonitorStatistics> e : monitorMap
 								.entrySet()) {
 							long timestamp = new Date().getTime();

@@ -10,6 +10,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.dianping.wed.tiger.dispatch.DispatchTaskService;
 import com.dianping.wed.tiger.event.EventExecutorManager;
 import com.dianping.wed.tiger.utils.HostUtil;
 
@@ -57,6 +58,11 @@ public class ScheduleServer {
 	 * 处理器的线程池大小maxsize
 	 */
 	private int handlerMaxSize = 5;
+	
+	/**
+	 * 任务捞取策略
+	 */
+	private int taskStrategy = DispatchTaskService.TaskFetchStrategy.Multi.getValue();
 
 	/**
 	 * handler配置识别码
@@ -327,6 +333,14 @@ public class ScheduleServer {
 
 	public void setHandlerMaxSize(int handlerMaxSize) {
 		this.handlerMaxSize = handlerMaxSize;
+	}
+
+	public int getTaskStrategy() {
+		return taskStrategy;
+	}
+
+	public void setTaskStrategy(int taskStrategy) {
+		this.taskStrategy = taskStrategy;
 	}
 
 	/**
