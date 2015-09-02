@@ -144,7 +144,7 @@ public class ScheduleManagerFactory {
 		}
 		// ==========监控相关============
 		if (!StringUtils.isBlank(enableMonitor)) {
-			this.setMonitorFlag("true".equals(enableBackFetch));
+			this.setMonitorFlag("true".equals(enableMonitor));
 		}
 		if (!StringUtils.isBlank(monitorurl)) {
 			ScheduleServer.getInstance().setMonitorIP(monitorurl);
