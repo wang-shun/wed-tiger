@@ -25,8 +25,7 @@ $(function () {
 		}
 		
 		window.location.href = base_url
-			+ "tiger/"
-			+ "?handlerName=" + handlerName 
+			+ "tiger?handlerName=" + handlerName 
 			+ "&monitorTimeFrom=" + monitorTimeFrom 
 			+ "&monitorTimeTo=" + monitorTimeTo;
 		

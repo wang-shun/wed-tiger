@@ -34,7 +34,6 @@ public class FileDbUtil {
 
 	private static final File DATA_DIR = new File("/data/tiger/data/");
 	private static final File ORIGIN_DIR = new File("/data/tiger/origin/");
-	private static final SimpleDateFormat formatDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private static final SimpleDateFormat formatPathA = new SimpleDateFormat("yyyyMM");
 	private static final SimpleDateFormat formatPathB = new SimpleDateFormat("dd");
 	
@@ -81,7 +80,7 @@ public class FileDbUtil {
 				String[] strArray = content.split("\\|");
 				if (strArray.length == 9) {
 					MonitorRecord item = new MonitorRecord();
-					item.setMonitorTime(formatDateTime.parse(strArray[0].trim()));
+					item.setMonitorTime(new Date(Long.valueOf(strArray[0].trim())));
 					item.setHandlerName(strArray[1].trim());
 					item.setHostName(strArray[2].trim());
 					item.setTotalNum(Integer.valueOf(strArray[3].trim()));
