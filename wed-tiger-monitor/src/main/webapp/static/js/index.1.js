@@ -16,16 +16,17 @@ $(function () {
 	
 	// query
 	$("#query").click(function(){
-		var hadleName = $("#hadleName").val();
+		var handlerName = $("#handlerName").val();
 		var monitorTimeFrom = $("#monitorTimeFrom").val();
 		var monitorTimeTo = $("#monitorTimeTo").val();
-		if (!hadleName) {
-			ComAlert.show(0, "hadleName");
+		if (!handlerName) {
+			ComAlert.show(0, "handlerName");
 			return;
 		}
 		
-		window.location.href = base_url 
-			+ "?hadleName=" + hadleName 
+		window.location.href = base_url
+			+ "tiger/"
+			+ "?handlerName=" + handlerName 
 			+ "&monitorTimeFrom=" + monitorTimeFrom 
 			+ "&monitorTimeTo=" + monitorTimeTo;
 		

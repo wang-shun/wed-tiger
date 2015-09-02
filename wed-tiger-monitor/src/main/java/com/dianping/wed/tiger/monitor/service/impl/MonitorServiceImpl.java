@@ -39,8 +39,8 @@ public class MonitorServiceImpl implements IMonitorService {
 	 * @see com.dianping.wed.tiger.monitor.service.IMonitorRecordService#loadMonitorInfo(java.lang.String, java.util.Date)
 	 */
 	@Override
-	public Map<String, List<MonitorRecord>> loadMonitorData(String hadleName, Date monitorTimeFrom, Date monitorTimeTo) {
-		/*String cacheKey = formatDate.format(monitorTime).concat("_").concat(hadleName);
+	public Map<String, List<MonitorRecord>> loadMonitorData(String handlerName, Date monitorTimeFrom, Date monitorTimeTo) {
+		/*String cacheKey = formatDate.format(monitorTime).concat("_").concat(handlerName);
 		
 		Map<String, List<MonitorRecord>> cacheDate = localDateCache.get(cacheKey);
 		Long cacheTim = localTimCache.get(cacheKey);
@@ -48,7 +48,7 @@ public class MonitorServiceImpl implements IMonitorService {
 			return cacheDate;
 		}*/
 		
-		Map<String, List<MonitorRecord>> map = FileDbUtil.loadMonitorData(hadleName, monitorTimeFrom);
+		Map<String, List<MonitorRecord>> map = FileDbUtil.loadMonitorData(handlerName, monitorTimeFrom);
 		Map<String, List<MonitorRecord>> resultMap = new HashMap<String, List<MonitorRecord>>();
 		if (MapUtils.isNotEmpty(map)) {
 			for (Entry<String, List<MonitorRecord>> item : map.entrySet()) {

@@ -34,12 +34,12 @@ public class MonitorController {
 	/**
 	 * monitor index
 	 * @param model
-	 * @param hadleName
+	 * @param handlerName
 	 * @param monitorTime
 	 * @return
 	 */
 	@RequestMapping("")
-	public String index(Model model, String hadleName, 
+	public String index(Model model, String handlerName, 
 			@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") Date monitorTimeFrom, 
 			@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") Date monitorTimeTo){
 		// for param
@@ -68,11 +68,11 @@ public class MonitorController {
 			monitorTimeTo = calendarTo.getTime();
 		}
 		
-		model.addAttribute("hadleName", hadleName);
+		model.addAttribute("handlerName", handlerName);
 		model.addAttribute("monitorTimeFrom", monitorTimeFrom);
 		model.addAttribute("monitorTimeTo", monitorTimeTo);
 		
-		Map<String, List<MonitorRecord>> map = monitorService.loadMonitorData(hadleName, monitorTimeFrom, monitorTimeTo);
+		Map<String, List<MonitorRecord>> map = monitorService.loadMonitorData(handlerName, monitorTimeFrom, monitorTimeTo);
 		model.addAttribute("map", map);
 		
 		return "index";
