@@ -118,7 +118,7 @@ public class EventMonitor {
 
 	private void httpSend(String parameter) throws HttpException, IOException {
 		HttpClient client = new HttpClient();
-		String encodeParam = URLEncoder.encode(parameter, "urf-8");
+		String encodeParam = URLEncoder.encode(parameter, "utf-8");
 		String url = ScheduleServer.getInstance().getMonitorIP()+"/tiger/monitor?tm=" + encodeParam;
 		HttpMethod method = new GetMethod(url);
 		client.executeMethod(method);
