@@ -52,7 +52,7 @@
 		<div class="col-xs-3">
 			<div class="input-group">
 				<span class="input-group-addon">hander</span>
-				<input type="text" class="form-control" id="hadleName" value="${hadleName}" placeholder="请输入hander">
+				<input type="text" class="form-control" id="handlerName" value="${handlerName}" placeholder="请输入hander">
 			</div>
 		</div>
 		<div class="col-xs-7">

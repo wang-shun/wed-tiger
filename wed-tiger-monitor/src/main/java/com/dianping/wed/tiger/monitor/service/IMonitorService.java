@@ -14,11 +14,11 @@ public interface IMonitorService {
 
 	/**
 	 * load monitor data
-	 * @param hadleName
+	 * @param handlerName
 	 * @param monitorTime
 	 * @return
 	 */
-	public Map<String, List<MonitorRecord>> loadMonitorData(String hadleName, Date monitorTimeFrom, Date monitorTimeTo);
+	public Map<String, List<MonitorRecord>> loadMonitorData(String handlerName, Date monitorTimeFrom, Date monitorTimeTo);
 
 	/**
 	 * push data

@@ -16,6 +16,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.dianping.wed.tiger.monitor.core.constant.CommonDic.ReturnCodeEnum;
+import com.dianping.wed.tiger.monitor.core.exception.WebException;
 import com.dianping.wed.tiger.monitor.core.model.MonitorRecord;
 import com.dianping.wed.tiger.monitor.core.thread.MonitorThreadHelper;
 import com.dianping.wed.tiger.monitor.core.util.FileDbUtil;
@@ -39,8 +41,8 @@ public class MonitorServiceImpl implements IMonitorService {
 	 * @see com.dianping.wed.tiger.monitor.service.IMonitorRecordService#loadMonitorInfo(java.lang.String, java.util.Date)
 	 */
 	@Override
-	public Map<String, List<MonitorRecord>> loadMonitorData(String hadleName, Date monitorTimeFrom, Date monitorTimeTo) {
-		/*String cacheKey = formatDate.format(monitorTime).concat("_").concat(hadleName);
+	public Map<String, List<MonitorRecord>> loadMonitorData(String handlerName, Date monitorTimeFrom, Date monitorTimeTo) {
+		/*String cacheKey = formatDate.format(monitorTime).concat("_").concat(handlerName);
 		
 		Map<String, List<MonitorRecord>> cacheDate = localDateCache.get(cacheKey);
 		Long cacheTim = localTimCache.get(cacheKey);
@@ -48,7 +50,7 @@ public class MonitorServiceImpl implements IMonitorService {
 			return cacheDate;
 		}*/
 		
-		Map<String, List<MonitorRecord>> map = FileDbUtil.loadMonitorData(hadleName, monitorTimeFrom);
+		Map<String, List<MonitorRecord>> map = FileDbUtil.loadMonitorData(handlerName, monitorTimeFrom);
 		Map<String, List<MonitorRecord>> resultMap = new HashMap<String, List<MonitorRecord>>();
 		if (MapUtils.isNotEmpty(map)) {
 			for (Entry<String, List<MonitorRecord>> item : map.entrySet()) {
@@ -80,11 +82,11 @@ public class MonitorServiceImpl implements IMonitorService {
 	public void pushData(String originData) {
 		logger.info("push data start :{}", originData);
 		MonitorRecord record = FileDbUtil.parseLineData(originData);
-		if (record != null) {
-			MonitorThreadHelper.pushData(originData);
-		} else {
+		if (record == null) {
 			logger.info("push data fail:{}", originData);
-		}
+			throw new WebException(ReturnCodeEnum.FAIL.code(),"数据解析错误.");
+		} 
+		MonitorThreadHelper.pushData(originData);
 	}
 
 }

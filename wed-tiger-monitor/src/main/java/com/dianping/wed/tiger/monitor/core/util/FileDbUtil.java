@@ -34,17 +34,16 @@ public class FileDbUtil {
 
 	private static final File DATA_DIR = new File("/data/tiger/data/");
 	private static final File ORIGIN_DIR = new File("/data/tiger/origin/");
-	private static final SimpleDateFormat formatDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private static final SimpleDateFormat formatPathA = new SimpleDateFormat("yyyyMM");
 	private static final SimpleDateFormat formatPathB = new SimpleDateFormat("dd");
 	
 	/**
 	 * 加载文件list
-	 * @param hadleName		specify monitor handle file name
+	 * @param handlerName		specify monitor handle file name
 	 * @param monitorTime	specify monitor date
 	 * @return
 	 */
-	private static List<File> loadFiles(String hadleName, Date monitorTime){
+	private static List<File> loadFiles(String handlerName, Date monitorTime){
 		if (!DATA_DIR.exists()) {
 			DATA_DIR.mkdirs();
 		}
@@ -56,7 +55,7 @@ public class FileDbUtil {
 				if (!ArrayUtils.isEmpty(fileArr)) {
 					List<File> result = new ArrayList<File>();
 					for (File file : fileArr) {
-						if (file.getName().startsWith(hadleName)) {
+						if (file.getName().startsWith(handlerName)) {
 							result.add(file);
 						}
 					}
@@ -81,8 +80,8 @@ public class FileDbUtil {
 				String[] strArray = content.split("\\|");
 				if (strArray.length == 9) {
 					MonitorRecord item = new MonitorRecord();
-					item.setMonitorTime(formatDateTime.parse(strArray[0].trim()));
-					item.setHadleName(strArray[1].trim());
+					item.setMonitorTime(new Date(Long.valueOf(strArray[0].trim())));
+					item.setHandlerName(strArray[1].trim());
 					item.setHostName(strArray[2].trim());
 					item.setTotalNum(Integer.valueOf(strArray[3].trim()));
 					item.setSucNum(Integer.valueOf(strArray[4].trim()));
@@ -145,18 +144,18 @@ public class FileDbUtil {
 	
 	/**
 	 * 检索数据
-	 * @param hadleName
+	 * @param handlerName
 	 * @param monitorTime
 	 * @return
 	 */
-	public static Map<String, List<MonitorRecord>> loadMonitorData(String hadleName, Date monitorTime){
+	public static Map<String, List<MonitorRecord>> loadMonitorData(String handlerName, Date monitorTime){
 		Map<String, List<MonitorRecord>> result = null;
 		// 加载文件列表
-		List<File> monotorFiles = loadFiles(hadleName, monitorTime);
+		List<File> monotorFiles = loadFiles(handlerName, monitorTime);
 		if (CollectionUtils.isNotEmpty(monotorFiles)) {
 			result = new HashMap<String, List<MonitorRecord>>();
 			for (File item : monotorFiles) {
-				String hostName = item.getName().substring(hadleName.length() + 1, item.getName().length() - 4);
+				String hostName = item.getName().substring(handlerName.length() + 1, item.getName().length() - 4);
 				List<MonitorRecord> list = new ArrayList<MonitorRecord>();
 				parseFile(item, list);
 				if (CollectionUtils.isNotEmpty(list)) {
@@ -199,7 +198,7 @@ public class FileDbUtil {
 			if (!dirB.exists()) {
 				dirB.mkdirs();
 			}
-			File file = new File(dirB, item.getHadleName().concat("_").concat(item.getHostName()).concat(".txt"));
+			File file = new File(dirB, item.getHandlerName().concat("_").concat(item.getHostName()).concat(".txt"));
 			if (!file.exists()) {
 				try {
 					file.createNewFile();

@@ -1,20 +1,19 @@
 package com.dianping.wed.tiger.monitor.controller;
 
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.Resource;
-
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.dianping.wed.tiger.monitor.core.model.MonitorRecord;
 import com.dianping.wed.tiger.monitor.core.result.ReturnT;
 import com.dianping.wed.tiger.monitor.service.IMonitorService;
@@ -34,12 +33,12 @@ public class MonitorController {
 	/**
 	 * monitor index
 	 * @param model
-	 * @param hadleName
+	 * @param handlerName
 	 * @param monitorTime
 	 * @return
 	 */
 	@RequestMapping("")
-	public String index(Model model, String hadleName, 
+	public String index(Model model, String handlerName, 
 			@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") Date monitorTimeFrom, 
 			@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss") Date monitorTimeTo){
 		// for param
@@ -68,11 +67,11 @@ public class MonitorController {
 			monitorTimeTo = calendarTo.getTime();
 		}
 		
-		model.addAttribute("hadleName", hadleName);
+		model.addAttribute("handlerName", handlerName);
 		model.addAttribute("monitorTimeFrom", monitorTimeFrom);
 		model.addAttribute("monitorTimeTo", monitorTimeTo);
 		
-		Map<String, List<MonitorRecord>> map = monitorService.loadMonitorData(hadleName, monitorTimeFrom, monitorTimeTo);
+		Map<String, List<MonitorRecord>> map = monitorService.loadMonitorData(handlerName, monitorTimeFrom, monitorTimeTo);
 		model.addAttribute("map", map);
 		
 		return "index";
@@ -82,11 +81,13 @@ public class MonitorController {
 	 * 接收监控数据
 	 * @param monitorOrigin
 	 * @return
+	 * @throws UnsupportedEncodingException 
 	 */
 	@RequestMapping("/monitor")
 	@ResponseBody
-	public ReturnT<String> dealMonitorData(String tm){
-		monitorService.pushData(tm);
+	public ReturnT<String> dealMonitorData(String tm) throws UnsupportedEncodingException{
+		String decodeTm = URLDecoder.decode(tm, "utf-8");
+		monitorService.pushData(decodeTm);
 		return new ReturnT<String>();
 	}
 	

@@ -10,7 +10,7 @@ import java.io.Serializable;
 public class MonitorOrigin implements Serializable {
 
 	private long timestamp;		// 监控时间
-	private String hadleName;	// hadle名称
+	private String handlerName;	// hadle名称
 	private String hostName;	// 服务器host名称
 	private int totalNum;		// 调用总次数 
 	private int sucNum;			// 成功次数
@@ -25,11 +25,12 @@ public class MonitorOrigin implements Serializable {
 	public void setTimestamp(long timestamp) {
 		this.timestamp = timestamp;
 	}
-	public String getHadleName() {
-		return hadleName;
+	
+	public String getHandlerName() {
+		return handlerName;
 	}
-	public void setHadleName(String hadleName) {
-		this.hadleName = hadleName;
+	public void setHandlerName(String handlerName) {
+		this.handlerName = handlerName;
 	}
 	public String getHostName() {
 		return hostName;

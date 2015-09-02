@@ -14,6 +14,7 @@ import com.dianping.wed.tiger.dispatch.DispatchParam;
 import com.dianping.wed.tiger.dispatch.DispatchResult;
 import com.dianping.wed.tiger.dispatch.DispatchResultManager;
 import com.dianping.wed.tiger.dispatch.DispatchTaskEntity;
+import com.dianping.wed.tiger.monitor.EventMonitor;
 import com.dianping.wed.tiger.repository.EventInConsumerRepository;
 
 /**

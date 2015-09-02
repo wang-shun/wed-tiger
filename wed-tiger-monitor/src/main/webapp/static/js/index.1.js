@@ -16,16 +16,16 @@ $(function () {
 	
 	// query
 	$("#query").click(function(){
-		var hadleName = $("#hadleName").val();
+		var handlerName = $("#handlerName").val();
 		var monitorTimeFrom = $("#monitorTimeFrom").val();
 		var monitorTimeTo = $("#monitorTimeTo").val();
-		if (!hadleName) {
-			ComAlert.show(0, "hadleName");
+		if (!handlerName) {
+			ComAlert.show(0, "handlerName");
 			return;
 		}
 		
-		window.location.href = base_url 
-			+ "?hadleName=" + hadleName 
+		window.location.href = base_url
+			+ "tiger?handlerName=" + handlerName 
 			+ "&monitorTimeFrom=" + monitorTimeFrom 
 			+ "&monitorTimeTo=" + monitorTimeTo;
 		
@@ -58,12 +58,12 @@ $(function () {
         tooltip: {
         	formatter:function(){
 				return '<b>' + this.series.name + '</b>：<br>' + 
-					'监控时间=' + Highcharts.dateFormat('%Y-%m-%d %H:%M:%S',this.x) + ', <br>' +
-					'执行次数=' + this.y + ', <br>' +
-					'成功次数=' + this.point.sucNum + ', <br>' +
-					'失败次数=' + this.point.failNum + ', <br>' +
-					'平均耗时=' + this.point.avgCost + ', <br>' +
-					'max耗时=' + this.point.maxCost + ', <br>' +
+					'监控时间=' + Highcharts.dateFormat('%Y-%m-%d %H:%M:%S',this.x) + ' <br>' +
+					'执行次数=' + this.y + ' <br>' +
+					'成功次数=' + this.point.sucNum + ' <br>' +
+					'失败次数=' + this.point.failNum + ' <br>' +
+					'平均耗时=' + this.point.avgCost + ' <br>' +
+					'max耗时=' + this.point.maxCost + ' <br>' +
 					'min耗时=' + this.point.minCost;
 			}
         },

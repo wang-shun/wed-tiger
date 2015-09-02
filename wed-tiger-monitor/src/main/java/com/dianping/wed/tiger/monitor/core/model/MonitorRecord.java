@@ -11,7 +11,7 @@ import java.util.Date;
 public class MonitorRecord implements Serializable, Comparable<MonitorRecord> {
 
 	private Date monitorTime;	// 监控时间
-	private String hadleName;	// hadle名称
+	private String handlerName;	// hadle名称
 	private String hostName;	// 服务器host名称
 	private int totalNum;	// 监控total数
 	private int sucNum;		// 监控success数
@@ -40,12 +40,12 @@ public class MonitorRecord implements Serializable, Comparable<MonitorRecord> {
 		this.monitorTime = monitorTime;
 	}
 
-	public String getHadleName() {
-		return hadleName;
+	public String getHandlerName() {
+		return handlerName;
 	}
 
-	public void setHadleName(String hadleName) {
-		this.hadleName = hadleName;
+	public void setHandlerName(String handlerName) {
+		this.handlerName = handlerName;
 	}
 
 	public String getHostName() {
