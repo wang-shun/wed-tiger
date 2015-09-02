@@ -16,6 +16,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.dianping.wed.tiger.monitor.core.constant.CommonDic.ReturnCodeEnum;
+import com.dianping.wed.tiger.monitor.core.exception.WebException;
 import com.dianping.wed.tiger.monitor.core.model.MonitorRecord;
 import com.dianping.wed.tiger.monitor.core.thread.MonitorThreadHelper;
 import com.dianping.wed.tiger.monitor.core.util.FileDbUtil;
@@ -80,11 +82,11 @@ public class MonitorServiceImpl implements IMonitorService {
 	public void pushData(String originData) {
 		logger.info("push data start :{}", originData);
 		MonitorRecord record = FileDbUtil.parseLineData(originData);
-		if (record != null) {
-			MonitorThreadHelper.pushData(originData);
-		} else {
+		if (record == null) {
 			logger.info("push data fail:{}", originData);
-		}
+			throw new WebException(ReturnCodeEnum.FAIL.code(),"数据解析错误.");
+		} 
+		MonitorThreadHelper.pushData(originData);
 	}
 
 }

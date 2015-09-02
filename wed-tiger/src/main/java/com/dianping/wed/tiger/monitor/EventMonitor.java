@@ -1,9 +1,10 @@
 /**
  * 
  */
-package com.dianping.wed.tiger.event;
+package com.dianping.wed.tiger.monitor;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dianping.wed.tiger.ScheduleServer;
-import com.dianping.wed.tiger.monitor.MonitorStatistics;
 
 /**
  * @author yuantengkai
@@ -118,7 +118,8 @@ public class EventMonitor {
 
 	private void httpSend(String parameter) throws HttpException, IOException {
 		HttpClient client = new HttpClient();
-		String url = ScheduleServer.getInstance().getMonitorIP()+"/tiger/monitor?tm=" + parameter;
+		String encodeParam = URLEncoder.encode(parameter, "urf-8");
+		String url = ScheduleServer.getInstance().getMonitorIP()+"/tiger/monitor?tm=" + encodeParam;
 		HttpMethod method = new GetMethod(url);
 		client.executeMethod(method);
 		if (method.getStatusCode() != 200) {
