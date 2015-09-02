@@ -1,4 +1,4 @@
-package com.xxl.core.util;
+package com.dianping.wed.tiger.monitor.core.util;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -23,7 +23,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.xxl.core.model.MonitorRecord;
+import com.dianping.wed.tiger.monitor.core.model.MonitorRecord;
 
 /**
  * file db util

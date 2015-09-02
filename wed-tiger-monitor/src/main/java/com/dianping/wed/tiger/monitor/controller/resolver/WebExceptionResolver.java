@@ -1,4 +1,4 @@
-package com.xxl.controller.resolver;
+package com.dianping.wed.tiger.monitor.controller.resolver;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,10 +12,10 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.xxl.core.constant.CommonDic.CommonViewName;
-import com.xxl.core.exception.WebException;
-import com.xxl.core.result.ReturnT;
-import com.xxl.core.result.ReturnT.ReturnCodeEnum;
+import com.dianping.wed.tiger.monitor.core.constant.CommonDic.CommonViewName;
+import com.dianping.wed.tiger.monitor.core.exception.WebException;
+import com.dianping.wed.tiger.monitor.core.result.ReturnT;
+import com.dianping.wed.tiger.monitor.core.result.ReturnT.ReturnCodeEnum;
 
 /**
  * 异常解析器

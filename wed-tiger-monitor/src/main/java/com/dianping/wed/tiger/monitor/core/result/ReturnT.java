@@ -1,4 +1,4 @@
-package com.xxl.core.result;
+package com.dianping.wed.tiger.monitor.core.result;
 
 /**
  * 封装返回

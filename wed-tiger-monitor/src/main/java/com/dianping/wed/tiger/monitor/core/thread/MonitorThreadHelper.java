@@ -1,10 +1,10 @@
-package com.xxl.core.thread;
+package com.dianping.wed.tiger.monitor.core.thread;
 
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import com.xxl.core.util.FileDbUtil;
+import com.dianping.wed.tiger.monitor.core.util.FileDbUtil;
 
 /**
  * 消息队列

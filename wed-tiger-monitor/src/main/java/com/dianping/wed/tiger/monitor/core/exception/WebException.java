@@ -1,4 +1,4 @@
-package com.xxl.core.exception;
+package com.dianping.wed.tiger.monitor.core.exception;
 
 /**
  * 自定义异常

@@ -1,4 +1,4 @@
-package com.xxl.controller;
+package com.dianping.wed.tiger.monitor.controller;
 
 
 import java.text.SimpleDateFormat;
@@ -14,9 +14,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.xxl.core.model.MonitorRecord;
-import com.xxl.core.result.ReturnT;
-import com.xxl.service.IMonitorService;
+import com.dianping.wed.tiger.monitor.core.model.MonitorRecord;
+import com.dianping.wed.tiger.monitor.core.result.ReturnT;
+import com.dianping.wed.tiger.monitor.service.IMonitorService;
 
 /**
  * monitor center

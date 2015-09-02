@@ -1,8 +1,8 @@
-package com.xxl.service.impl;
+package com.dianping.wed.tiger.monitor.service.impl;
 
 import org.springframework.stereotype.Service;
 
-import com.xxl.service.ITriggerService;
+import com.dianping.wed.tiger.monitor.service.ITriggerService;
 
 /**
  * Trigger Service

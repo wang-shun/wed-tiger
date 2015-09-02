@@ -1,4 +1,4 @@
-package com.xxl.core.util;
+package com.dianping.wed.tiger.monitor.core.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

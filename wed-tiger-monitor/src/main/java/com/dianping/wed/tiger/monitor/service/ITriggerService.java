@@ -1,4 +1,4 @@
-package com.xxl.service;
+package com.dianping.wed.tiger.monitor.service;
 
 /**
  * Trigger Service

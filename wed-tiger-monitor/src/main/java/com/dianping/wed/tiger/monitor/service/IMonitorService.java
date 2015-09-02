@@ -1,10 +1,10 @@
-package com.xxl.service;
+package com.dianping.wed.tiger.monitor.service;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import com.xxl.core.model.MonitorRecord;
+import com.dianping.wed.tiger.monitor.core.model.MonitorRecord;
 
 /**
  * monitor record

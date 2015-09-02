@@ -1,75 +1,105 @@
-package com.xxl.core.model;
+package com.dianping.wed.tiger.monitor.core.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
- * 原始监控数据 (2s接收一次,初步统计数据)
- * @author xuxueli 2015-8-31 18:25:26
+ * 监控结果记录
+ * @author xuxueli 2015-8-31 18:24:51
  */
 @SuppressWarnings("serial")
-public class MonitorOrigin implements Serializable {
+public class MonitorRecord implements Serializable, Comparable<MonitorRecord> {
 
-	private long timestamp;		// 监控时间
+	private Date monitorTime;	// 监控时间
 	private String hadleName;	// hadle名称
 	private String hostName;	// 服务器host名称
-	private int totalNum;		// 调用总次数 
-	private int sucNum;			// 成功次数
-	private int failNum;		// 失败次数
-	private long avgCost;		// 平均耗时
-	private long maxCost;		// max耗时
-	private long minCost;		// min耗时
+	private int totalNum;	// 监控total数
+	private int sucNum;		// 监控success数
+	private int failNum;	// 监控fail数
+	private long avgCost;		// avg耗时
+	private long maxCost;		// MAX耗时
+	private long minCost;		// MIN耗时
 	
-	public long getTimestamp() {
-		return timestamp;
+	@Override
+	public int compareTo(MonitorRecord o) {
+		if (this.monitorTime != null && o.monitorTime != null) {
+			if (this.monitorTime.before(o.monitorTime)) {
+				return 1;
+			} else {
+				return -1;
+			}
+		}
+		return 0;
 	}
-	public void setTimestamp(long timestamp) {
-		this.timestamp = timestamp;
+
+	public Date getMonitorTime() {
+		return monitorTime;
 	}
+
+	public void setMonitorTime(Date monitorTime) {
+		this.monitorTime = monitorTime;
+	}
+
 	public String getHadleName() {
 		return hadleName;
 	}
+
 	public void setHadleName(String hadleName) {
 		this.hadleName = hadleName;
 	}
+
 	public String getHostName() {
 		return hostName;
 	}
+
 	public void setHostName(String hostName) {
 		this.hostName = hostName;
 	}
+
 	public int getTotalNum() {
 		return totalNum;
 	}
+
 	public void setTotalNum(int totalNum) {
 		this.totalNum = totalNum;
 	}
+
 	public int getSucNum() {
 		return sucNum;
 	}
+
 	public void setSucNum(int sucNum) {
 		this.sucNum = sucNum;
 	}
+
 	public int getFailNum() {
 		return failNum;
 	}
+
 	public void setFailNum(int failNum) {
 		this.failNum = failNum;
 	}
+
 	public long getAvgCost() {
 		return avgCost;
 	}
+
 	public void setAvgCost(long avgCost) {
 		this.avgCost = avgCost;
 	}
+
 	public long getMaxCost() {
 		return maxCost;
 	}
+
 	public void setMaxCost(long maxCost) {
 		this.maxCost = maxCost;
 	}
+
 	public long getMinCost() {
 		return minCost;
 	}
+
 	public void setMinCost(long minCost) {
 		this.minCost = minCost;
 	}

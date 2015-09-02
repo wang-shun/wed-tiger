@@ -1,4 +1,4 @@
-package com.xxl.controller.interceptor;
+package com.dianping.wed.tiger.monitor.controller.interceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

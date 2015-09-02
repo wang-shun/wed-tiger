@@ -1,4 +1,4 @@
-package com.xxl.core.constant;
+package com.dianping.wed.tiger.monitor.core.constant;
 
 /**
  * 通用字典类

@@ -1,4 +1,4 @@
-package com.xxl.service.impl;
+package com.dianping.wed.tiger.monitor.service.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -16,10 +16,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.xxl.core.model.MonitorRecord;
-import com.xxl.core.thread.MonitorThreadHelper;
-import com.xxl.core.util.FileDbUtil;
-import com.xxl.service.IMonitorService;
+import com.dianping.wed.tiger.monitor.core.model.MonitorRecord;
+import com.dianping.wed.tiger.monitor.core.thread.MonitorThreadHelper;
+import com.dianping.wed.tiger.monitor.core.util.FileDbUtil;
+import com.dianping.wed.tiger.monitor.service.IMonitorService;
 
 /**
  * monitor record
@@ -36,7 +36,7 @@ public class MonitorServiceImpl implements IMonitorService {
 	
 	/*
 	 * load monitor data	// 注意002：此处注释为查询缓存，推荐线上打开注释缓存，可大大增加查询效率，默认缓存时间60s
-	 * @see com.xxl.service.IMonitorRecordService#loadMonitorInfo(java.lang.String, java.util.Date)
+	 * @see com.dianping.wed.tiger.monitor.service.IMonitorRecordService#loadMonitorInfo(java.lang.String, java.util.Date)
 	 */
 	@Override
 	public Map<String, List<MonitorRecord>> loadMonitorData(String hadleName, Date monitorTimeFrom, Date monitorTimeTo) {
@@ -74,7 +74,7 @@ public class MonitorServiceImpl implements IMonitorService {
 
 	/*
 	 * push data
-	 * @see com.xxl.service.IMonitorService#pushData(java.lang.String)
+	 * @see com.dianping.wed.tiger.monitor.service.IMonitorService#pushData(java.lang.String)
 	 */
 	@Override
 	public void pushData(String originData) {
