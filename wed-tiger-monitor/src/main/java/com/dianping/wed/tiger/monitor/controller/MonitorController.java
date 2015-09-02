@@ -7,7 +7,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
+
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,7 +27,7 @@ import com.dianping.wed.tiger.monitor.service.IMonitorService;
 public class MonitorController {
 	private static final SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
 	
-	@Autowired
+	@Resource
 	private IMonitorService monitorService;
 	
 	/**
