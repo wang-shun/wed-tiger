@@ -36,7 +36,7 @@ public class EventFactory {
 	public static EventExecutor createMultiExecutor(EventConfig config) {
 		DispatchTaskService dispatchTaskService = null;
 		DispatchMultiService dispatchMultiService = (DispatchMultiService) ScheduleManagerFactory
-				.getBean("dispatchMultiService");
+				.getBean("dispatchTaskService");
 		dispatchTaskService = dispatchMultiService;
 		// DispatchTaskService dispatchTaskService = (DispatchTaskService)
 		// ScheduleManagerFactory
@@ -59,7 +59,7 @@ public class EventFactory {
 	public static EventExecutor createSingleExecutor(EventConfig config) {
 		DispatchTaskService dispatchTaskService = null;
 		DispatchSingleService dispatchSingleService = (DispatchSingleService) ScheduleManagerFactory
-				.getBean("dispatchSingleService");
+				.getBean("dispatchTaskService");
 		dispatchTaskService = dispatchSingleService;
 		// DispatchTaskService dispatchTaskService = (DispatchTaskService)
 		// ScheduleManagerFactory
