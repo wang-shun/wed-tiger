@@ -53,7 +53,7 @@ public class FileDbUtil {
 			File dirB = new File(dirA, formatPathB.format(monitorTime));	// ../201509/01
 			if (dirB.exists()  && dirB.isDirectory()) {
 				File[] fileArr = dirB.listFiles();
-				if (ArrayUtils.isNotEmpty(fileArr)) {
+				if (!ArrayUtils.isEmpty(fileArr)) {
 					List<File> result = new ArrayList<File>();
 					for (File file : fileArr) {
 						if (file.getName().startsWith(hadleName)) {
