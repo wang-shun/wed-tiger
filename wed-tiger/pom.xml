@@ -14,8 +14,8 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework</groupId>
-			<artifactId>spring-context-support</artifactId>
-			<version>3.2.13.RELEASE</version>
+			<artifactId>spring-context</artifactId>
+			<version>2.5.6</version>
 		</dependency>
 		<dependency>
             <groupId>com.dianping.cat</groupId>
