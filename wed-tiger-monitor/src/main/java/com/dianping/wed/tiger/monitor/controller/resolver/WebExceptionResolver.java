@@ -39,9 +39,9 @@ public class WebExceptionResolver implements HandlerExceptionResolver {
 			result.setCode(ReturnCodeEnum.FAIL.code());
 			result.setMsg(ex.toString().replaceAll("\n", "<br/>"));
 			
-			logger.info("==============异常开始=============");
-			logger.info("system catch exception:{}", ex);
-			logger.info("==============异常结束=============");
+			logger.error("==============system异常开始=============");
+			logger.error("system catch exception:{}", ex);
+			logger.error("==============system异常结束=============");
 		}
 				
 		// 是否JSON返回

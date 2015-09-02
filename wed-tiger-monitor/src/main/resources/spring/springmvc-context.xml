@@ -26,12 +26,15 @@
 	<context:component-scan base-package="com.dianping.wed.tiger.monitor.controller" />
 	
 	<!-- 静态资源映射 （引用 "/resources/**" 的路径引用转到工程的/resources/目录取资源） -->
+	<mvc:resources mapping="/static/**" location="/static/" />
+	<mvc:resources mapping="/**" location="/" />
+	<!-- 
 	<mvc:resources mapping="/favicon.ico" location="/favicon.ico" />
 	<mvc:resources mapping="/images/**" location="/images/" />
 	<mvc:resources mapping="/css/**" location="/css/" />
 	<mvc:resources mapping="/js/**" location="/js/" />
 	<mvc:resources mapping="/plugin/**" location="/plugin/" />
-	<mvc:resources mapping="/**" location="/" />
+	 -->
 	
 	<!-- FreeMarker视图解析  -->
 	<bean id="viewResolver"	class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
@@ -56,7 +59,7 @@
 	</mvc:interceptors>
 	
 	<!-- 异常解析器 -->
- 	<bean id="exceptionResolver" class="com.dianping.wed.tiger.monitor.controller.resolver.WebExceptionResolver"></bean>
+ 	<bean id="exceptionResolver" class="com.dianping.wed.tiger.monitor.controller.resolver.WebExceptionResolver"/>
 	
 	<!-- 多部分解析器（文件上传组件) -->
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>

@@ -24,6 +24,7 @@ import com.dianping.wed.tiger.monitor.service.IMonitorService;
  * @author xuxueli
  */
 @Controller
+@RequestMapping("/tiger")
 public class MonitorController {
 	private static final SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
 	
@@ -78,18 +79,14 @@ public class MonitorController {
 	}
 	
 	/**
-	 * 接收推送数据
+	 * 接收监控数据
 	 * @param monitorOrigin
 	 * @return
 	 */
-	@RequestMapping("/pushData")
+	@RequestMapping("/monitor")
 	@ResponseBody
-	public ReturnT<String> pushData(String tm){
-		try {
-			monitorService.pushData(tm);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	public ReturnT<String> dealMonitorData(String tm){
+		monitorService.pushData(tm);
 		return new ReturnT<String>();
 	}
 	
