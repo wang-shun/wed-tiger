@@ -68,7 +68,7 @@ public class MonitorServiceImpl implements IMonitorService {
 					.get(cacheKey);
 
 			if (cacheData != null && cacheTim != null
-					&& System.currentTimeMillis() - cacheTim < 60 * 1000) {// 1分钟内缓存
+					&& System.currentTimeMillis() - cacheTim < 30 * 1000) {// 30s 内缓存
 				return cacheData;
 			}
 		}
