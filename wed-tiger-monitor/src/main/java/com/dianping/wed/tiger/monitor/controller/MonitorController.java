@@ -35,6 +35,12 @@ public class MonitorController {
 
 	@Resource
 	private IMonitorService monitorService;
+	
+	@RequestMapping("")
+	public String index(){
+//		return "forward:/tiger";
+		return "redirect:/tiger";
+	}
 
 	/**
 	 * monitor index
@@ -44,8 +50,8 @@ public class MonitorController {
 	 * @param monitorTime
 	 * @return
 	 */
-	@RequestMapping("")
-	public String index(
+	@RequestMapping("/tiger")
+	public String tigerIndex(
 			Model model,
 			String handlerName,
 			@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date monitorTimeFrom,
@@ -88,6 +94,7 @@ public class MonitorController {
 
 		return "index";
 	}
+	
 
 	/**
 	 * 接收监控数据
