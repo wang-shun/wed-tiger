@@ -12,27 +12,67 @@ tiger主要有以下三块组成：
 
 3. 任务执行管理：用于管理本机所分配到的执行器节点,进而进行任务节点捞取、任务过滤等,并对任务的执行结果进行处理;
 
-## 使用步骤
+## ======Quick Start======
 ### Step一. 依赖
 
 ```
 <groupId>com.dianping</groupId>
 <artifactId>wed-tiger</artifactId>
-<version>1.0.3</version>
+<version>1.1.0</version>
 ```
 
 ### Step二. 实现任务操作管理接口
 
-``com.dianping.wed.tiger.dispatch.DispatchTaskService``
+#### 任务操作支持两种策略，约定：
+***策略a***: 各个执行器捞取各自的任务
+
+***策略b***: 统一捞取任务
+
+***策略a***情况下实现接口:
+
+```
+配置:
+configp.setProperty(ScheduleManagerFactory.ScheduleKeys.taskStrategy.name(),DispatchTaskService.TaskFetchStrategy.Multi.getValue() + "");
+
+则实现各自捞取任务的操作接口
+com.dianping.wed.tiger.dispatch.DispatchMultiService
+
+```
+
+***策略b***情况下实现接口:
+
+```
+配置:
+configp.setProperty(ScheduleManagerFactory.ScheduleKeys.taskStrategy.name(),DispatchTaskService.TaskFetchStrategy.Single.getValue() + "");
+
+则实现统一捞取任务的操作接口
+com.dianping.wed.tiger.dispatch.DispatchMultiService
+
+```
+***定义spring bean***
+
+``<bean id="dispatchTaskService" class="你的实现类"/>``
 #### 必须实现：
 ##### 方法1. 添加一条任务
 ```
 public int addDispatchTask(DispatchTaskEntity taskEntity);
 ```
 ##### 方法2. 捞取一定数量的任务
+
+***策略a***情况下实现:
+
+
 ```
 public List<DispatchTaskEntity> findDispatchTasksWithLimit(String handler,List<Integer> nodeList, int limit);
 ```
+
+***策略b***情况下实现:
+
+```
+public List<DispatchTaskEntity> findDispatchTasksWithLimit(List<Integer> nodeList, int limit);
+
+```
+
 ##### 方法3. 更新任务状态
 ```
 public boolean updateTaskStatus(int taskId,int status,String hostName);
@@ -43,9 +83,17 @@ public boolean addRetryTimesAndExecuteTime(int taskId,Date nextExecuteTime,Strin
 ```
 
 #### 可选实现:
-##### 方法1. 反压获取一定数量的任务，使用前提ScheduleManagerFactory.setBackFetchFlag(true)
+##### 方法1. 反压获取一定数量的任务，使用前提:
+``ScheduleManagerFactory.setBackFetchFlag(true)``
+
+***策略a***情况下实现:
 ```
 public List<DispatchTaskEntity> findDispatchTasksWithLimitByBackFetch(String handler, List<Integer> nodeList, int limit,int taskId);
+```
+***策略b***情况下实现:
+
+```
+public List<DispatchTaskEntity> findDispatchTasksWithLimitByBackFetch(List<Integer> nodeList, int limit, int taskId);
 ```
 ### Step三. 实现任务分发接口
 ``com.dianping.wed.tiger.dispatch.DispatchHandler``
@@ -80,28 +128,31 @@ smf.setAppCtx(applicationcontext);
 Properties configp = new Properties();
 
 zk地址，必须
-configp.setProperty(ScheduleManagerFactory.keys.zkConnectAddress.name(),"127.0.0.1:2181,127.0.1.1:2181");
+configp.setProperty(ScheduleManagerFactory.ZookeeperKeys.zkConnectAddress.name(),"127.0.0.1:2181,127.0.1.1:2181");
 
 执行器名称，必须
-configp.setProperty(ScheduleManagerFactory.keys.handlers.name(),"handler1,hander2,hangdler3");
+configp.setProperty(ScheduleManagerFactory.ScheduleKeys.handlers.name(),"handler1,hander2,hangdler3");
 
 zk节点rootpath,必须
-configp.setProperty(ScheduleManagerFactory.keys.rootPath.name(),"/DPWED");
+configp.setProperty(ScheduleManagerFactory.ZookeeperKeys.rootPath.name(),"/DPWED");
 
 虚拟节点数，最好大于20，默认100,可选
-configp.setProperty(ScheduleManagerFactory.keys.visualNodeNum.name(),"30");
+configp.setProperty(ScheduleManagerFactory.ScheduleKeys.visualNodeNum.name(),"30");
 
 zk虚拟节点分配策略,1-散列模式,2－分块模式,默认分块模式,建议用2,可选
-configp.setProperty(ScheduleManagerFactory.keys.divideType.name(), "2");
+configp.setProperty(ScheduleManagerFactory.ScheduleKeys.divideType.name(), "2");
+
+执行器策略，可选，默认为策略a
+configp.setProperty(ScheduleManagerFactory.ScheduleKeys.taskStrategy.name(),"1");
 
 总调度开关,默认true,可选
-configp.setProperty(ScheduleManagerFactory.keys.scheduleFlag.name(),"true");
+configp.setProperty(ScheduleManagerFactory.ScheduleKeys.scheduleFlag.name(),"true");
 
 启用巡航模式，默认true,可选
-configp.setProperty(ScheduleManagerFactory.keys.enableNavigate.name(),"true");
+configp.setProperty(ScheduleManagerFactory.ScheduleKeys.enableNavigate.name(),"true");
 
 启用反压模式，默认false,可选
-configp.setProperty(ScheduleManagerFactory.keys.enableBackFetch.name(),"false");
+configp.setProperty(ScheduleManagerFactory.ScheduleKeys.enableBackFetch.name(),"false");
 
 ===========初始化启用==========
 smf.initSchedule(configp);
@@ -136,6 +187,22 @@ smf.initSchedule(configp);
   
   ``ScheduleManagerFactory.setBackFetchFlag(boolean flag);``
   
+
+## ======Tiger监控======
+tiger应用运行期间，支持任务监控，部署wed-tiger-monitor
+并且在tiger应用中增加如下配置:
+
+```
+监控服务地址，必须
+configp.setProperty(ScheduleManagerFactory.MonitorKeys.monitorIP.name(),"http://10.128.122.126:8080");
+
+监控开关，默认关闭，必须
+configp.setProperty(ScheduleManagerFactory.MonitorKeys.enableMonitor.name(),"true");
+
+同时支持监控运行中开关控制：
+scheduleManagerFactory.setMonitorFlag(boolean flag);
+
+```
 
 **Thanks**
 
