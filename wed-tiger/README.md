@@ -46,7 +46,7 @@ com.dianping.wed.tiger.dispatch.DispatchMultiService
 configp.setProperty(ScheduleManagerFactory.ScheduleKeys.taskStrategy.name(),DispatchTaskService.TaskFetchStrategy.Single.getValue() + "");
 
 则实现统一捞取任务的操作接口
-com.dianping.wed.tiger.dispatch.DispatchMultiService
+com.dianping.wed.tiger.dispatch.DispatchSingleService
 
 ```
 ***定义spring bean***
@@ -87,10 +87,12 @@ public boolean addRetryTimesAndExecuteTime(int taskId,Date nextExecuteTime,Strin
 ``ScheduleManagerFactory.setBackFetchFlag(true)``
 
 ***策略a***情况下实现:
+
 ```
 public List<DispatchTaskEntity> findDispatchTasksWithLimitByBackFetch(String handler, List<Integer> nodeList, int limit,int taskId);
 ```
 ***策略b***情况下实现:
+
 
 ```
 public List<DispatchTaskEntity> findDispatchTasksWithLimitByBackFetch(List<Integer> nodeList, int limit, int taskId);
@@ -205,4 +207,3 @@ scheduleManagerFactory.setMonitorFlag(boolean flag);
 ```
 
 **Thanks**
-
