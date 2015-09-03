@@ -47,7 +47,7 @@ public class MonitorServiceImpl implements IMonitorService {
 	public Map<String, List<MonitorRecord>> queryMonitorData(
 			String handlerName, Date monitorTimeFrom, Date monitorTimeTo) {
 
-		//========cache deal
+		//========cache deal======
 		String cacheKey = FormatDate_yyyyMMdd.format(monitorTimeFrom)
 				.concat("_").concat(handlerName);
 		
