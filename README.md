@@ -87,10 +87,12 @@ public boolean addRetryTimesAndExecuteTime(int taskId,Date nextExecuteTime,Strin
 ``ScheduleManagerFactory.setBackFetchFlag(true)``
 
 ***策略a***情况下实现:
+
 ```
 public List<DispatchTaskEntity> findDispatchTasksWithLimitByBackFetch(String handler, List<Integer> nodeList, int limit,int taskId);
 ```
 ***策略b***情况下实现:
+
 
 ```
 public List<DispatchTaskEntity> findDispatchTasksWithLimitByBackFetch(List<Integer> nodeList, int limit, int taskId);
