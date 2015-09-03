@@ -47,14 +47,14 @@ public class MonitorServiceImpl implements IMonitorService {
 	public Map<String, List<MonitorRecord>> queryMonitorData(
 			String handlerName, Date monitorTimeFrom, Date monitorTimeTo) {
 
-		//========cache deal======
+		// ========cache deal======
 		String cacheKey = FormatDate_yyyyMMdd.format(monitorTimeFrom)
 				.concat("_").concat(handlerName);
-		
+
 		String cacheDateKey = FormatDate_yyyyMMdd.format(new Date());
 
 		Long cacheDate = localTimeCache.get(cacheDateKey);
-		if (cacheDate == null) {//一天清空一次本地缓存
+		if (cacheDate == null) {// 一天清空一次本地缓存
 			Long exist = localTimeCache.putIfAbsent(cacheDateKey, 1L);
 			if (exist == null) {
 				localDateCache.clear();
@@ -68,12 +68,13 @@ public class MonitorServiceImpl implements IMonitorService {
 					.get(cacheKey);
 
 			if (cacheData != null && cacheTim != null
-					&& System.currentTimeMillis() - cacheTim < 30 * 1000) {// 30s 内缓存
+					&& System.currentTimeMillis() - cacheTim < 30 * 1000) {// 30s
+																			// 内缓存
 				return cacheData;
 			}
 		}
-		//=======end========
-		
+		// =======end========
+
 		// key-hostname
 		Map<String, List<MonitorRecord>> resultMap = new HashMap<String, List<MonitorRecord>>();
 
