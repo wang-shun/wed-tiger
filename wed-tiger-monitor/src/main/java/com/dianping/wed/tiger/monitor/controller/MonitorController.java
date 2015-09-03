@@ -27,7 +27,7 @@ import com.dianping.wed.tiger.monitor.service.IMonitorService;
  * @author xuxueli
  */
 @Controller
-@RequestMapping("/tiger")
+@RequestMapping("")
 public class MonitorController {
 
 	private static final SimpleDateFormat FormatDate = new SimpleDateFormat(
@@ -96,7 +96,7 @@ public class MonitorController {
 	 * @return
 	 * @throws UnsupportedEncodingException
 	 */
-	@RequestMapping("/monitor")
+	@RequestMapping("/tiger/monitor")
 	@ResponseBody
 	public ReturnT<String> dealMonitorData(String tm)
 			throws UnsupportedEncodingException {
