@@ -23,7 +23,7 @@ tiger主要有以下三块组成：
 
 ### Step二. 实现任务操作管理接口
 
-####任务操作支持两种策略，约定：
+#### 任务操作支持两种策略，约定：
 ***策略a***: 各个执行器捞取各自的任务
 
 ***策略b***: 统一捞取任务
@@ -61,6 +61,7 @@ public int addDispatchTask(DispatchTaskEntity taskEntity);
 
 ***策略a***情况下实现:
 
+
 ```
 public List<DispatchTaskEntity> findDispatchTasksWithLimit(String handler,List<Integer> nodeList, int limit);
 ```
@@ -71,6 +72,7 @@ public List<DispatchTaskEntity> findDispatchTasksWithLimit(String handler,List<I
 public List<DispatchTaskEntity> findDispatchTasksWithLimit(List<Integer> nodeList, int limit);
 
 ```
+
 ##### 方法3. 更新任务状态
 ```
 public boolean updateTaskStatus(int taskId,int status,String hostName);
