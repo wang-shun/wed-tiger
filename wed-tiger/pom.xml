@@ -3,12 +3,12 @@
 	<parent>
 		<groupId>com.dianping</groupId>
 		<artifactId>wed-tiger-parent</artifactId>
-		<version>1.1.0-SNAPSHOT</version>
+		<version>1.1.0</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>wed-tiger</artifactId>
 	<packaging>jar</packaging>
-	<version>1.1.0-SNAPSHOT</version>
+	<version>1.1.0</version>
 	<name>wed-tiger</name>
 	
 	<dependencies>

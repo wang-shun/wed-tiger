@@ -4,9 +4,9 @@
 package com.dianping.wed.tiger.event;
 
 import java.util.Map.Entry;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +46,7 @@ public class EventQueue {
 		BlockingQueue<EventConsumer> queue = handlerQueueMap.get(handler);
 		boolean needNewThreadFlag = false;
 		if (queue == null) {
-			queue = new ArrayBlockingQueue<EventConsumer>(10000);
+			queue = new LinkedBlockingQueue<EventConsumer>(10000);
 			BlockingQueue<EventConsumer> exists = handlerQueueMap.putIfAbsent(
 					handler, queue);
 			if (exists == null) {
@@ -99,7 +99,7 @@ public class EventQueue {
 			}
 
 		});
-		t.setName("chainconsumer-" + handler);
+		t.setName("Event-ChainConsumer-" + handler);
 		t.setDaemon(true);
 		t.start();
 	}

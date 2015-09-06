@@ -30,63 +30,93 @@ import com.dianping.wed.tiger.monitor.service.IMonitorService;
  */
 @Service("monitorService")
 public class MonitorServiceImpl implements IMonitorService {
-	private static Logger logger = LoggerFactory.getLogger(FileDbUtil.class);
-	
-	private static final SimpleDateFormat formatDate = new SimpleDateFormat("yyyyMMdd");
-	private static ConcurrentMap<String, Map<String, List<MonitorRecord>>> localDateCache = new ConcurrentHashMap<String, Map<String,List<MonitorRecord>>>();
-	private static ConcurrentMap<String, Long> localTimCache = new ConcurrentHashMap<String, Long>();
-	
-	/*
-	 * load monitor data	// 注意002：此处注释为查询缓存，推荐线上打开注释缓存，可大大增加查询效率，默认缓存时间60s
-	 * @see com.dianping.wed.tiger.monitor.service.IMonitorRecordService#loadMonitorInfo(java.lang.String, java.util.Date)
-	 */
+
+	private static Logger logger = LoggerFactory
+			.getLogger(MonitorServiceImpl.class);
+
+	private static final SimpleDateFormat FormatDate_yyyyMMdd = new SimpleDateFormat(
+			"yyyyMMdd");
+
+	private static ConcurrentMap<String, Map<String, List<MonitorRecord>>> localDateCache = new ConcurrentHashMap<String, Map<String, List<MonitorRecord>>>(
+			32);
+
+	private static ConcurrentMap<String, Long> localTimeCache = new ConcurrentHashMap<String, Long>(
+			32);
+
 	@Override
-	public Map<String, List<MonitorRecord>> loadMonitorData(String handlerName, Date monitorTimeFrom, Date monitorTimeTo) {
-		/*String cacheKey = formatDate.format(monitorTime).concat("_").concat(handlerName);
-		
-		Map<String, List<MonitorRecord>> cacheDate = localDateCache.get(cacheKey);
-		Long cacheTim = localTimCache.get(cacheKey);
-		if (cacheDate!=null && cacheTim!=null && System.currentTimeMillis() - cacheTim < 60 * 1000) {
-			return cacheDate;
-		}*/
-		
-		Map<String, List<MonitorRecord>> map = FileDbUtil.loadMonitorData(handlerName, monitorTimeFrom);
+	public Map<String, List<MonitorRecord>> queryMonitorData(
+			String handlerName, Date monitorTimeFrom, Date monitorTimeTo) {
+
+		// ========cache deal======
+		String cacheKey = FormatDate_yyyyMMdd.format(monitorTimeFrom)
+				.concat("_").concat(handlerName);
+
+		String cacheDateKey = FormatDate_yyyyMMdd.format(new Date());
+
+		Long cacheDate = localTimeCache.get(cacheDateKey);
+		if (cacheDate == null) {// 一天清空一次本地缓存
+			Long exist = localTimeCache.putIfAbsent(cacheDateKey, 1L);
+			if (exist == null) {
+				localDateCache.clear();
+				localTimeCache.clear();
+				localTimeCache.put(cacheDateKey, 1L);
+			}
+		} else {
+			Long cacheTim = localTimeCache.get(cacheKey);
+
+			Map<String, List<MonitorRecord>> cacheData = localDateCache
+					.get(cacheKey);
+
+			if (cacheData != null && cacheTim != null
+					&& System.currentTimeMillis() - cacheTim < 30 * 1000) {// 30s
+																			// 内缓存
+				return cacheData;
+			}
+		}
+		// =======end========
+
+		// key-hostname
 		Map<String, List<MonitorRecord>> resultMap = new HashMap<String, List<MonitorRecord>>();
-		if (MapUtils.isNotEmpty(map)) {
-			for (Entry<String, List<MonitorRecord>> item : map.entrySet()) {
+
+		Map<String, List<MonitorRecord>> wholeMap = FileDbUtil
+				.queryMonitorData(handlerName, monitorTimeFrom);
+
+		if (MapUtils.isNotEmpty(wholeMap)) {
+			// 过滤出时间
+			for (Entry<String, List<MonitorRecord>> item : wholeMap.entrySet()) {
 				List<MonitorRecord> list = new ArrayList<MonitorRecord>();
 				if (CollectionUtils.isNotEmpty(item.getValue())) {
 					for (MonitorRecord record : item.getValue()) {
-						if (record.getMonitorTime().after(monitorTimeFrom) && record.getMonitorTime().before(monitorTimeTo)) {
+						if (record.getMonitorTime().after(monitorTimeFrom)
+								&& record.getMonitorTime()
+										.before(monitorTimeTo)) {
 							list.add(record);
 						}
 					}
 					resultMap.put(item.getKey(), list);
 				}
-				
 			}
 		}
-		
-		/*if (MapUtils.isNotEmpty(map)) {
-			localDateCache.put(cacheKey, map);
-			localTimCache.put(cacheKey, System.currentTimeMillis());
-		}*/
+
+		if (MapUtils.isNotEmpty(resultMap)) {
+			localDateCache.put(cacheKey, resultMap);
+			localTimeCache.put(cacheKey, System.currentTimeMillis());
+		}
+
 		return resultMap;
 	}
 
-	/*
-	 * push data
-	 * @see com.dianping.wed.tiger.monitor.service.IMonitorService#pushData(java.lang.String)
-	 */
 	@Override
-	public void pushData(String originData) {
-		logger.info("push data start :{}", originData);
+	public void receiveData(String originData) {
+		if (logger.isInfoEnabled()) {
+			logger.info("receive data start :{}", originData);
+		}
 		MonitorRecord record = FileDbUtil.parseLineData(originData);
 		if (record == null) {
-			logger.info("push data fail:{}", originData);
-			throw new WebException(ReturnCodeEnum.FAIL.code(),"数据解析错误.");
-		} 
-		MonitorThreadHelper.pushData(originData);
+			logger.warn("parase receive data fail:{}", originData);
+			throw new WebException(ReturnCodeEnum.FAIL.code(), "数据解析错误.");
+		}
+		MonitorThreadHelper.dealMonitorDataAsync(originData);
 	}
 
 }

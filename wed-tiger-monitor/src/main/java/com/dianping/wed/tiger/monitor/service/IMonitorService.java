@@ -13,17 +13,17 @@ import com.dianping.wed.tiger.monitor.core.model.MonitorRecord;
 public interface IMonitorService {
 
 	/**
-	 * load monitor data
+	 * 查询监控数据
 	 * @param handlerName
 	 * @param monitorTime
 	 * @return
 	 */
-	public Map<String, List<MonitorRecord>> loadMonitorData(String handlerName, Date monitorTimeFrom, Date monitorTimeTo);
+	public Map<String, List<MonitorRecord>> queryMonitorData(String handlerName, Date monitorTimeFrom, Date monitorTimeTo);
 
 	/**
-	 * push data
+	 * 处理接收的监控数据
 	 * @param originData
 	 */
-	public void pushData(String originData);
+	public void receiveData(String originData);
 	
 }

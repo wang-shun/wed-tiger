@@ -17,7 +17,7 @@ public interface DispatchTaskService {
 	 */
 	public enum TaskFetchStrategy{
 		
-		Singler(0),Multi(1);
+		Single(0),Multi(1);
 		
 		private int value;
 
