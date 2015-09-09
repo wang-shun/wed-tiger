@@ -37,7 +37,7 @@ public class FileDbUtil {
 	/**
 	 * tiger监控页面的数据访问路径
 	 */
-	private static final File DATA_DIR = new File("/data/tiger/data/");
+	private static final File DATA_DIR = new File("/data/appdatas/tiger/");
 	
 //	private static final File ORIGIN_DIR = new File("/data/tiger/origin/");
 	
