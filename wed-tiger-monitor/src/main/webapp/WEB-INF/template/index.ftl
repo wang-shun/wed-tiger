@@ -9,13 +9,13 @@
 	<#import "/common/common.content.ftl" as netCommon>
 	
 	<!-- Highcharts -->
-	<script type="text/javascript" src="${base_url}/static/plugin/Highcharts-4.1.8/highcharts.js"></script>
-	<script type="text/javascript" src="${base_url}/static/plugin/Highcharts-4.1.8/modules/exporting.js"></script>
+	<script type="text/javascript" src="/static/plugin/Highcharts-4.1.8/highcharts.js"></script>
+	<script type="text/javascript" src="/static/plugin/Highcharts-4.1.8/modules/exporting.js"></script>
 	
 	<!-- bootstrap-datetimepicker -->
-	<link rel="stylesheet" href="${base_url}/static/plugin/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" >
-	<script type="text/javascript" src="${base_url}/static/plugin/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
-	<script type="text/javascript" src="${base_url}/static/plugin/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+	<link rel="stylesheet" href="/static/plugin/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" >
+	<script type="text/javascript" src="/static/plugin/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+	<script type="text/javascript" src="/static/plugin/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>
 	
 	<!-- meme -->
 	<script type="text/javascript">
@@ -39,7 +39,7 @@
 			</#list>
 		</#if>
 	</script>
-	<script type="text/javascript" src="${base_url}/static/js/index.1.js"></script>
+	<script type="text/javascript" src="/static/js/index.1.js"></script>
 	
 </head>
 <body>

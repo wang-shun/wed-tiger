@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.dianping.wed.tiger.monitor.core.model.MonitorRecord;
 import com.dianping.wed.tiger.monitor.core.result.ReturnT;
@@ -37,7 +38,7 @@ public class MonitorController {
 	private IMonitorService monitorService;
 	
 	@RequestMapping("")
-	public String index(){
+	public String index(RedirectAttributes attr){
 //		return "forward:/tiger";
 		return "redirect:/tiger";
 	}

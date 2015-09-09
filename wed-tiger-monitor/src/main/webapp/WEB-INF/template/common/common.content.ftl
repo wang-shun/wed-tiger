@@ -10,13 +10,13 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 	      	</button>
-			<a class="navbar-brand" href="${base_url}" ><span class="glyphicon glyphicon-home"></span></a>
+			<a class="navbar-brand" href="#" ><span class="glyphicon glyphicon-home"></span></a>
 		</div>
 		<!-- 响应式特性 -->
 		<div class="collapse navbar-collapse" id="net-navbar-collapse">
 			<!-- 左对齐 -->
 			<ul class="nav navbar-nav navbar-left active-nav" >
-				<li class="nav-click" ><a href="${base_url}" >Tiger监控中心</a></li>
+				<li class="nav-click" ><a href="#" >Tiger监控中心</a></li>
 			</ul>
 	   </div>
 	</div>
@@ -31,7 +31,7 @@
 			<div class="info">
 				<ul>
 					<li><b>关于:</b></li>
-	          		<li><a href="${base_url}/tigerhelp.html" target="_blank" >Tiger接入文档</a></li>
+	          		<li><a href="/tigerhelp.html" target="_blank" >Tiger接入文档</a></li>
 	        	</ul>
 	        	<ul>
 	        		<li>Tiger是一种分布式异步执行框架，偏重于执行层面，同一种任务可以由多台机器同时执行，并能保证一条任务不被重复执行。。。</li>

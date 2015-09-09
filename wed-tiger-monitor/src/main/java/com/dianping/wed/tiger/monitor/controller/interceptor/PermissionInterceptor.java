@@ -33,11 +33,10 @@ public class PermissionInterceptor extends HandlerInterceptorAdapter {
 			ModelAndView modelAndView) throws Exception {
 
 		// base_url 填充
-		if (modelAndView != null
-				&& !modelAndView.getModelMap().containsAttribute("base_url")) {
+		if (modelAndView != null) {
 //			System.out.println(request.getServletPath());
 //			System.out.println(request.getContextPath());
-			modelAndView.addObject("base_url", request.getContextPath());
+//			modelAndView.addObject("base_url", request.getContextPath());
 		}
 
 		super.postHandle(request, response, handler, modelAndView);
