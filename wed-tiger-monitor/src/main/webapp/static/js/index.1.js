@@ -20,7 +20,7 @@ $(function () {
 		var monitorTimeFrom = $("#monitorTimeFrom").val();
 		var monitorTimeTo = $("#monitorTimeTo").val();
 		if (!handlerName) {
-			ComAlert.show(0, "handlerName");
+			ComAlert.show(0, "请输入handlerName");
 			return;
 		}
 		
