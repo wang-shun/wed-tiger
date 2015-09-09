@@ -39,8 +39,8 @@ public class MonitorController {
 	
 	@RequestMapping("")
 	public String index(RedirectAttributes attr){
-//		return "forward:/tiger";
-		return "redirect:/tiger";
+		return "forward:/tiger";
+//		return "redirect:/tiger";
 	}
 
 	/**
