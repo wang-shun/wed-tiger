@@ -192,7 +192,7 @@ public class FileDbUtil {
 				if (!ArrayUtils.isEmpty(fileArray)) {
 					List<File> result = new ArrayList<File>();
 					for (File file : fileArray) {
-						if (file.getName().startsWith(handlerName)) {
+						if (file.getName().startsWith(handlerName+"_")) {
 							result.add(file);
 						}
 					}
