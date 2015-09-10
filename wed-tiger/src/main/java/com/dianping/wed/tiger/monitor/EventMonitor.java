@@ -11,11 +11,12 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -164,16 +165,38 @@ public class EventMonitor {
 		t.start();
 	}
 
-	private void httpSend(String parameter) throws HttpException, IOException {
-		HttpClient client = new HttpClient();
+	private void httpSend(String parameter) throws ClientProtocolException,
+			IOException {
+
 		String encodeParam = URLEncoder.encode(parameter, "utf-8");
 		String url = ScheduleServer.getInstance().getMonitorIP()
 				+ "/tiger/monitor?tm=" + encodeParam;
-		HttpMethod method = new GetMethod(url);
-		client.executeMethod(method);
-		if (method.getStatusCode() != 200) {
-			logger.warn("send monitor returns fail,url=" + url + ",httpcode:"
-					+ method.getStatusCode());
+
+		// 设置请求和传输超时时间
+		HttpGet httpGet = new HttpGet(url);
+		RequestConfig requestConfig = RequestConfig.custom()
+				.setSocketTimeout(3000).setConnectTimeout(3000).build();
+		httpGet.setConfig(requestConfig);
+
+		// 执行请求
+		CloseableHttpClient httpClient = HttpClients.createDefault();
+		try {
+			HttpResponse response = httpClient.execute(httpGet);
+			// 解析请求
+			if (response.getStatusLine().getStatusCode() != 200) {
+				logger.warn("send http monitor fail,url=" + url + ",httpcode:"
+						+ response.getStatusLine().getStatusCode());
+			}
+			//返回内容
+//			System.out.println(EntityUtils.toString(response.getEntity(), "UTF-8"));
+		} finally {
+			httpGet.releaseConnection();
+			try {
+				httpClient.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
+	
 }
