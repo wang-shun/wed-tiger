@@ -47,6 +47,8 @@ public class MonitorServiceImpl implements IMonitorService {
 	public Map<String, List<MonitorRecord>> queryMonitorData(
 			String handlerName, Date monitorTimeFrom, Date monitorTimeTo) {
 
+		Map<String, List<MonitorRecord>> wholeMap = new HashMap<String, List<MonitorRecord>>();
+
 		// ========cache deal======
 		String cacheKey = FormatDate_yyyyMMdd.format(monitorTimeFrom)
 				.concat("_").concat(handlerName);
@@ -68,21 +70,24 @@ public class MonitorServiceImpl implements IMonitorService {
 					.get(cacheKey);
 
 			if (cacheData != null && cacheTim != null
-					&& System.currentTimeMillis() - cacheTim < 30 * 1000) {// 30s
-																			// 内缓存
-				return cacheData;
+					&& System.currentTimeMillis() - cacheTim < 60 * 1000) {// 60s内缓存
+				wholeMap = cacheData;
 			}
 		}
-		// =======end========
-
 		// key-hostname
 		Map<String, List<MonitorRecord>> resultMap = new HashMap<String, List<MonitorRecord>>();
 
-		Map<String, List<MonitorRecord>> wholeMap = FileDbUtil
-				.queryMonitorData(handlerName, monitorTimeFrom);
-
+		if (MapUtils.isEmpty(wholeMap)) {
+			wholeMap = FileDbUtil
+					.queryMonitorData(handlerName, monitorTimeFrom);
+			if (MapUtils.isNotEmpty(wholeMap)) {
+				localDateCache.put(cacheKey, wholeMap);
+				localTimeCache.put(cacheKey, System.currentTimeMillis());
+			}
+		}
+		// =======end========
 		if (MapUtils.isNotEmpty(wholeMap)) {
-			// 过滤出时间
+			// 过滤出符合条件的时间
 			for (Entry<String, List<MonitorRecord>> item : wholeMap.entrySet()) {
 				List<MonitorRecord> list = new ArrayList<MonitorRecord>();
 				if (CollectionUtils.isNotEmpty(item.getValue())) {
@@ -97,12 +102,6 @@ public class MonitorServiceImpl implements IMonitorService {
 				}
 			}
 		}
-
-		if (MapUtils.isNotEmpty(resultMap)) {
-			localDateCache.put(cacheKey, resultMap);
-			localTimeCache.put(cacheKey, System.currentTimeMillis());
-		}
-
 		return resultMap;
 	}
 
