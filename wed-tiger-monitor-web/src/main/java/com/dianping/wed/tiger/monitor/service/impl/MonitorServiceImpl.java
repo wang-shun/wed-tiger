@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -42,6 +43,8 @@ public class MonitorServiceImpl implements IMonitorService {
 
 	private static ConcurrentMap<String, Long> localTimeCache = new ConcurrentHashMap<String, Long>(
 			32);
+	
+	private static ConcurrentMap<String, Object> localObjCache = new ConcurrentHashMap<String, Object>();
 
 	@Override
 	public Map<String, List<MonitorRecord>> queryMonitorData(
@@ -116,6 +119,25 @@ public class MonitorServiceImpl implements IMonitorService {
 			throw new WebException(ReturnCodeEnum.FAIL.code(), "数据解析错误.");
 		}
 		MonitorThreadHelper.dealMonitorDataAsync(originData);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public HashSet<String> queryMonitorHandler(Date monitorTime) {
+		if (monitorTime == null) {
+			return null;
+		}
+		String timKey = "queryMonitorHandler_tim_".concat(FormatDate_yyyyMMdd.format(monitorTime));
+		String dataKey = "queryMonitorHandler_data_".concat(FormatDate_yyyyMMdd.format(monitorTime));
+		Long tim = (Long) (localObjCache.get(timKey)!=null?localObjCache.get(timKey):-1L);
+		HashSet<String> list = (HashSet<String>) (localObjCache.get(dataKey)!=null?localObjCache.get(dataKey):null);
+		if (System.currentTimeMillis() - tim > 2 * 60 * 1000) {
+			tim = System.currentTimeMillis();
+			list = FileDbUtil.queryMonitorHandler(monitorTime);
+			localObjCache.put(timKey, tim);
+			localObjCache.put(dataKey, list);
+		}
+		return list;
 	}
 
 }

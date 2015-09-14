@@ -1,6 +1,7 @@
 package com.dianping.wed.tiger.monitor.service;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -25,5 +26,12 @@ public interface IMonitorService {
 	 * @param originData
 	 */
 	public void receiveData(String originData);
+
+	/**
+	 * 查询当日handler列表
+	 * @param date
+	 * @return
+	 */
+	public HashSet<String> queryMonitorHandler(Date monitorTime);
 	
 }

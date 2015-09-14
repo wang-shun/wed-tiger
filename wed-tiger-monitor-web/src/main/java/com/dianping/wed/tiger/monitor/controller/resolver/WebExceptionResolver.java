@@ -40,7 +40,7 @@ public class WebExceptionResolver implements HandlerExceptionResolver {
 			result.setMsg(ex.toString().replaceAll("\n", "<br/>"));
 			
 			logger.error("==============system异常开始=============");
-			logger.error("system catch exception:{}", ex);
+			ex.printStackTrace();
 			logger.error("==============system异常结束=============");
 		}
 				
