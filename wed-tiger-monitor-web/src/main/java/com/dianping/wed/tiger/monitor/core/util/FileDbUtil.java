@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -247,6 +248,33 @@ public class FileDbUtil {
 					reader.close();
 				} catch (IOException e) {
 					e.printStackTrace();
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * 指定日期下handler列表
+	 * @param monitorTime
+	 * @return
+	 */
+	public static HashSet<String> queryMonitorHandler(Date monitorTime) {
+		File dirA = new File(DATA_DIR, FormatPath_yyyyMM.format(monitorTime)); // ../201509
+		if (dirA.exists() && dirA.isDirectory()) {
+			File dirB = new File(dirA, FormatPath_dd.format(monitorTime)); // ../201509/01
+			if (dirB.exists() && dirB.isDirectory()) {
+				File[] fileArray = dirB.listFiles();
+				if (!ArrayUtils.isEmpty(fileArray)) {
+					HashSet<String> result = new HashSet<String>();
+					for (File file : fileArray) {
+						if (file.getName().indexOf("_") != -1) {
+							result.add(file.getName().substring(0, file.getName().indexOf("_")));
+						}
+					}
+					if (CollectionUtils.isNotEmpty(result)) {
+						return result;
+					}
 				}
 			}
 		}

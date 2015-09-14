@@ -79,3 +79,7 @@ $(function () {
         */
     });
 });
+
+function fillHandler(handlerName){
+	$("#handlerName").val(handlerName);
+}

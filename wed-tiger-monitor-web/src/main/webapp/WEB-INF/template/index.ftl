@@ -49,13 +49,28 @@
 <div class="container">
 
 	<div class="row">
-		<div class="col-xs-3">
+		<div class="col-xs-1">
 			<div class="input-group">
+				<#if handlerNameList?exists && handlerNameList?size gt 0 >
+				<div class="dropdown">
+				   <button type="button" class="btn dropdown-toggle"  data-toggle="dropdown">hander&nbsp;<span class="caret"></span></button>
+				   <ul class="dropdown-menu" role="menu" >
+				   		<#list handlerNameList as item>
+				      	<li role="presentation"><a role="menuitem" tabindex="-1" href="javascript:fillHandler('${item}');">${item}</a></li>
+				      	</#list>
+					</ul>
+				</div>
+				<#else>
 				<span class="input-group-addon">hander</span>
+				</#if>
+			</div>
+		</div>
+		<div class="col-xs-2 pull-left">
+			<div class="input-group">
 				<input type="text" class="form-control" id="handlerName" value="${handlerName}" placeholder="请输入hander">
 			</div>
 		</div>
-		<div class="col-xs-7">
+		<div class="col-xs-5">
 			<div class="input-group">
 				<span class="input-group-addon">日期</span>
 				<input type="text" class="form-control monitorTime" id="monitorTimeFrom" value="${monitorTimeFrom?datetime}" placeholder="开始时间">
@@ -63,7 +78,7 @@
 				<input type="text" class="form-control monitorTime" id="monitorTimeTo" value="${monitorTimeTo?datetime}" placeholder="结束时间">
 			</div>
 		</div>
-		<div class="col-xs-2">
+		<div class="col-xs-2 ">
 			<button type="button" class="btn btn-primary pull-right" id="query">查询</button>
 		</div>
 	</div>
