@@ -125,17 +125,19 @@ public class MonitorServiceImpl implements IMonitorService {
 	@Override
 	public HashSet<String> queryMonitorHandler(Date monitorTime) {
 		if (monitorTime == null) {
-			return null;
+			return new HashSet<String>();
 		}
 		String timKey = "queryMonitorHandler_tim_".concat(FormatDate_yyyyMMdd.format(monitorTime));
 		String dataKey = "queryMonitorHandler_data_".concat(FormatDate_yyyyMMdd.format(monitorTime));
 		Long tim = (Long) (localObjCache.get(timKey)!=null?localObjCache.get(timKey):-1L);
 		HashSet<String> list = (HashSet<String>) (localObjCache.get(dataKey)!=null?localObjCache.get(dataKey):null);
-		if (System.currentTimeMillis() - tim > 2 * 60 * 1000) {
+		if (list == null || System.currentTimeMillis() - tim > 2 * 60 * 1000) {
 			tim = System.currentTimeMillis();
 			list = FileDbUtil.queryMonitorHandler(monitorTime);
-			localObjCache.put(timKey, tim);
-			localObjCache.put(dataKey, list);
+			if(list != null && !list.isEmpty()){
+				localObjCache.put(timKey, tim);
+				localObjCache.put(dataKey, list);
+			}
 		}
 		return list;
 	}
