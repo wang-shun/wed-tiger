@@ -41,7 +41,7 @@ $(function () {
         	title: {text:'执行时间'},
         	labels: {
                 formatter: function() {
-                    return Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.value);                  
+                    return Highcharts.dateFormat('%H:%M:%S', this.value);                  
                 },
                 rotation: -45
             }
@@ -63,7 +63,7 @@ $(function () {
 				}
         		
 				return '<b>' + this.series.name + '</b>：<br>' + 
-					'监控时间=' + Highcharts.dateFormat('%Y-%m-%d %H:%M:%S',this.x) + ' <br>' +
+					'监控时间=' + Highcharts.dateFormat('%H:%M:%S',this.x) + ' <br>' +		// %Y-%m-%d %H:%M:%S
 					'执行次数=' + this.y + ' <br>' +
 					'成功次数=' + this.point.sucNum + ' <br>' +
 					'失败次数=' + failPanel + ' <br>' +
