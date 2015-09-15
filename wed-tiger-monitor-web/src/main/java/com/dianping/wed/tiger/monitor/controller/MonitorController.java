@@ -115,5 +115,9 @@ public class MonitorController {
 		monitorService.receiveData(decodeTm);
 		return new ReturnT<String>();
 	}
+	
+	public static void main(String[] args) {
+		System.out.println(System.currentTimeMillis());
+	}
 
 }

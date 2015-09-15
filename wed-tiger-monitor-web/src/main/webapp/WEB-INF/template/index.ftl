@@ -53,7 +53,7 @@
 		<div class="col-xs-1">
 			<div class="input-group">
 				<div class="dropdown">
-				   <button type="button" class="btn dropdown-toggle"  data-toggle="dropdown">hander&nbsp;<span class="caret"></span></button>
+				   <button type="button" class="btn dropdown-toggle"  data-toggle="dropdown">handler&nbsp;<span class="caret"></span></button>
 				   <ul class="dropdown-menu" role="menu" >
 				   		<#list handlerNameList as item>
 				      	<li role="presentation"><a role="menuitem" tabindex="-1" href="javascript:fillHandler('${item}');">${item}</a></li>
