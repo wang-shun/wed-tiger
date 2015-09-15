@@ -54,7 +54,7 @@
 			<div class="input-group">
 				<div class="dropdown">
 				   <button type="button" class="btn dropdown-toggle"  data-toggle="dropdown">handler&nbsp;<span class="caret"></span></button>
-				   <ul class="dropdown-menu" role="menu" style="height:250px;overflow:auto; " >
+				   <ul class="dropdown-menu" role="menu" style="overflow:auto;height:auto !important;max-height:250px;" >
 				   		<#list handlerNameList as item>
 				      	<li role="presentation"><a role="menuitem" tabindex="-1" href="javascript:fillHandler('${item}');">${item}</a></li>
 				      	</#list>
