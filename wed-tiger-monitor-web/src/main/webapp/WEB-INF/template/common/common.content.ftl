@@ -10,13 +10,14 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 	      	</button>
-			<a class="navbar-brand" href="#" ><span class="glyphicon glyphicon-home"></span></a>
+			<a class="navbar-brand" href="#" >Tiger&nbsp;<span class="glyphicon glyphicon-home"></span></a>
 		</div>
 		<!-- 响应式特性 -->
 		<div class="collapse navbar-collapse" id="net-navbar-collapse">
 			<!-- 左对齐 -->
 			<ul class="nav navbar-nav navbar-left active-nav" >
-				<li class="nav-click" ><a href="#" >Tiger监控中心</a></li>
+				<li class="nav-click" ><a href="#" >监控中心</a></li>
+				<li class="nav-click" ><a href="/tigerhelp.html" target="_blank" >接入文档</a></li>
 			</ul>
 	   </div>
 	</div>
@@ -25,7 +26,7 @@
 
 <#macro footer>
 <footer class="footer">
-	<!-- footerlinks -->
+	<!-- footerlinks 
 	<section class="footerlinks">
 		<div class="container">
 			<div class="info">
@@ -39,6 +40,7 @@
 	      	</div>
 	    </div>
 	</section>
+	-->
 	<!-- copyrightbottom -->
 	<section class="copyrightbottom">
 		<div class="container">

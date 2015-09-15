@@ -56,11 +56,17 @@ $(function () {
         },
         tooltip: {
         	formatter:function(){
+        		
+        		var failPanel = this.point.failNum;
+        		if (this.point.failNum > 0) {
+        			failPanel = '<span style="color:red;">' + this.point.failNum +'</span>';
+				}
+        		
 				return '<b>' + this.series.name + '</b>：<br>' + 
 					'监控时间=' + Highcharts.dateFormat('%Y-%m-%d %H:%M:%S',this.x) + ' <br>' +
 					'执行次数=' + this.y + ' <br>' +
 					'成功次数=' + this.point.sucNum + ' <br>' +
-					'失败次数=' + this.point.failNum + ' <br>' +
+					'失败次数=' + failPanel + ' <br>' +
 					'平均耗时=' + this.point.avgCost + ' <br>' +
 					'max耗时=' + this.point.maxCost + ' <br>' +
 					'min耗时=' + this.point.minCost;
