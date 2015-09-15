@@ -63,20 +63,20 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-xs-2 pull-left">
+		<div class="col-xs-3 pull-left">
 			<div class="input-group">
 				<input type="text" class="form-control" id="handlerName" value="${handlerName}" placeholder="请输入handler">
 			</div>
 		</div>
 		<#else>
-		<div class="col-xs-3">
+		<div class="col-xs-4">
 			<div class="input-group">
 				<span class="input-group-addon">handler</span>
 				<input type="text" class="form-control" id="handlerName" value="${handlerName}" placeholder="请输入handler">
 			</div>
 		</div>
 		</#if>
-		<div class="col-xs-7">
+		<div class="col-xs-6">
 			<div class="input-group">
 				<span class="input-group-addon">日期</span>
 				<input type="text" class="form-control monitorTime" id="monitorTimeFrom" value="${monitorTimeFrom?datetime}" placeholder="开始时间">
