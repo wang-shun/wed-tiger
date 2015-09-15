@@ -49,9 +49,9 @@
 <div class="container">
 
 	<div class="row">
+		<#if handlerNameList?exists && handlerNameList?size gt 0 >
 		<div class="col-xs-1">
 			<div class="input-group">
-				<#if handlerNameList?exists && handlerNameList?size gt 0 >
 				<div class="dropdown">
 				   <button type="button" class="btn dropdown-toggle"  data-toggle="dropdown">hander&nbsp;<span class="caret"></span></button>
 				   <ul class="dropdown-menu" role="menu" >
@@ -60,17 +60,22 @@
 				      	</#list>
 					</ul>
 				</div>
-				<#else>
-				<span class="input-group-addon">hander</span>
-				</#if>
 			</div>
 		</div>
 		<div class="col-xs-2 pull-left">
 			<div class="input-group">
-				<input type="text" class="form-control" id="handlerName" value="${handlerName}" placeholder="请输入hander">
+				<input type="text" class="form-control" id="handlerName" value="${handlerName}" placeholder="请输入handler">
 			</div>
 		</div>
-		<div class="col-xs-5">
+		<#else>
+		<div class="col-xs-3">
+			<div class="input-group">
+				<span class="input-group-addon">handler</span>
+				<input type="text" class="form-control" id="handlerName" value="${handlerName}" placeholder="请输入handler">
+			</div>
+		</div>
+		</#if>
+		<div class="col-xs-7">
 			<div class="input-group">
 				<span class="input-group-addon">日期</span>
 				<input type="text" class="form-control monitorTime" id="monitorTimeFrom" value="${monitorTimeFrom?datetime}" placeholder="开始时间">
