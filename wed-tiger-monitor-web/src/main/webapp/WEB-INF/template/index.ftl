@@ -33,6 +33,7 @@
 						avgCost:${item.avgCost},
 						maxCost:${item.maxCost},
 						minCost:${item.minCost}
+						<#if item.failNum gt 0 >,color:'red'</#if>
 					});
 				</#list>
 				chartData.push({'name':itemName, 'data':itemData});
