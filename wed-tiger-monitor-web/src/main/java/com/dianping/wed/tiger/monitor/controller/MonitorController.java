@@ -60,17 +60,11 @@ public class MonitorController {
 		// for param
 		if (monitorTimeFrom == null) {
 			Calendar calendarFrom = Calendar.getInstance();
-			calendarFrom.set(Calendar.HOUR_OF_DAY, 0);
-			calendarFrom.set(Calendar.MINUTE, 0);
-			calendarFrom.set(Calendar.SECOND, 0);
+			calendarFrom.add(Calendar.HOUR_OF_DAY, -2);
 			monitorTimeFrom = calendarFrom.getTime();
 		}
 		if (monitorTimeTo == null) {
-			Calendar calendarTo = Calendar.getInstance();
-			calendarTo.set(Calendar.HOUR_OF_DAY, 23);
-			calendarTo.set(Calendar.MINUTE, 59);
-			calendarTo.set(Calendar.SECOND, 59);
-			monitorTimeTo = calendarTo.getTime();
+			monitorTimeTo = new Date();
 		}
 		String dateFromStr = FormatDate.format(monitorTimeFrom);
 		String dateToStr = FormatDate.format(monitorTimeTo);
