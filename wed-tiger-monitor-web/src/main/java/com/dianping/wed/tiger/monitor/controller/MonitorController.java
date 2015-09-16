@@ -3,7 +3,10 @@ package com.dianping.wed.tiger.monitor.controller;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -87,7 +90,25 @@ public class MonitorController {
 			model.addAttribute("map", map);
 		}
 		
-		HashSet<String> handlerNameList = monitorService.queryMonitorHandler(new Date());
+		HashSet<String> handlerNameSet = monitorService.queryMonitorHandler(new Date());
+		List<String> handlerNameList = new ArrayList<String>(handlerNameSet);
+		Collections.sort(handlerNameList);
+//		Collections.sort(handlerNameList, new Comparator<String>(){
+//
+//			@Override
+//			public int compare(String o1, String o2) {
+//				if(StringUtils.isBlank(o1) || StringUtils.isBlank(o2)){
+//					return 0;
+//				}
+//				char a = o1.charAt(0);
+//				char b = o2.charAt(0);
+//				if(a < b){
+//					return 1;
+//				} else if(a > b){
+//					return -1;
+//				}
+//				return 0;
+//			}});
 		model.addAttribute("handlerNameList", handlerNameList);
 
 		return "index";
