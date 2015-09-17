@@ -19,15 +19,19 @@
 	
 	<!-- meme -->
 	<script type="text/javascript">
-		var chartData = new Array();
+		var chartCountData = new Array();
+		var chartCostData = new Array();
 		<#if map?exists>
 			<#list map?keys as key>
+				// 执行次数
 				itemName = '${key}';
 				itemData = new Array();
 				<#list map[key] as item>
 					itemData.push({
 						x:new Date(${item.monitorTime?long}), 
 						y:${item.totalNum}, 
+						monitorTime:new Date(${item.monitorTime?long}), 
+						totalNum:${item.totalNum},
 						sucNum:${item.sucNum},
 						failNum:${item.failNum},
 						avgCost:${item.avgCost},
@@ -36,7 +40,25 @@
 						<#if item.failNum gt 0 >,color:'red'</#if>
 					});
 				</#list>
-				chartData.push({'name':itemName, 'data':itemData});
+				chartCountData.push({'name':itemName, 'data':itemData});
+				
+				// 执行耗时
+				itemName = '${key}';
+				itemData = new Array();
+				<#list map[key] as item>
+					itemData.push({
+						x:new Date(${item.monitorTime?long}), 
+						y:${item.avgCost}, 
+						monitorTime:new Date(${item.monitorTime?long}), 
+						totalNum:${item.totalNum},
+						sucNum:${item.sucNum},
+						failNum:${item.failNum},
+						avgCost:${item.avgCost},
+						maxCost:${item.maxCost},
+						minCost:${item.minCost}
+					});
+				</#list>
+				chartCostData.push({'name':itemName, 'data':itemData});
 			</#list>
 		</#if>
 	</script>
@@ -89,11 +111,11 @@
 		</div>
 	</div>
     <hr>
-	<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
-	
-	<!--大标题
-	<div class="jumbotron"><h4>Hey Girl.</h4></div>
-	-->
+    <!-- 执行次数 -->
+	<div id="container_count" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+	<hr>
+	<!-- 执行耗时 -->
+	<div id="container_cost" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 	
 </div>
 
