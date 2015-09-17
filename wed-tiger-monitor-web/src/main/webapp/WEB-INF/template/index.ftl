@@ -112,10 +112,10 @@
 	</div>
     <hr>
     <!-- 执行次数 -->
-	<div id="container_count" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+	<div id="container_count" style="min-width: 250px; height: 280px; margin: 0 auto"></div>
 	<hr>
 	<!-- 执行耗时 -->
-	<div id="container_cost" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+	<div id="container_cost" style="min-width: 250px; height: 280px; margin: 0 auto"></div>
 	
 </div>
 
