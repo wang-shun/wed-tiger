@@ -67,11 +67,10 @@ $(function () {
 					'监控时间=' + Highcharts.dateFormat('%H:%M:%S',this.x) + ' <br>' +		// %Y-%m-%d %H:%M:%S
 					'执行次数=' + this.y + ' <br>' +
 					'成功次数=' + this.point.sucNum + ' <br>' +
-					'失败次数=' + failPanel + ' <br>';
-					/*+
+					'失败次数=' + failPanel + ' <br>' +
 					'平均耗时=' + this.point.avgCost + ' <br>' +
 					'max耗时=' + this.point.maxCost + ' <br>' +
-					'min耗时=' + this.point.minCost;*/
+					'min耗时=' + this.point.minCost;
 			}
         },
         series:chartCountData 

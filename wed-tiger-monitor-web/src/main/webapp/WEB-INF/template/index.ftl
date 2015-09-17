@@ -56,7 +56,6 @@
 						avgCost:${item.avgCost},
 						maxCost:${item.maxCost},
 						minCost:${item.minCost}
-						<#if item.avgCost gt 0 && item.maxCost / item.avgCost gte 2 >,color:'red'</#if>
 					});
 				</#list>
 				chartCostData.push({'name':itemName, 'data':itemData});
