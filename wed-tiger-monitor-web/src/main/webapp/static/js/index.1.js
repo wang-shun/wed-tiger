@@ -30,11 +30,12 @@ $(function () {
 		
 	});
 	
-	// chart
+	// chart local
 	Highcharts.setOptions({ global: { useUTC: false } });   // 时区处理
-    $('#container').highcharts({
+	// 执行次数
+    $('#container_count').highcharts({
         title: {
-            text: '监控中心',
+            text: '执行次数监控',
             x: -20 //center
         },
         xAxis: {
@@ -66,24 +67,59 @@ $(function () {
 					'监控时间=' + Highcharts.dateFormat('%H:%M:%S',this.x) + ' <br>' +		// %Y-%m-%d %H:%M:%S
 					'执行次数=' + this.y + ' <br>' +
 					'成功次数=' + this.point.sucNum + ' <br>' +
-					'失败次数=' + failPanel + ' <br>' +
+					'失败次数=' + failPanel + ' <br>';
+					/*+
+					'平均耗时=' + this.point.avgCost + ' <br>' +
+					'max耗时=' + this.point.maxCost + ' <br>' +
+					'min耗时=' + this.point.minCost;*/
+			}
+        },
+        series:chartCountData 
+    });
+    // 执行耗时
+    $('#container_cost').highcharts({
+        title: {
+            text: '执行耗时监控',
+            x: -20 //center
+        },
+        xAxis: {
+        	title: {text:'执行时间'},
+        	labels: {
+                formatter: function() {
+                    return Highcharts.dateFormat('%H:%M:%S', this.value);                  
+                },
+                rotation: -45
+            }
+        },
+        yAxis: {
+        	title: {text:'执行耗时/ms'},
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }]
+        },
+        tooltip: {
+        	formatter:function(){
+        		
+        		var failPanel = this.point.failNum;
+        		if (this.point.failNum > 0) {
+        			failPanel = '<span style="color:red;">' + this.point.failNum +'</span>';
+				}
+        		
+				return '<b>' + this.series.name + '</b>：<br>' + 
+					'监控时间=' + Highcharts.dateFormat('%H:%M:%S',this.x) + ' <br>' +		// %Y-%m-%d %H:%M:%S
+					/*'执行次数=' + this.y + ' <br>' +
+					'成功次数=' + this.point.sucNum + ' <br>' +
+					'失败次数=' + failPanel + ' <br>' +*/
 					'平均耗时=' + this.point.avgCost + ' <br>' +
 					'max耗时=' + this.point.maxCost + ' <br>' +
 					'min耗时=' + this.point.minCost;
 			}
         },
-        series:chartData 
-        /*
-        	[{
-            name: 'host1',
-            data: [{x:new Date(2015, 9, 01, 8, 59, 59), y:10, avgCost:'04'}, 	// yyyy,mth(月份区间0-11),dd,hh,mm,ss
-                   {x:new Date(2015, 9, 02, 9, 59, 59), y:20, avgCost:'78'},
-                   {x:new Date(2015, 9, 04, 10, 59, 59), y:30, avgCost:'278'},
-                   {x:new Date(2015, 9, 06, 11, 59, 59), y:40, avgCost:'20'},
-                   {x:new Date(2015, 9, 08, 12, 59, 59), y:50, avgCost:'21'},]
-        	}]
-        */
+        series:chartCostData 
     });
+    
 });
 
 function fillHandler(handlerName){
