@@ -56,11 +56,10 @@ public class EventExecutor {
 		String handlerName = eventConfig.getHandler();
 		if (ScheduleServer.getInstance().getTaskStrategy() == DispatchTaskService.TaskFetchStrategy.Multi
 				.getValue()) {
-			DispatchHandler handler = (DispatchHandler) ScheduleManagerFactory
-					.getBean(handlerName);
-			if (handler.getClass().isAnnotationPresent(ExecuteType.class)) {
-				String dType = handler.getClass()
-						.getAnnotation(ExecuteType.class).value();
+			Class<DispatchHandler> clazz = ScheduleManagerFactory
+					.getHandlerClazz(handlerName);
+			if (clazz.isAnnotationPresent(ExecuteType.class)) {
+				String dType = clazz.getAnnotation(ExecuteType.class).value();
 				if (AnnotationConstants.Executor.CHAIN.equalsIgnoreCase(dType)) {// 说明是串行
 					coreSize = 1;
 					maxSize = 1;
@@ -134,6 +133,8 @@ public class EventExecutor {
 					dispatchTasks(backFetchTasks);
 				}
 			}
+		} catch (Exception e) {
+			logger.error("EventExecutor happens exception," + eventConfig, e);
 		} finally {
 			lock.unlock();
 		}
@@ -162,12 +163,11 @@ public class EventExecutor {
 								+ task);
 						continue;
 					}
-					DispatchHandler handler = (DispatchHandler) ScheduleManagerFactory
-							.getBean(task.getHandler());
-					if (handler.getClass().isAnnotationPresent(
-							ExecuteType.class)) {
-						String dType = handler.getClass()
-								.getAnnotation(ExecuteType.class).value();
+					Class<DispatchHandler> handlerClazz = ScheduleManagerFactory
+							.getHandlerClazz(task.getHandler());
+					if (handlerClazz.isAnnotationPresent(ExecuteType.class)) {
+						String dType = handlerClazz.getAnnotation(
+								ExecuteType.class).value();
 						if (AnnotationConstants.Executor.CHAIN
 								.equalsIgnoreCase(dType)) {// 说明是串行
 							boolean succ = EventQueue.getInstance()
