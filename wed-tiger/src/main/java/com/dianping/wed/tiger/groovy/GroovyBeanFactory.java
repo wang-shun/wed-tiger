@@ -6,19 +6,25 @@ package com.dianping.wed.tiger.groovy;
 import groovy.lang.GroovyClassLoader;
 
 import java.lang.reflect.Field;
+import java.util.Map.Entry;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dianping.wed.tiger.ScheduleManagerFactory;
+import com.dianping.wed.tiger.annotation.AnnotationConstants;
+import com.dianping.wed.tiger.annotation.GroovyBeanType;
 import com.dianping.wed.tiger.annotation.TService;
 import com.dianping.wed.tiger.dispatch.DispatchHandler;
 
@@ -34,26 +40,27 @@ public class GroovyBeanFactory {
 
 	private static final GroovyBeanFactory instance = new GroovyBeanFactory();
 
-	/**
-	 * 约定:单例的groovyHandler开头名称
-	 */
-	private final String SingleGroovyPrefix = "SGroovy";
-
-	/**
-	 * 约定:多例的groovyHandler开头名称
-	 */
-	private final String PrototypeGroovyPrefix = "PGroovy";
+	private final String GroovyPrefix = "Groovy";
 
 	/**
 	 * handler本地缓存map key-handlerName value-handler future
 	 */
-	private final ConcurrentHashMap<String, Future<DispatchHandler>> handlerCacheMap = new ConcurrentHashMap<String, Future<DispatchHandler>>();
+	private final ConcurrentHashMap<String, Future<DispatchHandler>> handlerCacheMap = new ConcurrentHashMap<String, Future<DispatchHandler>>(64);
 
 	/**
 	 * handler clazz本地缓存map key-handlerName value-handler clazz
 	 */
-	private final ConcurrentHashMap<String, Class<DispatchHandler>> handlerClazzCacheMap = new ConcurrentHashMap<String, Class<DispatchHandler>>();
+	private final ConcurrentHashMap<String, Class<DispatchHandler>> handlerClazzCacheMap = new ConcurrentHashMap<String, Class<DispatchHandler>>(64);
 
+	/**
+	 * handler code标示本地缓存map key-handlerName value-code.hashcode
+	 */
+	private final ConcurrentHashMap<String, Integer> handlerCodeSignCacheMap = new ConcurrentHashMap<String, Integer>(64);
+	
+	private final BlockingQueue<GroovyCodeEntity> groovyCodeQueue = new LinkedBlockingQueue<GroovyCodeEntity>(5000);
+	
+	private AtomicBoolean monitorInit = new AtomicBoolean(false);
+	
 	private GroovyBeanFactory() {
 
 	}
@@ -72,8 +79,7 @@ public class GroovyBeanFactory {
 		if (StringUtils.isBlank(handlerName)) {
 			return false;
 		}
-		if (handlerName.startsWith(SingleGroovyPrefix)
-				|| handlerName.startsWith(PrototypeGroovyPrefix)) {
+		if (handlerName.startsWith(GroovyPrefix)) {
 			return true;
 		}
 		return false;
@@ -88,9 +94,17 @@ public class GroovyBeanFactory {
 	public DispatchHandler getHandlerByName(String handlerName) {
 		if (StringUtils.isBlank(handlerName)) {
 			return null;
-		} else if (handlerName.startsWith(SingleGroovyPrefix)) {
-			return getHandlerByNameWithSingle(handlerName);
-		} else if (handlerName.startsWith(PrototypeGroovyPrefix)) {
+		} else if (handlerName.startsWith(GroovyPrefix)) {
+			Class<DispatchHandler> clazz = getClazzByHandlerName(handlerName);
+			if(clazz == null){
+				return null;
+			}
+			if (clazz.isAnnotationPresent(GroovyBeanType.class)){
+				String bType = clazz.getAnnotation(GroovyBeanType.class).value();
+				if(AnnotationConstants.BeanType.SINGLE.equalsIgnoreCase(bType)){
+					return getHandlerByNameWithSingle(handlerName);
+				}
+			}
 			return getHandlerByNameWithPrototype(handlerName);
 		} else {
 			return null;
@@ -125,11 +139,76 @@ public class GroovyBeanFactory {
 			Class<DispatchHandler> clazz = gClassLoader.parseClass(code);// 可能刚开始
 																			// 同时有多个线程parse同一块code,但不影响业务
 			handlerClazzCacheMap.putIfAbsent(handlerName, clazz);
+			//监控groovy handler更新情况
+			putIntoGroovyCodeMonitor(new GroovyCodeEntity(handlerName,code));
 			return handlerClazzCacheMap.get(handlerName);
 		}catch(Throwable t){
 			logger.error("getHandlerClazz exeption,handlerName="+handlerName, t);
 			return null;
 		}
+	}
+
+	/**
+	 * 代码监控，异步处理
+	 * @param groovyCodeEntity
+	 */
+	private void putIntoGroovyCodeMonitor(GroovyCodeEntity codeEntity) {
+		if(groovyCodeQueue.offer(codeEntity)){
+			if(monitorInit.compareAndSet(false, true)){
+				startThread2Monitor();
+			}
+		}else{
+			this.clearHandlerCache(codeEntity.getHandlerName());
+		}
+	}
+
+	private void startThread2Monitor() {
+		Thread t = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				while(true){
+					try {
+						GroovyCodeEntity entity = groovyCodeQueue.poll(5000, TimeUnit.MILLISECONDS);
+						if(entity == null){//5s一次轮询groovy code
+							IGroovyCodeRepo groovyCodeRepo = (IGroovyCodeRepo) ScheduleManagerFactory
+									.getBean(IGroovyCodeRepo.BeanName);
+							if(!handlerCodeSignCacheMap.isEmpty()){
+								for(Entry<String, Integer> e:handlerCodeSignCacheMap.entrySet()){
+									String code = groovyCodeRepo.loadGroovyCodeByHandlerName(e.getKey());
+									if(StringUtils.isBlank(code) || e.getValue() != code.hashCode()){
+										clearHandlerCache(e.getKey());//如果发现代码有更新，则清空handler缓存，等待下一次调度
+									}
+								}
+							}
+						}else{
+							Integer codeSign = handlerCodeSignCacheMap.get(entity.getHandlerName());
+							if(codeSign == null){
+								handlerCodeSignCacheMap.put(entity.getHandlerName(), entity.getCode().hashCode());
+							}else if(codeSign != entity.getCode().hashCode()){//代码有变化
+								//清空本地缓存
+								clearHandlerCache(entity.getHandlerName());
+							}
+						}
+					} catch (InterruptedException e) {
+						logger.error("GroovyCode-Monitor happens InterruptedException.", e);
+					} catch(Throwable t){//只捕获异常打错误日志
+						logger.error("GroovyCode-Monitor happens exception.", t);
+					}
+				}
+			}
+		});
+		t.setName("GroovyCode-Monitor-Thread");
+		t.setDaemon(true);
+		t.start();
+		
+	}
+
+	private void clearHandlerCache(String handlerName) {
+		this.handlerClazzCacheMap.remove(handlerName);
+		this.handlerCacheMap.remove(handlerName);
+		this.handlerCodeSignCacheMap.remove(handlerName);
+		
 	}
 
 	private boolean isClassTypeHandler(String code) {
@@ -147,7 +226,7 @@ public class GroovyBeanFactory {
 	 * @return DispatchHandler
 	 */
 	private DispatchHandler getHandlerByNameWithSingle(String handlerName) {
-		// 构造DispatchHandler会比较耗时，为了提高性能，这里通过future的方式
+		// 构造DispatchHandler会比较耗时，为了提高性能、保证单例，这里通过future的方式
 		Future<DispatchHandler> fdh = handlerCacheMap.get(handlerName);
 		if (fdh == null) {
 			FutureTask<DispatchHandler> fTask = new FutureTask<DispatchHandler>(
@@ -270,5 +349,39 @@ public class GroovyBeanFactory {
 		}
 
 	}
+	
+	/**
+	 * groovy code内部类
+	 * @author yuantengkai
+	 *
+	 */
+	public class GroovyCodeEntity{
+		
+		private String handlerName;
+		
+		private String code;
+
+		public GroovyCodeEntity(String handlerName,String code){
+			this.handlerName = handlerName;
+			this.code = code;
+		}
+		
+		public String getHandlerName() {
+			return handlerName;
+		}
+
+		public void setHandlerName(String handlerName) {
+			this.handlerName = handlerName;
+		}
+
+		public String getCode() {
+			return code;
+		}
+
+		public void setCode(String code) {
+			this.code = code;
+		}
+	}
+	
 
 }

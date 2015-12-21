@@ -14,5 +14,12 @@ public interface AnnotationConstants {
 		 */
 		public static final String CHAIN = "chain";
 	}
+	
+	public interface BeanType{
+		/**
+		 * 单例
+		 */
+		public static final String SINGLE = "single";
+	}
 
 }
