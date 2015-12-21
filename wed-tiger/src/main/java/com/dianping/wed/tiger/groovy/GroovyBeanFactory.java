@@ -147,6 +147,15 @@ public class GroovyBeanFactory {
 			return null;
 		}
 	}
+	
+	/**
+	 * groovy代码变化,对外暴露，供应用方及时刷新本地groovy handler缓存<br/>
+	 * 及时应用方不刷新缓存，本地也会有轮询线程监控code的变化
+	 * @param groovyHandlerName
+	 */
+	public void onChange(String groovyHandlerName){
+		this.clearHandlerCache(groovyHandlerName);
+	}
 
 	/**
 	 * 代码监控，异步处理
