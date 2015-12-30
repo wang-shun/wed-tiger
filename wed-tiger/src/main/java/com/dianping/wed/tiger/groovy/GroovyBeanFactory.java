@@ -342,7 +342,7 @@ public class GroovyBeanFactory {
 						if (fieldValue == null) {
 							throw new RuntimeException(
 									"TService fildValue is null,field="
-											+ field.getName());
+											+ field.getName()+",handlerName="+handlerName);
 						}
 						field.setAccessible(true);
 						field.set(handler, fieldValue);
