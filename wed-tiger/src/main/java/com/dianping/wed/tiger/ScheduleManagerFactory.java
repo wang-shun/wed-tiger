@@ -7,12 +7,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
+
+import com.dianping.wed.tiger.dispatch.DispatchHandler;
 import com.dianping.wed.tiger.event.EventConfig;
 import com.dianping.wed.tiger.event.EventExecutorManager;
+import com.dianping.wed.tiger.groovy.GroovyBeanFactory;
 import com.dianping.wed.tiger.utils.EventConfigUtil;
 import com.dianping.wed.tiger.zk.ScheduleZkManager;
 
@@ -284,6 +288,27 @@ public class ScheduleManagerFactory {
 			return appCtx.getBean(beanName);
 		} catch (Exception e) {
 			return null;
+		}
+	}
+	
+	public static Object getHandlerBean(String handlerName){
+		if(GroovyBeanFactory.getInstance().isGroovyHandler(handlerName)){
+			return GroovyBeanFactory.getInstance().getHandlerByName(handlerName);
+		}else{
+			return getBean(handlerName);
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static Class<DispatchHandler> getHandlerClazz(String handlerName){
+		if(GroovyBeanFactory.getInstance().isGroovyHandler(handlerName)){
+			return GroovyBeanFactory.getInstance().getClazzByHandlerName(handlerName);
+		}else{
+			DispatchHandler h =  (DispatchHandler) getBean(handlerName);
+			if(h == null){
+				return null;
+			}
+			return (Class<DispatchHandler>) h.getClass();
 		}
 	}
 
