@@ -120,7 +120,7 @@ public class GroovyBeanFactory {
 	@SuppressWarnings("unchecked")
 	public Class<DispatchHandler> getClazzByHandlerName(String handlerName) {
 		try{
-			if (handlerClazzCacheMap.contains(handlerName)) {
+			if (handlerClazzCacheMap.containsKey(handlerName)) {
 				return handlerClazzCacheMap.get(handlerName);
 			}
 			IGroovyCodeRepo groovyCodeRepo = (IGroovyCodeRepo) ScheduleManagerFactory
