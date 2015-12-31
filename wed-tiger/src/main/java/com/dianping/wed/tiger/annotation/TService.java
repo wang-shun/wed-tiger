@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
  * @author yuantengkai
  * service注入注释（用于groovyHandler）
  */
-@Target(ElementType.METHOD)
+@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TService {
 
