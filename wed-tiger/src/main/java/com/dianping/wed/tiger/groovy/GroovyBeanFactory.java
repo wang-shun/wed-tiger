@@ -82,7 +82,25 @@ public class GroovyBeanFactory {
 		if (handlerName.startsWith(GroovyPrefix)) {
 			return true;
 		}
-		return false;
+		if (handlerClazzCacheMap.containsKey(handlerName)) {
+			return true;
+		}
+		try{
+			IGroovyCodeRepo groovyCodeRepo = (IGroovyCodeRepo) ScheduleManagerFactory
+					.getBean(IGroovyCodeRepo.BeanName);
+			if (groovyCodeRepo == null) {
+				return false;
+			}
+			
+			String code = groovyCodeRepo.loadGroovyCodeByHandlerName(handlerName);
+			if (StringUtils.isBlank(code)){
+				return false;
+			}else{
+				return true;
+			}
+		}catch(Throwable t){
+			return false;
+		}
 	}
 
 	/**
