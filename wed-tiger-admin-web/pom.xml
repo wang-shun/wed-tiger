@@ -101,7 +101,7 @@
 		<dependency>
 			<groupId>com.dianping</groupId>
 			<artifactId>wed-platform-api</artifactId>
-			<version>1.0.0.30-SNAPSHOT</version>
+			<version>1.0.0.30</version>
 		</dependency>
 		
 		<dependency>

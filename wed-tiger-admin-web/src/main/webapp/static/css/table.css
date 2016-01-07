@@ -1,7 +1,7 @@
 @CHARSET "UTF-8";
 	.container table { width: 100%;}
 	.container th { padding: 13px 5px; width: 100px; background-color: #f4f4f4; text-align: center;}
-	.container td { padding: 15px 5px; border-bottom: 1px solid #eee; }
+	.container td { padding: 12px 0px; border-bottom: 1px solid #eee; }
 	.container .tit { width: 255px; padding-left: 10px; text-align: left;}
     .container .opt { width: 150px;}
 	.container .opt .line { padding: 0 8px;}
