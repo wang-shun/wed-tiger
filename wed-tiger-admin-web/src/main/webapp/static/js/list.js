@@ -18,14 +18,16 @@ define(function(require, exports, module) {
     function sureDelete(handlerName) {
     	$.ajax({
 			type : 'POST',
-			url : base_url + 'admin/delete',
+			url : '/delete',
 			data : {
 				'handlerName' : handlerName,
 			},
 			dataType : "json",
 			success : function(data){
 				if (data.code == 200) {
-					ComAlert.alert('删除成功');
+					ComAlert.alert('删除成功',function(){
+						location.href = "/list";
+					});
 				} else {
 					ComAlert.alert(data.msg);
 				}

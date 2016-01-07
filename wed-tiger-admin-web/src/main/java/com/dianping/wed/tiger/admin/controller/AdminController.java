@@ -26,13 +26,18 @@ import com.dianping.wed.tiger.core.result.ReturnT;
  */
 
 @Controller
-@RequestMapping("/admin")
+@RequestMapping("")
 public class AdminController {
 	
 	@Resource
 	private WedHandlerService wedHandlerService;
 	
-	private final int PAGE_SIZE = 5;
+	private final int PAGE_SIZE = 10;
+	
+	@RequestMapping("")
+	public String index(){
+		return "forward:/list";
+	}
 	
 	@RequestMapping("/list")
 	public String list(

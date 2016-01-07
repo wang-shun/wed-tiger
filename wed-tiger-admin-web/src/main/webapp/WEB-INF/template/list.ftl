@@ -13,7 +13,7 @@
 <!-- content -->
 <div class="container" style="padding-left:15px;padding-right:15px;margin-left:auto;margin-right:auto;width:1170px">
 	<h3 style="width:100%;text-align:center;padding-top:17px">Handler列表页</h3>
-    <a href="/admin/add" class="addBtn">添加新的handler</a>
+    <a href="/add" class="addBtn">添加新的handler</a>
 	<table border="0" cellspacing="0" cellpadding="0"><#t>
     <tbody><#t>
     <tr><#t>
@@ -26,7 +26,7 @@
     	<td class="tit">${handler.handlerName}</td><#t>
     	<td class="tit">${handler.desc}</td>
         <td class="opt">
-            <a href="/admin/modify?handlerName=${handler.handlerName}">修改</a>
+            <a href="/modify?handlerName=${handler.handlerName}">修改</a>
             <em class="line">|</em>
             <a href="javascript:;" class="delete" data=${handler.handlerName}>删除</a>
         </td>
@@ -40,7 +40,6 @@
 </div>
 <script src="/static/plugin/requirejs/requirejs.2.1.22.min.js" data-main="/static/js/requirejs.config" ></script>
 <script>
-var base_url = '/';
 require(['list']);
 </script>
 
