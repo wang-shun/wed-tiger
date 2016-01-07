@@ -35,7 +35,7 @@
 		<div class="Pages">
 			<#--如果当前页大于第一页，输出上一页导航-->
 			<#if (curPage > 1) >
-				<a href="/admin/list?pageIndex=${curPage-1}" class="page-prev"><i class="p-prev"></i>上一页</a>
+				<a href="/list?pageIndex=${curPage-1}" class="page-prev"><i class="p-prev"></i>上一页</a>
 			</#if>
 			
 			<#--开始输出页码导航-->
@@ -46,7 +46,7 @@
 					然后由遍历的过程输出第一页的链接
 			-->
 			<#if (startPage > 1)>
-				<a href="/admin/list?pageIndex=1">1</a>
+				<a href="/list?pageIndex=1">1</a>
 				<#if (startPage != 2)>
 					<span class="ellipsis">...</span>
 				</#if>
@@ -61,7 +61,7 @@
 					<#if curPage == page>
 						<span class="cur">${page}</span>
 					<#else>
-						<a href="/admin/list?pageIndex=${page}">${page}</a>
+						<a href="/list?pageIndex=${page}">${page}</a>
 					</#if>
 				</#list>
 			</#if>
@@ -82,7 +82,7 @@
 							
 			<#--如果当前页小于总页数，输出下一页导航-->
 			<#if (curPage < pageCount)>
-				<a href="/admin/list?pageIndex=${curPage+1}" class="page-next">下一页<i class="p-next"></i></a>
+				<a href="/list?pageIndex=${curPage+1}" class="page-next">下一页<i class="p-next"></i></a>
 			</#if>
 			<#--结束输出页码导航-->
 		</div>

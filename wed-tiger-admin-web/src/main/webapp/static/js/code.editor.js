@@ -11,11 +11,6 @@ define(function(require, exports, module) {
 	editor.getSession().setMode("ace/mode/groovy");
 	var orginCode = editor.getSession().getValue();
 	
-	// reset
-	$("#reset").on('click', function(){
-		editor.getSession().setValue("");
-	});
-	
 	//添加handler
 	$("#submit").on('click', function(){
 		var code = editor.getSession().getValue();
@@ -27,7 +22,7 @@ define(function(require, exports, module) {
 		}else{
 			$.ajax({
 				type : 'POST',
-				url : base_url + 'admin/save',
+				url : '/save',
 				data : {
 					'handlerName' : handlerName,
 					'desc' : desc,
@@ -38,7 +33,7 @@ define(function(require, exports, module) {
 				success : function(data){
 					if (data.code == 200) {
 						ComAlert.alert('添加成功',function(){
-							location.href = "/admin/list";
+							location.href = "/list";
 						});
 					} else {
 						ComAlert.alert(data.msg);
@@ -48,7 +43,8 @@ define(function(require, exports, module) {
 		}
 	});
 	
-	$("#submit1").on('click', function(){//更新handler
+	//修改handler
+	$("#submit1").on('click', function(){
 		var code = editor.getSession().getValue();
 		// or session.getValue
 		console.log(code);
@@ -61,7 +57,7 @@ define(function(require, exports, module) {
 		
 			$.ajax({
 				type : 'POST',
-				url : base_url + 'admin/save',
+				url : '/save',
 				data : {
 					'handlerName' : handlerName,
 					'code' : code,
@@ -72,7 +68,7 @@ define(function(require, exports, module) {
 				success : function(data){
 					if (data.code == 200) {
 						ComAlert.alert('更新成功',function(){
-							location.href = "/admin/list";
+							location.href = "/list";
 						});
 					} else {
 						ComAlert.alert(data.msg);
@@ -82,67 +78,8 @@ define(function(require, exports, module) {
 		}
 	});
 	
-	$("#reset1").on('click', function(){
+	$("#reset").on('click', function(){
 		editor.setValue(orginCode);
 	});
-	
-	$("#delete").on('click', function(){//删除handler
-		
-		var handlerName = $(this).attr('data');;
-		deleteHandler(handlerName);
-		
-	});
-	
-	
-	function deleteHandler(handlerName) {
-        var content = '<div class="msg">' +
-            '你确定要删除' +handlerName+'吗?'
-            '</div>' +
-            '<div class="btn-box">' +
-            '<span class="medi-btn btn"><a href="javascript:;" title="确定" class="btn-txt J_sureDelete">确定</a></span>' +
-            '<span class="medi-btn-ash"><a href="javascript:;" title="取消" class="btn-txt J_close-hintbox">取消</a></span>' +
-            '</div>';
-
-        var mbox = new Mbox({
-            winCls: 'popup-sty pop-recharge',
-            contCls: 'con',
-            closeable: true,
-            title: '删除',
-            content: content,
-            size: { x: 360}
-        }).on('show', function () {
-                var self = this;
-                $.all('.J_close-hintbox').on('click', function () {
-                    self.close();
-                });
-
-                $(".J_sureDelete").on('click', function () {
-                    self.close();
-                    // 确认删除 发送ajax
-                    sureDelete(handlerName);
-                });
-            })
-            .open();
-    }
-
-    function sureDelete(handlerName) {
-        new Ajax({
-            url: '/admin/delete',
-            data: {
-                handlerName: handlerName
-            },
-            method: "post"
-        }).on("success",function (json) {
-                var html;
-                if (!json) {
-                	ComAlert.alert('系统错误');
-                }
-                if (json.code == 200) {
-                	ComAlert.alert('删除成功');
-                } else {
-                	ComAlert.alert('删除失败');
-                }
-            }).send();
-    }
 	
 });
