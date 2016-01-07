@@ -1,0 +1,16 @@
+@CHARSET "UTF-8";
+/* pages-num 页码 */
+.pages-num .p-prev,.pages-num .p-next{ background-image: url(//j1.s1.51ping.com/b/css/app/bizwedding/i/infocenter.062f985ec983c0bb53714eaf9c72fc38.png); background-repeat: no-repeat; }
+.pages-num{ padding:25px 0 15px; text-align:right;}
+.pages-num a,.pages-num .cur{ padding:3px 7px; margin:0 1px;}
+.pages-num a{ border:1px solid #eaeaea; background-color:#ffffff; color:#999;}
+.pages-num a:hover{border:1px solid #ddd;background-color:#eaeaea;color:#555; text-decoration:none;}
+.pages-num .cur{border:1px solid #ddd; background-color:#eaeaea; color:#555; font-weight:700;}
+.pages-num .ellipsis{ margin:0 5px;color:#999}
+.pages-num .page-prev, .pages-num .page-next { *position: relative; *top: -2px; _top: 0px;}
+.pages-num .p-prev, .pages-num .p-next { width: 3px; height: 5px; cursor:pointer; display:inline-block; *display: inline; overflow: hidden; zoom:1; vertical-align: middle;}
+.pages-num .p-prev{ padding-left: 5px; background-position:-120px -160px;}
+.pages-num a:hover .p-prev{background-position: -120px -195px; background-color:#eaeaea;}
+.pages-num .p-next{ padding-right: 5px; background-position: -179px -161px;}
+.pages-num  a:hover .p-next{background-position: -179px  -195px;background-color:#eaeaea;}
+/* pages-num 页码 */
