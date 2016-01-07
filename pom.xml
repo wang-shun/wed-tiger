@@ -18,6 +18,7 @@
 	<modules>
 		<module>wed-tiger</module>
 		<module>wed-tiger-monitor-web</module>
+		<module>wed-tiger-admin-web</module>
 	</modules>
 
 	<dependencyManagement>
