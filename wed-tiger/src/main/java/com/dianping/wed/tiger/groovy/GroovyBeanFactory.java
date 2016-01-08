@@ -40,8 +40,6 @@ public class GroovyBeanFactory {
 
 	private static final GroovyBeanFactory instance = new GroovyBeanFactory();
 
-	private final String GroovyPrefix = "Groovy";
-
 	/**
 	 * handler本地缓存map key-handlerName value-handler future
 	 */
@@ -56,6 +54,11 @@ public class GroovyBeanFactory {
 	 * handler code标示本地缓存map key-handlerName value-code.hashcode
 	 */
 	private final ConcurrentHashMap<String, Integer> handlerCodeSignCacheMap = new ConcurrentHashMap<String, Integer>(64);
+	
+	/**
+	 * 非groovyhandler本地缓存 key-handlerName value-timestamp
+	 */
+	private final ConcurrentHashMap<String, Long> nonGroovyHandlerCacheMap = new ConcurrentHashMap<String, Long>(64);
 	
 	private final BlockingQueue<GroovyCodeEntity> groovyCodeQueue = new LinkedBlockingQueue<GroovyCodeEntity>(5000);
 	
@@ -79,10 +82,34 @@ public class GroovyBeanFactory {
 		if (StringUtils.isBlank(handlerName)) {
 			return false;
 		}
-		if (handlerName.startsWith(GroovyPrefix)) {
+		if (handlerClazzCacheMap.containsKey(handlerName)) {
 			return true;
 		}
-		return false;
+		if (nonGroovyHandlerCacheMap.containsKey(handlerName)){
+			long timestamp = nonGroovyHandlerCacheMap.get(handlerName);
+			long currentTimeStamp = System.currentTimeMillis() / 1000 / 60 / 60;
+			if(currentTimeStamp == timestamp){
+				return false;
+			}
+		}
+		try{
+			IGroovyCodeRepo groovyCodeRepo = (IGroovyCodeRepo) ScheduleManagerFactory
+					.getBean(IGroovyCodeRepo.BeanName);
+			if (groovyCodeRepo == null) {
+				return false;
+			}
+			
+			String code = groovyCodeRepo.loadGroovyCodeByHandlerName(handlerName);
+			if (StringUtils.isBlank(code)){
+				nonGroovyHandlerCacheMap.put(handlerName,
+						System.currentTimeMillis() / 1000 / 60 / 60);
+				return false;
+			}else{
+				return true;
+			}
+		}catch(Throwable t){
+			return false;
+		}
 	}
 
 	/**
@@ -94,21 +121,19 @@ public class GroovyBeanFactory {
 	public DispatchHandler getHandlerByName(String handlerName) {
 		if (StringUtils.isBlank(handlerName)) {
 			return null;
-		} else if (handlerName.startsWith(GroovyPrefix)) {
-			Class<DispatchHandler> clazz = getClazzByHandlerName(handlerName);
-			if(clazz == null){
-				return null;
-			}
-			if (clazz.isAnnotationPresent(GroovyBeanType.class)){
-				String bType = clazz.getAnnotation(GroovyBeanType.class).value();
-				if(AnnotationConstants.BeanType.SINGLE.equalsIgnoreCase(bType)){
-					return getHandlerByNameWithSingle(handlerName);
-				}
-			}
-			return getHandlerByNameWithPrototype(handlerName);
-		} else {
+		} 
+		
+		Class<DispatchHandler> clazz = getClazzByHandlerName(handlerName);
+		if(clazz == null){
 			return null;
 		}
+		if (clazz.isAnnotationPresent(GroovyBeanType.class)){
+			String bType = clazz.getAnnotation(GroovyBeanType.class).value();
+			if(AnnotationConstants.BeanType.SINGLE.equalsIgnoreCase(bType)){
+				return getHandlerByNameWithSingle(handlerName);
+			}
+		}
+		return getHandlerByNameWithPrototype(handlerName);
 	}
 
 	/**
