@@ -190,6 +190,45 @@ smf.initSchedule(configp);
   ``ScheduleManagerFactory.setBackFetchFlag(boolean flag);``
   
 
+## ======Tiger任务动态加载Groovy======
+自 ***1.2.2*** 版本起，tiger支持任务代码的动态修改，通过groovy来实现.
+
+### groovy动态加载接入说明
+1 配置启用groovy动态加载开关:
+
+```
+configp.setProperty(ScheduleManagerFactory.ScheduleKeys.enableGroovyCode.name(),"true");
+
+```
+2 实现groovy code操作接口
+
+```
+com.dianping.wed.tiger.groovy.IGroovyCodeRepo
+```
+
+3 接下来实现任务分发接口（同quick start step3）
+
+**groovy特别说明**
+
+1) groovy代码中service注入方式
+
+```
+import com.dianping.wed.tiger.annotation.TService;
+
+@TService
+private WedSmsSendService wpsWedSmsSendService;
+```
+2) groovy代码支持单例和多例两种方式，默认为多例，若需要使用单例，则采用如下注解的形式
+
+```
+import com.dianping.wed.tiger.annotation.AnnotationConstants;
+import com.dianping.wed.tiger.annotation.GroovyBeanType;
+
+@GroovyBeanType(AnnotationConstants.BeanType.SINGLE)
+class GroovyTest implements DispatchHandler {
+}
+```
+
 ## ======Tiger监控======
 tiger应用运行期间，支持任务监控，部署wed-tiger-monitor
 并且在tiger应用中增加如下配置:
