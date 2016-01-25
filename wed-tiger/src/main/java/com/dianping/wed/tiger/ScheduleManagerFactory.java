@@ -53,7 +53,7 @@ public class ScheduleManagerFactory {
 	}
 
 	public enum ScheduleKeys {
-		scheduleFlag, taskStrategy, enableNavigate, enableBackFetch, handlers, coreSize, maxSize, visualNodeNum, divideType;
+		scheduleFlag, taskStrategy, enableNavigate, enableBackFetch, enableGroovyCode, handlers, coreSize, maxSize, visualNodeNum, divideType;
 	}
 
 	public enum MonitorKeys {
@@ -104,6 +104,8 @@ public class ScheduleManagerFactory {
 				ScheduleKeys.enableNavigate.name(), "true");
 		String enableBackFetch = config.getProperty(
 				ScheduleKeys.enableBackFetch.name(), "false");
+		String enableGroovyCode = config.getProperty(
+				ScheduleKeys.enableGroovyCode.name(), "false");
 		String enableMonitor = config.getProperty(
 				MonitorKeys.enableMonitor.name(), "false");
 		String monitorurl = config.getProperty(MonitorKeys.monitorIP.name());
@@ -134,6 +136,9 @@ public class ScheduleManagerFactory {
 		}
 		if (!StringUtils.isBlank(enableBackFetch)) {
 			this.setBackFetchFlag("true".equals(enableBackFetch));
+		}
+		if (!StringUtils.isBlank(enableGroovyCode)) {
+			this.setGroovyCodeFlag("true".equals(enableGroovyCode));
 		}
 		if (!StringUtils.isBlank(coreSize) && StringUtils.isNumeric(coreSize)) {
 			ScheduleServer.getInstance().setHandlerCoreSize(
@@ -206,6 +211,15 @@ public class ScheduleManagerFactory {
 	 */
 	public void setBackFetchFlag(boolean flag) {
 		ScheduleServer.getInstance().setEnableBackFetch(flag);
+	}
+	
+	/**
+	 * 设置是否使用groovy动态加载handler
+	 * 
+	 * @param flag
+	 */
+	public void setGroovyCodeFlag(boolean flag) {
+		ScheduleServer.getInstance().setEnableGroovyCode(flag);
 	}
 
 	/**
@@ -292,7 +306,8 @@ public class ScheduleManagerFactory {
 	}
 	
 	public static Object getHandlerBean(String handlerName){
-		if(GroovyBeanFactory.getInstance().isGroovyHandler(handlerName)){
+		if(ScheduleServer.getInstance().enableGroovyCode() && 
+				GroovyBeanFactory.getInstance().isGroovyHandler(handlerName)){
 			return GroovyBeanFactory.getInstance().getHandlerByName(handlerName);
 		}else{
 			return getBean(handlerName);
@@ -301,7 +316,8 @@ public class ScheduleManagerFactory {
 	
 	@SuppressWarnings("unchecked")
 	public static Class<DispatchHandler> getHandlerClazz(String handlerName){
-		if(GroovyBeanFactory.getInstance().isGroovyHandler(handlerName)){
+		if(ScheduleServer.getInstance().enableGroovyCode() &&
+				GroovyBeanFactory.getInstance().isGroovyHandler(handlerName)){
 			return GroovyBeanFactory.getInstance().getClazzByHandlerName(handlerName);
 		}else{
 			DispatchHandler h =  (DispatchHandler) getBean(handlerName);

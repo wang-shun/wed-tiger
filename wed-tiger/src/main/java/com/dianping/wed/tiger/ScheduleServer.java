@@ -103,6 +103,11 @@ public class ScheduleServer {
 	 * 监控开关
 	 */
 	private AtomicBoolean enableMonitor = new AtomicBoolean(false);
+	
+	/**
+	 * 是否启用groovy代码
+	 */
+	private AtomicBoolean enableGroovyCode = new AtomicBoolean(false);
 
 	/**
 	 * 当前正在执行的任务数
@@ -277,6 +282,14 @@ public class ScheduleServer {
 
 	public void setEnableMonitor(boolean enableMonitor) {
 		this.enableMonitor.set(enableMonitor);;
+	}
+	
+	public boolean enableGroovyCode(){
+		return enableGroovyCode.get();
+	}
+	
+	public void setEnableGroovyCode(boolean enableGroovyCode){
+		this.enableGroovyCode.set(enableGroovyCode);
 	}
 
 	public String getZkAddress() {
