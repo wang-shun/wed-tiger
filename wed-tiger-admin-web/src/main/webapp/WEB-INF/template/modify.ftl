@@ -25,7 +25,8 @@
 </div>
 
 <!-- editor -->
-<div id="ace-editor">${handlerCode.code}</div>
+<div id="ace-editor"></div>
+<textarea id="orginCode" style="display:none;" >${handlerCode.code}</textarea>
 
 <script src="/static/plugin/requirejs/requirejs.2.1.22.min.js" data-main="/static/js/requirejs.config" ></script>
 <script>
