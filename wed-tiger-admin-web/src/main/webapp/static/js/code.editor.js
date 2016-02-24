@@ -9,7 +9,8 @@ define(function(require, exports, module) {
 	var editor = ace.edit("ace-editor");
 	editor.setTheme("ace/theme/idle_fingers");
 	editor.getSession().setMode("ace/mode/groovy");
-	var orginCode = editor.getSession().getValue();
+	var orginCode = $("#orginCode").val();
+	//console.log(orginCode);
 	
 	//添加handler
 	$("#submit").on('click', function(){
@@ -81,5 +82,6 @@ define(function(require, exports, module) {
 	$("#reset").on('click', function(){
 		editor.setValue(orginCode);
 	});
+	$("#reset").click();
 	
 });
