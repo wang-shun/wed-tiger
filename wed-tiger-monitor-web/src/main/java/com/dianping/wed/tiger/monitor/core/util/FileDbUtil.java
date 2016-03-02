@@ -203,6 +203,7 @@ public class FileDbUtil {
 			        	subfiles[i].delete();  
 			        } 
 			    }
+			    // The directory is now empty so now it can be smoked
 			    dirFile.delete();
 			}
 			
