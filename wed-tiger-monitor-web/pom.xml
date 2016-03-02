@@ -97,7 +97,14 @@
 			<version>2.1</version>
 			<scope>provided</scope>
 		</dependency>
-
+	
+		<!-- zip -->
+        <dependency>
+		    <groupId>org.apache.ant</groupId>
+		    <artifactId>ant</artifactId>
+		    <version>1.9.4</version>
+		</dependency>
+		
 	</dependencies>
 
 	<build>
