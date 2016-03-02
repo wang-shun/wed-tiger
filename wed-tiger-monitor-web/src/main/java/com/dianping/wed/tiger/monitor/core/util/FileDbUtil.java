@@ -5,25 +5,28 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.dianping.wed.tiger.monitor.core.model.MonitorRecord;
 
 /**
@@ -36,14 +39,20 @@ public class FileDbUtil {
 	private static Logger logger = LoggerFactory.getLogger(FileDbUtil.class);
 
 	/**
+	 * zip压缩触发标识 当前监控时间 201510
+	 */
+	private static final BlockingQueue<Date> zipTriggerQueue = new LinkedBlockingQueue<Date>();
+	
+	private static final AtomicBoolean zipInitFlag = new AtomicBoolean(false);
+	
+	/**
 	 * tiger监控页面的数据访问路径
 	 */
 	private static final File DATA_DIR = new File("/data/appdatas/tiger/");
 	
 //	private static final File ORIGIN_DIR = new File("/data/tiger/origin/");
 	
-	private static final SimpleDateFormat FormatPath_yyyyMM = new SimpleDateFormat(
-			"yyyyMM");
+	private static final String FormatPath_yyyyMM = "yyyyMM";
 	
 	private static final SimpleDateFormat FormatPath_dd = new SimpleDateFormat(
 			"dd");
@@ -54,19 +63,25 @@ public class FileDbUtil {
 		}
 	}
 
+	private static SimpleDateFormat getDateFormat(String format){
+		return new SimpleDateFormat(format);
+	}
 	/**
 	 * push data to origin dic :ORIGIN_DIR/DATA_DIR<br/>
-	 * 注意001，此处DATA_DIR线上应该为ORIGIN_DIR，守护线程自动同步两个目录下文件
-	 * 
+	 * 注意001，此处DATA_DIR线上应该为ORIGIN_DIR，守护线程自动同步两个目录下文件<br/>
+	 * 写监控数据需要同步，保证线程安全
 	 * @param originData
 	 */
-	public static void dealReceiveData(String originData) {
+	public static synchronized void dealReceiveData(String originData) {
 		MonitorRecord item = parseLineData(originData);
 		if (item != null) {
-			File dirA = new File(DATA_DIR, FormatPath_yyyyMM.format(item
+			initZipThread();
+			File dirA = new File(DATA_DIR, getDateFormat(FormatPath_yyyyMM).format(item
 					.getMonitorTime())); // ../201509
 			if (!dirA.exists()) {
 				dirA.mkdirs();
+				//每个月启动zip压缩一次，异步实现
+				zipTriggerQueue.offer(item.getMonitorTime());
 			}
 			File dirB = new File(dirA, FormatPath_dd.format(item
 					.getMonitorTime())); // ../201509/01
@@ -108,6 +123,95 @@ public class FileDbUtil {
 		}
 	}
 	
+	private static void initZipThread() {
+		if(!zipInitFlag.compareAndSet(false, true)){
+			return;
+		}
+		Thread t = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				while(true){
+					try{
+						Date currentMonitorDate = zipTriggerQueue.take();
+						Calendar c = Calendar.getInstance();
+						c.setTime(currentMonitorDate);
+						c.add(Calendar.MONTH, -2);//提前2个月时间
+						final Date zipDate = c.getTime();
+						
+						
+						File[] historyFiles = DATA_DIR.listFiles(new FilenameFilter() {
+							
+							@Override
+							public boolean accept(File dir, String name) {
+								if(name.startsWith("20")){ //2100年后的事情暂不考虑
+									if(!name.endsWith(".zip")){
+										return true;
+									}
+								}
+								return false;
+							}
+						});
+						if(historyFiles != null && historyFiles.length > 0){
+							for(File f:historyFiles){ // ../201509 201510 201511
+								try{
+									String dateName = f.getName(); //201509
+									SimpleDateFormat sdf = getDateFormat(FormatPath_yyyyMM);
+									Date fileDate = sdf.parse(dateName);
+									if(fileDate.after(zipDate)){
+										continue;//不足2个月，则不压缩
+									}
+									AntZipCompressor azc = new AntZipCompressor(f.getAbsolutePath().concat(".zip"));
+									azc.compressExe(f.getAbsolutePath());
+									//当前文件要删除
+									deleteDirectory(f.getAbsolutePath());
+								}catch(Exception e){
+									logger.error("zip deal error,filePathName="+f.getAbsolutePath());
+									continue;
+								}
+
+								
+							}
+						}
+						
+					}catch(Exception e){
+						logger.error("zip deal exception",e);
+					}
+				}
+			}
+
+			/**
+			 * 递归删除目录及里面的内容
+			 * @param path ../201510
+			 */
+			private void deleteDirectory(String path) {
+				if (!path.endsWith(File.separator)) {  
+					path = path + File.separator;  
+			    }
+				File dirFile = new File(path);  
+			    //如果dir对应的文件不存在,或不是个文件目录则退出  
+			    if (!dirFile.exists() || !dirFile.isDirectory()) {  
+			        return;  
+			    }
+			    //删除文件夹下的所有文件(包括子目录)  
+			    File[] subfiles = dirFile.listFiles();  
+			    for (int i = 0; i < subfiles.length; i++) {  
+			        //删除子文件 
+			    	if(subfiles[i].isDirectory()){
+			    		deleteDirectory(subfiles[i].getAbsolutePath());
+			    	}else if (subfiles[i].isFile()) {  
+			        	subfiles[i].delete();  
+			        } 
+			    }
+			    dirFile.delete();
+			}
+			
+		});
+		t.setDaemon(true);
+		t.setName("TigerMonitor-Zip-Thread");
+		t.start();
+	}
+
 	/**
 	 * 查询当天的监控数据
 	 * 
@@ -185,7 +289,7 @@ public class FileDbUtil {
 	 * @return
 	 */
 	private static List<File> queryFiles(String handlerName, Date monitorTime) {
-		File dirA = new File(DATA_DIR, FormatPath_yyyyMM.format(monitorTime)); // ../201509
+		File dirA = new File(DATA_DIR, getDateFormat(FormatPath_yyyyMM).format(monitorTime)); // ../201509
 		if (dirA.exists() && dirA.isDirectory()) {
 			File dirB = new File(dirA, FormatPath_dd.format(monitorTime)); // ../201509/01
 			if (dirB.exists() && dirB.isDirectory()) {
@@ -261,7 +365,7 @@ public class FileDbUtil {
 	 */
 	public static HashSet<String> queryMonitorHandler(Date monitorTime) {
 		HashSet<String> result = new HashSet<String>();
-		File dirA = new File(DATA_DIR, FormatPath_yyyyMM.format(monitorTime)); // ../201509
+		File dirA = new File(DATA_DIR, getDateFormat(FormatPath_yyyyMM).format(monitorTime)); // ../201509
 		if (dirA.exists() && dirA.isDirectory()) {
 			File dirB = new File(dirA, FormatPath_dd.format(monitorTime)); // ../201509/01
 			if (dirB.exists() && dirB.isDirectory()) {
