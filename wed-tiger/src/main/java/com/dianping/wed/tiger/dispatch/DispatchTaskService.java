@@ -51,7 +51,7 @@ public interface DispatchTaskService {
 	/**
 	 * 添加一条任务
 	 * 
-	 * @param taskEntity
+	 * @param taskEntity:其中handler,loadbalance,earliestExecuteTime不能为空
 	 * @return
 	 */
 	public int addDispatchTask(DispatchTaskEntity taskEntity);

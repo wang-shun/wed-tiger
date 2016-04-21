@@ -53,11 +53,13 @@ public class ScheduleManager {
 				while (true) {
 					try {
 						if (!ScheduleServer.getInstance().isInitOk()) {
+							logger.warn("scheduleServer is not already inited.");
 							continue;
 						}
 						List<String> serverList = zkClient.getChildren()
 								.forPath(path);
 						if (serverList == null || serverList.size() == 0) {
+							logger.warn("scheduleServer init ok, but serverList is empty.path="+path);
 							continue;
 						}
 						StringBuilder sb = new StringBuilder();

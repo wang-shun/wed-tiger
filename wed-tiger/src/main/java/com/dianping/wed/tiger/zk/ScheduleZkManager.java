@@ -16,6 +16,7 @@ import org.apache.zookeeper.KeeperException.NodeExistsException;
 import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.dianping.wed.tiger.ScheduleManager;
 import com.dianping.wed.tiger.ScheduleServer;
 
@@ -53,22 +54,10 @@ public class ScheduleZkManager {
 			PATH = ScheduleServer.getInstance().getRootPath();
 		}
 		final CuratorWatcher watcher = new ScheduleZkNodeWatcher(zkClient, PATH);
-		Stat stat = zkClient.checkExists().usingWatcher(watcher).forPath(PATH);
-		if (stat == null) {
-			String createPath = zkClient.create()
-					.withMode(CreateMode.PERSISTENT)
-					.forPath(PATH, "0".getBytes("utf-8"));
-			if (!StringUtils.isBlank(createPath)) {
-				logger.warn("root zknode created," + PATH);
-			} else {
-				logger.error("create root zknode failed," + PATH);
-				throw new Exception("create root zknode failed," + PATH);
-			}
-		} else {
-			logger.warn("root zknode already exist," + PATH);
-		}
+		
+		createRootNode(watcher);
 		zkClient.getChildren().usingWatcher(watcher).forPath(PATH);
-
+		
 		zkClient.getConnectionStateListenable().addListener(
 				new ConnectionStateListener() {
 					@Override
@@ -88,6 +77,28 @@ public class ScheduleZkManager {
 
 		register();
 		startScheduleManager();
+	}
+
+	/**
+	 * 创建根节点
+	 * @param watcher
+	 * @throws Exception
+	 */
+	private void createRootNode(CuratorWatcher watcher) throws Exception {
+		Stat stat = zkClient.checkExists().usingWatcher(watcher).forPath(PATH);
+		if (stat == null) {
+			String createPath = zkClient.create()
+					.withMode(CreateMode.PERSISTENT)
+					.forPath(PATH, "0".getBytes("utf-8"));
+			if (!StringUtils.isBlank(createPath)) {
+				logger.warn("root zknode created," + PATH);
+			} else {
+				logger.error("create root zknode failed," + PATH);
+				throw new Exception("create root zknode failed," + PATH);
+			}
+		} else {
+			logger.warn("root zknode already exist," + PATH);
+		}
 	}
 
 	/**
@@ -117,8 +128,12 @@ public class ScheduleZkManager {
 						if (zkClient.getZookeeperClient()
 								.blockUntilConnectedOrTimedOut()) {
 							logger.warn("zookeeper reconnected success.");
+							//此时可能rootNode不存在,需要重新创建
+							createRootNode(watcher);
+							
 							zkClient.getChildren().usingWatcher(watcher)
 									.forPath(path);
+							
 							register();
 							break;
 						}
