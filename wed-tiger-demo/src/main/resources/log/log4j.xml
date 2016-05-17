@@ -16,7 +16,7 @@
     
     <!-- 业务执行日志 -->
     <appender name="DEMO" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="file" value="/data/applogs/tiger-demo/logs/demo.log"/>
+        <param name="file" value="/data/applogs/wed-tiger-demo/logs/demo.log"/>
         <param name="append" value="true"/>
         <param name="encoding" value="UTF-8"/>
         <layout class="org.apache.log4j.PatternLayout">
