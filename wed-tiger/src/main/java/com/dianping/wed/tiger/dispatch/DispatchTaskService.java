@@ -11,50 +11,12 @@ import java.util.Date;
 public interface DispatchTaskService {
 	
 	/**
-	 * 任务捞取策略
-	 * @author yuantengkai
-	 *
-	 */
-	public enum TaskFetchStrategy{
-		
-		Single(0),Multi(1);
-		
-		private int value;
-
-		private TaskFetchStrategy(int value) {
-			this.value = value;
-		}
-
-		public int getValue() {
-			return value;
-		}
-	}
-
-	/**
-	 * 任务执行后状态
-	 *
-	 */
-	public enum TaskType {
-		NEW(0), SUCCESS(1), FAIL(2);
-
-		private int value;
-
-		private TaskType(int value) {
-			this.value = value;
-		}
-
-		public int getValue() {
-			return value;
-		}
-	}
-
-	/**
 	 * 添加一条任务
 	 * 
 	 * @param taskEntity:其中handler,loadbalance,earliestExecuteTime不能为空
 	 * @return
 	 */
-	public int addDispatchTask(DispatchTaskEntity taskEntity);
+	public long addDispatchTask(DispatchTaskEntity taskEntity);
 
 	/**
 	 * 根据任务id更新任务状态
@@ -65,7 +27,7 @@ public interface DispatchTaskService {
 	 * @param hostName
 	 * @return
 	 */
-	public boolean updateTaskStatus(int taskId, int status, String hostName);
+	public boolean updateTaskStatus(long taskId, int status, String hostName);
 
 	/**
 	 * 增加重试次数,并设定下次执行时间
@@ -75,7 +37,7 @@ public interface DispatchTaskService {
 	 * @param hostName
 	 * @return
 	 */
-	public boolean addRetryTimesAndExecuteTime(int taskId,
+	public boolean addRetryTimesAndExecuteTime(long taskId,
 			Date nextExecuteTime, String hostName);
 
 }

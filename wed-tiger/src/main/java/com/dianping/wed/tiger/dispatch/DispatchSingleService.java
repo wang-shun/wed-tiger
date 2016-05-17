@@ -32,6 +32,6 @@ public interface DispatchSingleService extends DispatchTaskService {
 	 * @return
 	 */
 	public List<DispatchTaskEntity> findDispatchTasksWithLimitByBackFetch(
-			List<Integer> nodeList, int limit, int taskId);
+			List<Integer> nodeList, int limit, long taskId);
 
 }

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="tigerTask">
+
+	<typeAlias alias="tigerTaskDo"
+		type="com.xxx.tiger.demo.task.dataobject.TigerTaskDo" />
+
+	<sql id="tigerTask_columns">
+		id,
+		addTime,
+		updateTime,
+		handler,
+		node,
+		retryTimes,
+		status,
+		earliestExecuteTime,
+		parameter,
+		host
+	</sql>
+
+    <insert id="tigerTask.insert" parameterClass="tigerTaskDo">
+        <![CDATA[
+		INSERT INTO Tiger_Task
+		(
+		id,
+		addTime,
+		updateTime,
+		handler,
+		node,
+		retryTimes,
+		status,
+		earliestExecuteTime,
+		parameter,
+		host
+		)
+		VALUES(
+		#id#,
+		now(),
+		now(),
+		#handler#,
+		#node#,
+		#retryTimes#,
+		#status#,
+		#earliestExecuteTime#,
+		#parameter#,
+		#host#
+		)
+		]]>
+		<selectKey keyProperty="id" resultClass="java.lang.Long">
+                SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+    
+    <update id="tigerTask.updateTaskStatus" parameterClass="map">
+    	UPDATE Tiger_Task
+    	SET   updateTime = now(),
+    	      status = #status#,
+    	      host = #hostName#
+    	WHERE id = #id# 
+    </update>
+    
+    <update id="tigerTask.updateRetryTimesAndExecuteTime" parameterClass="map">
+    	UPDATE Tiger_Task
+    	SET   updateTime = now(),
+    	      earliestExecuteTime = #nextExecuteTime#,
+    	      host = #hostName#
+    	WHERE id = #id# 
+    </update>
+    
+    <select id="tigerTask.queryTasksWithLimit" parameterClass="map" resultClass="tigerTaskDo">
+    	SELECT <include refid="tigerTask_columns"/>
+    	FROM Tiger_Task
+    	WHERE handler = #handler#
+    	AND   node IN
+        <iterate open="(" close=")" property="nodeList" conjunction=",">
+            #nodeList[]#
+        </iterate>
+        AND status = 0
+        <![CDATA[ 
+        AND earliestExecuteTime <= now() 
+        ]]>
+        ORDER BY earliestExecuteTime
+        LIMIT #limit#
+    </select>
+    
+    <select id="tigerTask.queryTasksWithLimitByBackFetch" parameterClass="map" resultClass="tigerTaskDo">
+    	SELECT <include refid="tigerTask_columns"/>
+    	FROM Tiger_Task
+    	WHERE handler = #handler#
+    	AND   node IN
+        <iterate open="(" close=")" property="nodeList" conjunction=",">
+            #nodeList[]#
+        </iterate>
+        AND status = 0
+        <![CDATA[ 
+        AND earliestExecuteTime <= now() 
+        AND id > #id#
+        ]]>
+        ORDER BY earliestExecuteTime
+        LIMIT #limit#
+    </select>
+
+</sqlMap>

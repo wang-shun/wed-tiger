@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration PUBLIC "-//log4j/log4j Configuration//EN" "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/"
+	threshold="null" debug="null">
+    <!-- ===================================================================== -->
+    <!--  appender 配置                                                        -->
+    <!-- ===================================================================== -->
+    <appender name="ROOT" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="file" value="/data/applogs/tiger-demo/logs/root.log"/>
+        <param name="append" value="true"/>
+        <param name="encoding" value="UTF-8"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%-d{yyyy-MM-dd HH:mm:ss} [%c]-[%t]-[%M]-[%L]-[%p] %m%n"/>
+        </layout>
+    </appender>
+    
+    <!-- 业务执行日志 -->
+    <appender name="DEMO" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="file" value="/data/applogs/tiger-demo/logs/demo.log"/>
+        <param name="append" value="true"/>
+        <param name="encoding" value="UTF-8"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%-d{yyyy-MM-dd HH:mm:ss} [%c]-[%t]-[%M]-[%L]-[%p] %m%n"/>
+        </layout>
+    </appender>
+    
+    <!-- tiger框架日志 -->
+    <appender name="TIGER" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="file" value="/data/applogs/wed-tiger-demo/logs/tiger.log"/>
+        <param name="append" value="true"/>
+        <param name="encoding" value="UTF-8"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%-d{yyyy-MM-dd HH:mm:ss} [%c]-[%t]-[%M]-[%L]-[%p] %m%n"/>
+        </layout>
+    </appender>
+    
+    <!-- ===================================================================== -->
+    <!--  logger 配置                                                        -->
+    <!-- ===================================================================== -->
+    <root>
+        <level value="ERROR"/>
+        <appender-ref ref="ROOT"/>
+    </root>
+    
+    <logger name="com.xxx.tiger.demo" additivity="false">
+        <level value="WARN"/>
+        <appender-ref ref="DEMO"/>
+    </logger>
+    
+    <logger name="com.dianping.wed.tiger" additivity="false">
+      	<level value="INFO"/>
+      	<appender-ref ref="TIGER"/>
+	</logger>
+    
+	
+</log4j:configuration>

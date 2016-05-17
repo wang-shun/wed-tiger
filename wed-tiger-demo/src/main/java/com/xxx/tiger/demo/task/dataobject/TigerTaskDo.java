@@ -1,9 +1,8 @@
 /**
  * 
  */
-package com.dianping.wed.tiger.dispatch;
+package com.xxx.tiger.demo.task.dataobject;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -11,15 +10,10 @@ import org.apache.commons.lang.builder.ToStringStyle;
 
 /**
  * @author yuantengkai
- * 任务操作对象
+ * 任务表do
  */
-public class DispatchTaskEntity implements Serializable{
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 8663925261412976809L;
-
+public class TigerTaskDo {
+	
 	/**
 	 * 任务id
 	 */
@@ -36,19 +30,14 @@ public class DispatchTaskEntity implements Serializable{
 	private Date updateTime;
 	
 	/**
-	 * handler名字,非空
+	 * handler名字
 	 */
 	private String handler;
 	
 	/**
-	 * 虚拟节点:计算＝loadbalance%numOfvisualNode
+	 * 虚拟节点
 	 */
 	private Integer node;
-	
-	/**
-	 * 负载均衡参数,非空
-	 */
-	private int loadbalance;
 	
 	/**
 	 * 重试次数
@@ -56,7 +45,7 @@ public class DispatchTaskEntity implements Serializable{
 	private Integer retryTimes;
 	
 	/**
-	 * 状态,see DispatchTaskService.TaskType
+	 * 任务执行状态,see DispatchTaskService.TaskType
 	 */
 	private Integer status;
 	
@@ -69,6 +58,11 @@ public class DispatchTaskEntity implements Serializable{
 	 * 业务参数,json格式,com.alibaba.fastjson.JSON.toJSONString()
 	 */
 	private String parameter;
+	
+	/**
+	 * 真实的执行机器
+	 */
+	private String host;
 
 	public Long getId() {
 		return id;
@@ -141,13 +135,13 @@ public class DispatchTaskEntity implements Serializable{
 	public void setParameter(String parameter) {
 		this.parameter = parameter;
 	}
-	
-	public int getLoadbalance() {
-		return loadbalance;
+
+	public String getHost() {
+		return host;
 	}
 
-	public void setLoadbalance(int loadbalance) {
-		this.loadbalance = loadbalance;
+	public void setHost(String host) {
+		this.host = host;
 	}
 
 	public String toString() {
