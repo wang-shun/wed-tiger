@@ -1,8 +1,8 @@
 # tiger说明
 
-#### 如果阅读完文档后，还有任何疑问，请mail to zjytk05@163.com
+#### 如果阅读完文档后，还有任何疑问，请mail to tengkai.yuan@dianping.com
 
-**tiger**是一种分布式异步执行框架，偏重于执行层面，同一种任务可以由多台机器同时执行，并能保证一条任务不被重复执行。
+**tiger**是一种分布式异步调度框架，偏重于执行层面，同一种任务可以由多台机器同时执行，并能保证一条任务不被重复执行。
 
 tiger主要有以下三块组成：
 
@@ -203,7 +203,7 @@ smf.initSchedule(configp);
 ```
 应用启动后，查看tiger启动日志，看到红线标注部分(start success)，代表启动成功，如图：
 
-![image](https://github.com/tkyuan/tiger/blob/master/tiger-monitor/src/main/resources/META-INF/img/startlog.png)
+![image](http://code.dianpingoa.com/shop-business/wed-tiger/blob/master/wed-tiger-demo/src/main/resources/img/startlog.png)
 
 **注意点:**
 
@@ -212,7 +212,7 @@ smf.initSchedule(configp);
 
 2) DispatchHandler接口实现类的spring bean配置默认是 **单例**，所以在实现类里最好 **不用成员变量**，而要用局部变量， **成员变量是有状态的，会有线程安全问题;**
 
-##### 为了能快速基于tiger搭建分布式异步执行平台，可以直接下载tiger-demo进行修改部署。
+##### 为了能快速基于tiger搭建分布式异步调度平台，可以直接下载tiger-demo进行修改部署。
 
 ### Step五. 运行中改变
   
@@ -294,7 +294,7 @@ tiger监控用的是文件存储方式，需要对/data/appdatas/tiger/目录有
 
 tiger监控截图：
 
-![image](https://github.com/tkyuan/tiger/blob/master/tiger-monitor/src/main/resources/META-INF/img/monitor.png)
+![image](http://code.dianpingoa.com/shop-business/wed-tiger/blob/master/wed-tiger-demo/src/main/resources/img/startlog.png)
 
 
 **Thanks**
