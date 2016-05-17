@@ -203,7 +203,7 @@ smf.initSchedule(configp);
 ```
 应用启动后，查看tiger启动日志，看到红线标注部分(start success)，代表启动成功，如图：
 
-![image](http://code.dianpingoa.com/shop-business/wed-tiger/blob/feature_0517_tigerdemo/wed-tiger-demo/src/main/resources/img/startlog.png)
+![image](http://code.dianpingoa.com/shop-business/wed-tiger/blob/master/wed-tiger-demo/src/main/resources/img/startlog.png)
 
 **注意点:**
 
@@ -294,7 +294,7 @@ tiger监控用的是文件存储方式，需要对/data/appdatas/tiger/目录有
 
 tiger监控截图：
 
-![image](http://code.dianpingoa.com/shop-business/wed-tiger/blob/feature_0517_tigerdemo/wed-tiger-demo/src/main/resources/img/startlog.png)
+![image](http://code.dianpingoa.com/shop-business/wed-tiger/blob/master/wed-tiger-demo/src/main/resources/img/startlog.png)
 
 
 **Thanks**
