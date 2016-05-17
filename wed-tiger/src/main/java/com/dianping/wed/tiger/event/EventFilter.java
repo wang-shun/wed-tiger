@@ -22,7 +22,7 @@ public class EventFilter {
 	 * @param taskId
 	 * @return
 	 */
-	public boolean isAccept(Integer taskId){
+	public boolean isAccept(Long taskId){
 		return !eventInConsumerRepository.isContain(taskId);
 	}
 

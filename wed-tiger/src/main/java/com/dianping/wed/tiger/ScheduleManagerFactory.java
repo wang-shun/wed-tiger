@@ -18,6 +18,7 @@ import com.dianping.wed.tiger.event.EventConfig;
 import com.dianping.wed.tiger.event.EventExecutorManager;
 import com.dianping.wed.tiger.groovy.GroovyBeanFactory;
 import com.dianping.wed.tiger.utils.EventConfigUtil;
+import com.dianping.wed.tiger.utils.ScheduleConstants;
 import com.dianping.wed.tiger.zk.ScheduleZkManager;
 
 /**
@@ -95,7 +96,7 @@ public class ScheduleManagerFactory {
 		String visualNode = config.getProperty(
 				ScheduleKeys.virtualNodeNum.name(), "100");
 		String divideType = config.getProperty(ScheduleKeys.divideType.name(),
-				ScheduleManager.DIVIDE_RNAGE_MODE + "");
+				ScheduleConstants.NodeDivideMode.DIVIDE_RANGE_MODE.getValue() + "");
 		String zkSessionTimeout = config.getProperty(
 				ZookeeperKeys.zkSessionTimeout.name(), "60000");
 		String scheduleFlag = config.getProperty(

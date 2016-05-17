@@ -14,6 +14,8 @@ import org.apache.curator.framework.CuratorFramework;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.dianping.wed.tiger.utils.ScheduleConstants;
+
 /**
  * @author yuantengkai 任务调度分配管理器:<br/>
  *         1)轮询zk集群的变化.<br/>
@@ -25,16 +27,6 @@ public class ScheduleManager {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(ScheduleManager.class);
-
-	/**
-	 * 节点分配策略：1-散列 2-分块
-	 */
-	public static final int DIVIDE_SANLIE_MODE = 1;
-
-	/**
-	 * 节点分配策略：1-散列 2-分块
-	 */
-	public static final int DIVIDE_RNAGE_MODE = 2;
 
 	private CuratorFramework zkClient;
 
@@ -187,7 +179,7 @@ public class ScheduleManager {
 		}
 		int divideType = ScheduleServer.getInstance().getDivideType();
 		int numOfVisualNode = ScheduleServer.getInstance().getNumOfVisualNode();
-		if (divideType == DIVIDE_SANLIE_MODE) {// 散列模式
+		if (divideType == ScheduleConstants.NodeDivideMode.DIVIDE_SANLIE_MODE.getValue()) {// 散列模式
 			for (int i = index; i < numOfVisualNode; i += serverList.size()) {
 				nodelist.add(i);
 			}

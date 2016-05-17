@@ -8,11 +8,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
-
 import com.dianping.wed.tiger.EventFactory;
 import com.dianping.wed.tiger.ScheduleServer;
-import com.dianping.wed.tiger.dispatch.DispatchTaskService;
 import com.dianping.wed.tiger.repository.EventInConsumerRepository;
+import com.dianping.wed.tiger.utils.ScheduleConstants;
 
 /**
  * @author yuantengkai 事件执行管理器
@@ -56,7 +55,7 @@ public class EventExecutorManager {
 		try {
 			eventExecutors.clear();
 			executorVersion.set(eventConfigs.get(0).getIdentifyCode());
-			if (ScheduleServer.getInstance().getTaskStrategy() == DispatchTaskService.TaskFetchStrategy.Multi
+			if (ScheduleServer.getInstance().getTaskStrategy() == ScheduleConstants.TaskFetchStrategy.Multi
 					.getValue()) {
 				for (EventConfig config : eventConfigs) {
 					EventExecutor ee = EventFactory.createMultiExecutor(config);

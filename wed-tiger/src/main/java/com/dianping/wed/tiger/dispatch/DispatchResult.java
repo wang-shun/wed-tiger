@@ -12,9 +12,9 @@ public enum DispatchResult {
 	SUCCESS,
 	
 	/**
-	 * 执行失败－增加重试次数|下次继续调度重试
+	 * 执行失败－下次继续重试|增加重试次数
 	 */
-	FAIL,
+	FAIL2RETRY,
 	
 	/**
 	 * 下次执行
@@ -22,8 +22,8 @@ public enum DispatchResult {
 	NEXT,
 	
 	/**
-	 * 丢弃－更新状态为失败|下次不再调度
+	 * 执行失败-丢弃,下次不再重试|更新状态为失败
 	 */
-	DISCARD;
+	FAIL2DISCARD;
 
 }

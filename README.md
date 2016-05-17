@@ -1,6 +1,6 @@
 # tiger说明
 
-#### 如果阅读完文档后，还有任何疑问，请mail to tengkai.yuan@dianping.com
+#### 如果阅读完文档后，还有任何疑问，请mail to zjytk05@163.com
 
 **tiger**是一种分布式异步执行框架，偏重于执行层面，同一种任务可以由多台机器同时执行，并能保证一条任务不被重复执行。
 
@@ -12,61 +12,80 @@ tiger主要有以下三块组成：
 
 3. 任务执行管理：用于管理本机所分配到的执行器节点,进而进行任务节点捞取、任务过滤等,并对任务的执行结果进行处理;
 
+####业务应用场景举例
+www.12306.cn上购买火车票的例子：
+
+用户a在12306上提交订单后，会提示请在45分钟内支付，不然就会取消订单。
+
+这样的情形很适合tiger来解决，步骤：
+
+1)  插入一条[订单取消任务]，并设置执行时间45分钟后，addDispatchTask(arg0)
+
+2)  实现任务分发接口DispatchHandler,实现订单取消的业务逻辑（做订单是否已支付的判断）
+
+45分钟后，tiger会自动触发[订单取消任务]。
+
+业务代码逻辑判断：如果此时订单已支付，那么返回任务丢弃；如果订单没支付，那么执行订单取消逻辑，成功后返回。
+
+######总结：tiger适合任何异步任务执行的业务场景.
+
+
+
 ## ======Quick Start======
 ### Step一. 依赖
 
 ```
 <groupId>com.dianping</groupId>
 <artifactId>wed-tiger</artifactId>
-<version>1.1.0</version>
+<version>1.2.4</version>
 ```
 
 ### Step二. 实现任务操作管理接口
 
 #### 任务操作支持两种策略，约定：
-***策略a***: 各个执行器捞取各自的任务
+***策略Multi***: 各个执行器捞取各自的任务
 
-***策略b***: 统一捞取任务
+***策略Single***: 统一捞取任务
 
-***策略a***情况下实现接口:
+***策略Multi***情况下实现接口:
 
 ```
 配置:
-configp.setProperty(ScheduleManagerFactory.ScheduleKeys.taskStrategy.name(),DispatchTaskService.TaskFetchStrategy.Multi.getValue() + "");
+configp.setProperty(ScheduleManagerFactory.ScheduleKeys.taskStrategy.name(),ScheduleConstants.TaskFetchStrategy.Multi.getValue() + "");
 
 则实现各自捞取任务的操作接口
 com.dianping.wed.tiger.dispatch.DispatchMultiService
 
 ```
 
-***策略b***情况下实现接口:
+***策略Single***情况下实现接口:
 
 ```
 配置:
-configp.setProperty(ScheduleManagerFactory.ScheduleKeys.taskStrategy.name(),DispatchTaskService.TaskFetchStrategy.Single.getValue() + "");
+configp.setProperty(ScheduleManagerFactory.ScheduleKeys.taskStrategy.name(),ScheduleConstants.TaskFetchStrategy.Single.getValue() + "");
 
 则实现统一捞取任务的操作接口
-com.dianping.wed.tiger.dispatch.DispatchSingleService
+com.dianping.tiger.dispatch.DispatchSingleService
 
 ```
 ***定义spring bean***
 
 ``<bean id="dispatchTaskService" class="你的实现类"/>``
-#### 必须实现：
+#### Method[必须]实现：
 ##### 方法1. 添加一条任务
 ```
-public int addDispatchTask(DispatchTaskEntity taskEntity);
+public long addDispatchTask(DispatchTaskEntity taskEntity);
 ```
 ##### 方法2. 捞取一定数量的任务
 
-***策略a***情况下实现:
+***策略Multi***情况下实现:
 
 
 ```
 public List<DispatchTaskEntity> findDispatchTasksWithLimit(String handler,List<Integer> nodeList, int limit);
 ```
 
-***策略b***情况下实现:
+***策略Single***情况下实现:
 
 ```
 public List<DispatchTaskEntity> findDispatchTasksWithLimit(List<Integer> nodeList, int limit);
@@ -75,27 +94,27 @@ public List<DispatchTaskEntity> findDispatchTasksWithLimit(List<Integer> nodeLis
 
 ##### 方法3. 更新任务状态
 ```
-public boolean updateTaskStatus(int taskId,int status,String hostName);
+public boolean updateTaskStatus(long taskId,int status,String hostName);
 ```
 ##### 方法4. 执行不成功，希望下次继续重试
 ```
-public boolean addRetryTimesAndExecuteTime(int taskId,Date nextExecuteTime,String hostName);
+public boolean addRetryTimesAndExecuteTime(long taskId,Date nextExecuteTime,String hostName);
 ```
 
-#### 可选实现:
+#### Method[可选]实现:
 ##### 方法1. 反压获取一定数量的任务，使用前提:
 ``ScheduleManagerFactory.setBackFetchFlag(true)``
 
-***策略a***情况下实现:
+***策略Multi***情况下实现:
 
 ```
-public List<DispatchTaskEntity> findDispatchTasksWithLimitByBackFetch(String handler, List<Integer> nodeList, int limit,int taskId);
+public List<DispatchTaskEntity> findDispatchTasksWithLimitByBackFetch(String handler, List<Integer> nodeList, int limit,long taskId);
 ```
-***策略b***情况下实现:
+***策略Single***情况下实现:
 
 
 ```
-public List<DispatchTaskEntity> findDispatchTasksWithLimitByBackFetch(List<Integer> nodeList, int limit, int taskId);
+public List<DispatchTaskEntity> findDispatchTasksWithLimitByBackFetch(List<Integer> nodeList, int limit, long taskId);
 ```
 ### Step三. 实现任务分发接口
 ``com.dianping.wed.tiger.dispatch.DispatchHandler``
@@ -109,8 +128,8 @@ public List<DispatchTaskEntity> findDispatchTasksWithLimitByBackFetch(List<Integ
 public class ChainTestHandler implements DispatchHandler {
     @Override
     public DispatchResult invoke(DispatchParam param) throws Exception {
-        int taskId = (Integer) param.getProperty("id");
-        String jsonStr = (String) param.getProperty("param");
+        Long taskId =  param.getTaskId();
+        String jsonStr = param.getBizParameter();
         Map<String, String> paramMap = (Map<String, String>) JSON.parse(jsonStr);
         ...
     }
@@ -118,10 +137,13 @@ public class ChainTestHandler implements DispatchHandler {
 ```
 ### Step四. 应用启动唤起
 ``com.dianping.wed.tiger.ScheduleManagerFactory``
+
 ***example***:
 
 ```
 ===========声明 ScheduleManagerFactory=======
+
+设置30s轮询一次任务
 ScheduleManagerFactory smf = new ScheduleManagerFactory(30*1000);
 
 smf.setAppCtx(applicationcontext);
@@ -136,16 +158,17 @@ configp.setProperty(ScheduleManagerFactory.ZookeeperKeys.zkConnectAddress.name()
 configp.setProperty(ScheduleManagerFactory.ScheduleKeys.handlers.name(),"handler1,hander2,hangdler3");
 
 zk节点rootpath,必须
-configp.setProperty(ScheduleManagerFactory.ZookeeperKeys.rootPath.name(),"/DPWED");
+configp.setProperty(ScheduleManagerFactory.ZookeeperKeys.rootPath.name(),"/XXXX");
 
 虚拟节点数，最好大于20，默认100,可选
-configp.setProperty(ScheduleManagerFactory.ScheduleKeys.visualNodeNum.name(),"30");
+configp.setProperty(ScheduleManagerFactory.ScheduleKeys.virtualNodeNum.name(),"20");
 
-zk虚拟节点分配策略,1-散列模式,2－分块模式,默认分块模式,建议用2,可选
-configp.setProperty(ScheduleManagerFactory.ScheduleKeys.divideType.name(), "2");
+zk虚拟节点分配策略,0-散列模式,1－分块模式,默认分块模式,建议用1,可选
 
-执行器策略，可选，默认为策略a
-configp.setProperty(ScheduleManagerFactory.ScheduleKeys.taskStrategy.name(),"1");
+configp.setProperty(ScheduleManagerFactory.ScheduleKeys.divideType.name(),ScheduleConstants.NodeDivideMode.DIVIDE_RANGE_MODE.getValue()+"");
+
+执行器策略，可选，默认为策略Multi(多执行器各自捞取任务策略)
+configp.setProperty(ScheduleManagerFactory.ScheduleKeys.taskStrategy.name(),ScheduleConstants.TaskFetchStrategy.Multi.getValue()+"");
 
 总调度开关,默认true,可选
 configp.setProperty(ScheduleManagerFactory.ScheduleKeys.scheduleFlag.name(),"true");
@@ -159,7 +182,28 @@ configp.setProperty(ScheduleManagerFactory.ScheduleKeys.enableBackFetch.name(),"
 ===========初始化启用==========
 smf.initSchedule(configp);
 ```
-***完成以上4步，启动你的应用就可以使用了.***
+***完成以上4步，启动你的应用就可以使用了.（应用启动前要部署启动zookeeper服务）***
+
+配置tiger日志：
+
+```
+<appender name="TIGER" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="file" value="/data/applogs/tiger-demo/logs/tiger.log"/>
+        <param name="append" value="true"/>
+        <param name="encoding" value="UTF-8"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%-d{yyyy-MM-dd HH:mm:ss} [%c]-[%t]-[%M]-[%L]-[%p] %m%n"/>
+        </layout>
+    </appender>
+    
+<logger name="com.dianping.wed.tiger" additivity="false">
+      <level value="INFO"/>
+      <appender-ref ref="TIGER"/>
+</logger>
+```
+应用启动后，查看tiger启动日志，看到红线标注部分(start success)，代表启动成功，如图：
+
+![image](https://github.com/tkyuan/tiger/blob/master/tiger-monitor/src/main/resources/META-INF/img/startlog.png)
 
 **注意点:**
 
@@ -168,6 +212,7 @@ smf.initSchedule(configp);
 
 2) DispatchHandler接口实现类的spring bean配置默认是 **单例**，所以在实现类里最好 **不用成员变量**，而要用局部变量， **成员变量是有状态的，会有线程安全问题;**
 
+##### 为了能快速基于tiger搭建分布式异步执行平台，可以直接下载tiger-demo进行修改部署。
 
 ### Step五. 运行中改变
   
@@ -230,12 +275,12 @@ class GroovyTest implements DispatchHandler {
 ```
 
 ## ======Tiger监控======
-tiger应用运行期间，支持任务监控，部署wed-tiger-monitor
+tiger应用运行期间，支持任务监控，部署tiger-monitor
 并且在tiger应用中增加如下配置:
 
 ```
 监控服务地址，必须
-configp.setProperty(ScheduleManagerFactory.MonitorKeys.monitorIP.name(),"http://10.128.122.126:8080");
+configp.setProperty(ScheduleManagerFactory.MonitorKeys.monitorIP.name(),"http://127.0.0.1:8080");
 
 监控开关，默认关闭，必须
 configp.setProperty(ScheduleManagerFactory.MonitorKeys.enableMonitor.name(),"true");
@@ -244,6 +289,12 @@ configp.setProperty(ScheduleManagerFactory.MonitorKeys.enableMonitor.name(),"tru
 scheduleManagerFactory.setMonitorFlag(boolean flag);
 
 ```
+**注意点:**
+tiger监控用的是文件存储方式，需要对/data/appdatas/tiger/目录有读写权限
+
+tiger监控截图：
+
+![image](https://github.com/tkyuan/tiger/blob/master/tiger-monitor/src/main/resources/META-INF/img/monitor.png)
+
 
 **Thanks**
-

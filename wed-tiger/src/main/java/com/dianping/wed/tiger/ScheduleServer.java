@@ -9,10 +9,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import com.dianping.wed.tiger.dispatch.DispatchTaskService;
 import com.dianping.wed.tiger.event.EventExecutorManager;
 import com.dianping.wed.tiger.utils.HostUtil;
+import com.dianping.wed.tiger.utils.ScheduleConstants;
 
 /**
  * @author yuantengkai 调度server信息
@@ -62,7 +61,7 @@ public class ScheduleServer {
 	/**
 	 * 任务捞取策略
 	 */
-	private int taskStrategy = DispatchTaskService.TaskFetchStrategy.Multi.getValue();
+	private int taskStrategy = ScheduleConstants.TaskFetchStrategy.Multi.getValue();
 
 	/**
 	 * handler配置识别码
@@ -114,7 +113,7 @@ public class ScheduleServer {
 	 */
 	private AtomicInteger runningTaskNum = new AtomicInteger(0);
 
-	private int divideType = ScheduleManager.DIVIDE_RNAGE_MODE;
+	private int divideType = ScheduleConstants.NodeDivideMode.DIVIDE_RANGE_MODE.getValue();
 
 	/**
 	 * zk rootpath

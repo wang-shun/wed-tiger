@@ -7,8 +7,10 @@ import java.util.Calendar;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.dianping.wed.tiger.ScheduleManagerFactory;
 import com.dianping.wed.tiger.ScheduleServer;
+import com.dianping.wed.tiger.utils.ScheduleConstants;
 
 /**
  * @author yuantengkai
@@ -50,7 +52,7 @@ public class DispatchResultManager {
 		}
 		if (DispatchResult.SUCCESS.equals(result)) {
 			boolean flag = dispatchTaskService.updateTaskStatus(task.getId(),
-					DispatchTaskService.TaskType.SUCCESS.getValue(),
+					ScheduleConstants.TaskType.SUCCESS.getValue(),
 					ScheduleServer.getInstance().getServerName());
 
 			if (!flag) {
@@ -59,7 +61,7 @@ public class DispatchResultManager {
 			}
 			return;
 		}
-		if (DispatchResult.FAIL.equals(result)) {
+		if (DispatchResult.FAIL2RETRY.equals(result)) {
 			if (task.getRetryTimes() < MAX_FAIL_TIMES) {
 				Calendar c = Calendar.getInstance();
 				c.add(Calendar.MINUTE, task.getRetryTimes() + 1);// 每多重试一次，就多延迟1分钟后执行
@@ -77,7 +79,7 @@ public class DispatchResultManager {
 			return;
 		}
 		boolean flag = dispatchTaskService.updateTaskStatus(task.getId(),
-				DispatchTaskService.TaskType.FAIL.getValue(), ScheduleServer
+				ScheduleConstants.TaskType.FAIL.getValue(), ScheduleServer
 						.getInstance().getServerName());
 		if (!flag) {
 			logger.error("task execute discard, update status failed," + task);

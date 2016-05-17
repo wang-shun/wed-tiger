@@ -12,10 +12,10 @@ public class EventInConsumerRepository {
 
 	private static final EventInConsumerRepository instance = new EventInConsumerRepository();
 
-	private static ConcurrentHashMap<Integer, Integer> repository;
+	private static ConcurrentHashMap<Long, Long> repository;
 
 	private EventInConsumerRepository() {
-		repository = new ConcurrentHashMap<Integer, Integer>();
+		repository = new ConcurrentHashMap<Long, Long>();
 	}
 
 	public static EventInConsumerRepository getInstance() {
@@ -27,12 +27,12 @@ public class EventInConsumerRepository {
 	 * @param taskId
 	 * @return
 	 */
-	public boolean isContain(Integer taskId) {
-		Integer value = repository.putIfAbsent(taskId, taskId);
+	public boolean isContain(Long taskId) {
+		Long value = repository.putIfAbsent(taskId, taskId);
 		return (value == null) ? false : true;
 	}
 	
-	public void remove(Integer taskId){
+	public void remove(Long taskId){
 		repository.remove(taskId);
 	}
 	
@@ -40,7 +40,7 @@ public class EventInConsumerRepository {
 		repository.clear();
 	}
 	
-	public Integer get(Integer taskId){
+	public Long get(Long taskId){
 		return repository.get(taskId);
 	}
 

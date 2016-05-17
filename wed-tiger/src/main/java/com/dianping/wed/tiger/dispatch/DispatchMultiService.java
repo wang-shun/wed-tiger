@@ -31,6 +31,6 @@ public interface DispatchMultiService extends DispatchTaskService {
 	 * @return
 	 */
 	public List<DispatchTaskEntity> findDispatchTasksWithLimitByBackFetch(
-			String handler, List<Integer> nodeList, int limit, int taskId);
+			String handler, List<Integer> nodeList, int limit, long taskId);
 
 }
