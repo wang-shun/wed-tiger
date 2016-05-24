@@ -17,7 +17,9 @@
 			<!-- 左对齐 -->
 			<ul class="nav navbar-nav navbar-left active-nav" >
 				<li class="nav-click" ><a href="#" >监控中心</a></li>
-				<li class="nav-click" ><a href="/tigerhelp.html" target="_blank" >接入文档</a></li>
+				<!--
+				<li class="nav-click" ><a href="##" target="_blank" >接入文档</a></li>
+				-->
 			</ul>
 	   </div>
 	</div>
